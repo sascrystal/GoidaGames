@@ -228,9 +228,9 @@ public class GameScreen implements Screen {
                     isCardInfoVisible = false; // Показываем информацию о карте
                 } else {
                     // Если карта не попадает на противника, обрабатываем ее
-                    if (player.manaPool - player.hand[draggedCardIndex].cost >= 0 && enemy.isAlive() && enemy.getBounds().overlaps(new Rectangle(draggedCardX, draggedCardY, draggedCard.getRegionWidth(), draggedCard.getRegionHeight()))) {
+                    if (manaPoolCheck() && enemy.getBounds().overlaps(new Rectangle(draggedCardX, draggedCardY, draggedCard.getRegionWidth(), draggedCard.getRegionHeight()))) {
                         useCard();
-                    } else if (player.hand[draggedCardIndex] instanceof CardAbility && player.manaPool - player.hand[draggedCardIndex].cost >= 0 &&!invisibleCardArea.contains(draggedCardX, draggedCardY)){
+                    } else if (player.hand[draggedCardIndex] instanceof CardAbility && manaPoolCheck() &&!invisibleCardArea.contains(draggedCardX, draggedCardY)){
                         useCard();
                     } else {
                         returnCard();
@@ -350,6 +350,11 @@ public class GameScreen implements Screen {
         cardBounds[draggedCardIndex].setPosition(initialCardPositionsX[draggedCardIndex], initialCardPositionsY[draggedCardIndex]);
         isCardVisible[draggedCardIndex] = true;
         isCardInfoVisible = false;
+
+    }
+
+    private boolean manaPoolCheck(){
+        return player.manaPool - player.hand[draggedCardIndex].cost >= 0;
 
     }
 
