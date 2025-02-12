@@ -221,7 +221,7 @@ class CookieOfDobor extends CardAbility{
             y.health -= damageSelf;
         }
         y.useManaForCard(this);
-        y.doborCards(extraCards);
+        y.takeCardsFromDraftDeck(extraCards);
     }
 
 

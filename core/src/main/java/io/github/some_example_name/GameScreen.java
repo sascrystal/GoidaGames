@@ -54,6 +54,8 @@ public class GameScreen implements Screen {
     public GameScreen(Enemy enemy, Player player){
         this.enemy = enemy;
         this.player = player;
+        player.beginFight();
+        player.beginTurn();
 
     }
 
@@ -72,7 +74,10 @@ public class GameScreen implements Screen {
         initialCardPositionsX = new float[6];
         initialCardPositionsY = new float[6];
 
+
+
         preRenderCards();
+
 
         // Создаем невидимое поле для карт
         invisibleCardArea = new Rectangle(0, 0, Gdx.graphics.getWidth(), 250); // Задаем ширину и высоту
@@ -99,7 +104,7 @@ public class GameScreen implements Screen {
         soundEffectPlaceCard = Gdx.audio.newSound(Gdx.files.internal("sounds/placeCard.wav"));
         soundEffectEndTurn = Gdx.audio.newSound(Gdx.files.internal("sounds/endTurn.wav"));
         soundEffectNotEnoughMana = Gdx.audio.newSound(Gdx.files.internal("sounds/notEnoughMana.wav"));
-        
+
     }
 
     @Override
@@ -272,7 +277,7 @@ public class GameScreen implements Screen {
         }
 
         playerTurn = true; // Ход переходит обратно к игроку
-        player.resetAfterTurn(); // Обновляем карты в руке игрока
+        player.beginTurn(); // Обновляем карты в руке игрока
 
         // Обновляем видимость карт
         // Делаем все карты видимыми (или можете настроить по вашему усмотрению)
