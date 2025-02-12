@@ -360,3 +360,4 @@ public class GameScreen implements Screen {
 
 
 }
+//СОСАТЬ АМЕРИКА
