@@ -230,11 +230,6 @@ public class GameScreen implements Screen {
                     // Если карта не попадает на противника, обрабатываем ее
                     if (player.manaPool - player.hand[draggedCardIndex].cost >= 0 && enemy.isAlive() && enemy.getBounds().overlaps(new Rectangle(draggedCardX, draggedCardY, draggedCard.getRegionWidth(), draggedCard.getRegionHeight()))) {
                         useCard();
-                        if (enemy.getHealth() <= 0) {
-                            backgroundMusic.stop();
-                            this.dispose();
-                            ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
-                        }
                     } else if (player.hand[draggedCardIndex] instanceof CardAbility && player.manaPool - player.hand[draggedCardIndex].cost >= 0 &&!invisibleCardArea.contains(draggedCardX, draggedCardY)){
                         useCard();
                     } else {
@@ -314,7 +309,7 @@ public class GameScreen implements Screen {
 
     }
 
-    public void preRenderCards() {
+    private void preRenderCards() {
         float cardWidth = 150; // Ширина карты
         float cardHeight = 225; // Высота карты
         float startX = (float) ((Gdx.graphics.getWidth() - (cardWidth * player.hand.length)) / 2.4); // Центрирование по X
@@ -343,6 +338,11 @@ public class GameScreen implements Screen {
         enemy.enemyReactionOfCard(player,draggedCardIndex);
         isCardInfoVisible = false; // Показываем информацию о карте
         preRenderCards();
+        if (enemy.getHealth() <= 0) {
+            backgroundMusic.stop();
+            this.dispose();
+            ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
+        }
     }
 
     private void returnCard(){
