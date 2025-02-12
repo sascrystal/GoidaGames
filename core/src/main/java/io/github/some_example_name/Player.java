@@ -6,30 +6,82 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Player {
-    public PlayingCard[] deckCard; // Все карты игрока
-    public PlayingCard[] hand;// Карты в руке игрока
+public abstract class Player {
     public EndlessBuff[] endlessBuffs = new EndlessBuff[2];
     public TalentBuff[] talentsBuffs = new TalentBuff[2];
     public int health;
-    protected List<PlayingCard> cardList;
     public int manaPool;
     public int manaPoolMax;
     public  int shield;// Здоровье игрока
     public Animation animation;// Анимация для игрока
-    protected static int usedCardsInDeck;
-    static {
-        usedCardsInDeck = 0;
+
+    protected List<PlayingCard> dropDeck = new ArrayList<>();
+    protected List<PlayingCard> deck = new ArrayList<>();
+    protected List<PlayingCard> draftDeck = new ArrayList<>();
+    protected PlayingCard[] hand = new PlayingCard[6];
+
+    public int getShield(){
+        return shield;
+    }
+
+    public int getHealth() {
+        return health;
     }
 
 
-    public void doborCards(int count){
+    public void beginFight(){
+        draftDeck.addAll(deck);
+        Collections.shuffle(draftDeck);
+        ComboAttack.setCondition(false);
+    }
 
-        for(int i = findFreeSpaceIndex(), j = 0; j<count && i<hand.length;j++,i++){
-            hand[i] = cardList.get(usedCardsInDeck);
-            usedCardsInDeck++;
+    public void beginTurn(){
+        takeCardsFromDraftDeck(4);
+        manaPool = manaPoolMax;
+        shield = 0;
+    }
+
+    public void endTurn(){
+        int notFreeSpace = findFreeSpaceIndex();
+        for (int i = 0; i<notFreeSpace;i++){
+            draftDeck.add(hand[i]);
+            hand[i] = null;
+        }
+
+    }
+
+    public void addDropDeck(PlayingCard x){
+        dropDeck.add(x);
+    }
+
+    public void playCard(Enemy enemy,int index){
+        hand[index].cardAction(enemy, this, index);
+        addDropDeck(hand[index]);
+        shiftHand(index);
+    }
+
+
+
+    public void takeCardsFromDraftDeck(int count){
+        for (int i = 0; i<count; i++){
+            int freeSpace = findFreeSpaceIndex();
+            if(freeSpace == -1){
+                break;
+            }
+            else {
+                hand[freeSpace] =  draftDeck.get(0);
+                draftDeck.remove(0);
+                if(draftDeck.isEmpty()){
+                    draftDeck.addAll(dropDeck);
+                    Collections.shuffle(draftDeck);
+                }
+            }
+
         }
     }
+
+
+
 
     public void giveMaxMana(int count){
         manaPoolMax+=count;
@@ -59,16 +111,7 @@ public class Player {
         return index;
     }
 
-    public void burnTheCard(Class x){
-        PlayingCard[] newDeck =  new PlayingCard[deckCard.length-1];
-        for (int j = 0, i = 0; i<deckCard.length; i++){
-            if(deckCard[i].getClass() != x){
-                newDeck[j] = deckCard[i];
-                j++;
-            }
-        }
-        deckCard = newDeck;
-    }
+
 
     public void giveTheCard (PlayingCard x){
         int i = findFreeSpaceIndex();
@@ -79,13 +122,10 @@ public class Player {
 
 
     public void drawRandomCards() {
-        Collections.shuffle(cardList);// Перемешиваем карты
-        usedCardsInDeck=0;
-        hand = new PlayingCard[6];
+
         int i;
 
         //Основной добор
-        doborCards(4);
         i = 4;
 
         //Добор от CookieOfMadnees
@@ -113,12 +153,7 @@ public class Player {
         }
 
     }
-    public int getShield(){
-        return shield;
-    }
-    public int getHealth() {
-        return health;
-    }
+
 
     public void takeDamage(int damage) {
             if (shield-damage>0){
@@ -139,36 +174,32 @@ public class Player {
     public void useManaForCard(PlayingCard x){
             manaPool -= x.cost;
     }
-    public void resetAfterTurn(){
-            manaPool = manaPoolMax;
-            shield = 0;
-            ComboAttack.setCondition(false);
-            drawRandomCards();
-    }
+
 
     public int getManaPool() {
         return manaPool;
     }
 }
+
+
 class    CharacterKnight extends Player{
     public CharacterKnight() {
         Buff.setStaticBuff(this);
-        deckCard = new PlayingCard[6];
         for(int i=0 ; i<2; i++){
-            deckCard[i] = new Attack();
+            deck.add(new Attack());
+
         }
         for(int i=2; i<4; i++){
-            deckCard[i] = new Defence();
+            deck.add(new Defence());
+
         }
-        deckCard[4] = new ComboAttack();
-        deckCard[5] = new ComboAttack();
+        for(int i=2; i<4; i++){
+            deck.add(new ComboAttack());
+        }
         health = 60;// Начальное здоровье игрока
         shield = 0;
         manaPool = 2;
         manaPoolMax = 2;
-        cardList = new ArrayList<>();
-        Collections.addAll(cardList, deckCard);
-        drawRandomCards();
         animation = new Animation(0.9f, 1.1f, 0.5f, 300f); // Инициализация анимации
     }
 

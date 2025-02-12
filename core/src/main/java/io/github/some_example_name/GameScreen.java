@@ -54,6 +54,8 @@ public class GameScreen implements Screen {
     public GameScreen(Enemy enemy, Player player){
         this.enemy = enemy;
         this.player = player;
+        player.beginFight();
+        player.beginTurn();
 
     }
 
@@ -72,7 +74,10 @@ public class GameScreen implements Screen {
         initialCardPositionsX = new float[6];
         initialCardPositionsY = new float[6];
 
+
+
         preRenderCards();
+
 
         // Создаем невидимое поле для карт
         invisibleCardArea = new Rectangle(0, 0, Gdx.graphics.getWidth(), 250); // Задаем ширину и высоту
@@ -99,7 +104,7 @@ public class GameScreen implements Screen {
         soundEffectPlaceCard = Gdx.audio.newSound(Gdx.files.internal("sounds/placeCard.wav"));
         soundEffectEndTurn = Gdx.audio.newSound(Gdx.files.internal("sounds/endTurn.wav"));
         soundEffectNotEnoughMana = Gdx.audio.newSound(Gdx.files.internal("sounds/notEnoughMana.wav"));
-        
+
     }
 
     @Override
@@ -223,29 +228,12 @@ public class GameScreen implements Screen {
                     isCardInfoVisible = false; // Показываем информацию о карте
                 } else {
                     // Если карта не попадает на противника, обрабатываем ее
-                    if (player.manaPool - player.hand[draggedCardIndex].cost >= 0 && enemy.isAlive() && enemy.getBounds().overlaps(new Rectangle(draggedCardX, draggedCardY, draggedCard.getRegionWidth(), draggedCard.getRegionHeight()))) {
-                        player.hand[draggedCardIndex].cardAction(enemy, player,draggedCardIndex);// Уменьшаем здоровье противника
-                        enemy.enemyReactionOfCard(player,draggedCardIndex);
-                        isCardInfoVisible = false; // Показываем информацию о карте
-                        player.shiftHand(draggedCardIndex);
-                        preRenderCards();
-                            // Проверка здоровья противника
-                        if (enemy.getHealth() <= 0) {
-                            backgroundMusic.stop();
-                            this.dispose();
-                            ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
-                        }
-                    } else if (player.hand[draggedCardIndex] instanceof CardAbility && player.manaPool - player.hand[draggedCardIndex].cost >= 0 &&!invisibleCardArea.contains(draggedCardX, draggedCardY)){
-                        player.hand[draggedCardIndex].cardAction(enemy, player, draggedCardIndex);
-                        enemy.enemyReactionOfCard(player,draggedCardIndex);
-                        isCardInfoVisible = false; // Показываем информацию о карте
-                        player.shiftHand(draggedCardIndex);
-                        preRenderCards();
+                    if (manaPoolCheck() && enemy.getBounds().overlaps(new Rectangle(draggedCardX, draggedCardY, draggedCard.getRegionWidth(), draggedCard.getRegionHeight()))) {
+                        useCard();
+                    } else if (player.hand[draggedCardIndex] instanceof CardAbility && manaPoolCheck() &&!invisibleCardArea.contains(draggedCardX, draggedCardY)){
+                        useCard();
                     } else {
-                        soundEffectNotEnoughMana.play(0.7f);
-                        cardBounds[draggedCardIndex].setPosition(initialCardPositionsX[draggedCardIndex], initialCardPositionsY[draggedCardIndex]);
-                        isCardVisible[draggedCardIndex] = true;
-                        isCardInfoVisible = false; // Показываем информацию о карте
+                        returnCard();
                     }
                 }
             }
@@ -271,8 +259,10 @@ public class GameScreen implements Screen {
             ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
         }
 
+        player.endTurn();
+
         playerTurn = true; // Ход переходит обратно к игроку
-        player.resetAfterTurn(); // Обновляем карты в руке игрока
+        player.beginTurn(); // Обновляем карты в руке игрока
 
         // Обновляем видимость карт
         // Делаем все карты видимыми (или можете настроить по вашему усмотрению)
@@ -319,7 +309,7 @@ public class GameScreen implements Screen {
 
     }
 
-    public void preRenderCards() {
+    private void preRenderCards() {
         float cardWidth = 150; // Ширина карты
         float cardHeight = 225; // Высота карты
         float startX = (float) ((Gdx.graphics.getWidth() - (cardWidth * player.hand.length)) / 2.4); // Центрирование по X
@@ -334,13 +324,38 @@ public class GameScreen implements Screen {
         }
     }
 
-    public void renderingCards() {
+    private void renderingCards() {
         for (int i = 0; i < player.hand.length; i++) {
             if (isCardVisible[i] && player.hand[i] != null) {
                 // Используем координаты cardBounds для отрисовки карт
                 batch.draw(player.hand[i].texture, cardBounds[i].x, cardBounds[i].y);
             }
         }
+    }
+
+    private void useCard(){
+        player.playCard(enemy, draggedCardIndex);
+        enemy.enemyReactionOfCard(player,draggedCardIndex);
+        isCardInfoVisible = false; // Показываем информацию о карте
+        preRenderCards();
+        if (enemy.getHealth() <= 0) {
+            backgroundMusic.stop();
+            this.dispose();
+            ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
+        }
+    }
+
+    private void returnCard(){
+        soundEffectNotEnoughMana.play(0.7f);
+        cardBounds[draggedCardIndex].setPosition(initialCardPositionsX[draggedCardIndex], initialCardPositionsY[draggedCardIndex]);
+        isCardVisible[draggedCardIndex] = true;
+        isCardInfoVisible = false;
+
+    }
+
+    private boolean manaPoolCheck(){
+        return player.manaPool - player.hand[draggedCardIndex].cost >= 0;
+
     }
 
 
