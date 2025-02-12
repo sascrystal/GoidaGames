@@ -28,6 +28,9 @@ public abstract class Player {
         return health;
     }
 
+    public int getManaPool() {
+        return manaPool;
+    }
 
     public void beginFight(){
         draftDeck.addAll(deck);
@@ -43,15 +46,10 @@ public abstract class Player {
 
     public void endTurn(){
         int notFreeSpace = findFreeSpaceIndex();
-        for (int i = 0; i<notFreeSpace;i++){
+        for (int i = 0; i<notFreeSpace;i++) {
             draftDeck.add(hand[i]);
             hand[i] = null;
         }
-
-    }
-
-    public void addDropDeck(PlayingCard x){
-        dropDeck.add(x);
     }
 
     public void playCard(Enemy enemy,int index){
@@ -59,8 +57,6 @@ public abstract class Player {
         addDropDeck(hand[index]);
         shiftHand(index);
     }
-
-
 
     public void takeCardsFromDraftDeck(int count){
         for (int i = 0; i<count; i++){
@@ -80,11 +76,8 @@ public abstract class Player {
         }
     }
 
-
-
-
-    public void giveMaxMana(int count){
-        manaPoolMax+=count;
+    public void addDropDeck(PlayingCard x){
+        dropDeck.add(x);
     }
 
     public void shiftHand(int index){
@@ -112,7 +105,6 @@ public abstract class Player {
     }
 
 
-
     public void giveTheCard (PlayingCard x){
         int i = findFreeSpaceIndex();
         if(i!=-1){
@@ -120,40 +112,9 @@ public abstract class Player {
         }
     }
 
-
-    public void drawRandomCards() {
-
-        int i;
-
-        //Основной добор
-        i = 4;
-
-        //Добор от CookieOfMadnees
-        if(talentsBuffs[CookiesOfMadnessBuff.getIndex()].stack>0){
-            for(int j = 0;j<talentsBuffs[CookiesOfMadnessBuff.getIndex()].stack && i<hand.length;j++,i++){
-                int chance = (int)(Math.random()*5);
-                switch (chance){
-                    case 0:
-                        hand[i] = new CookieOfPower();
-                        break;
-                    case 1:
-                        hand[i] = new CookieOfReinforce();
-                        break;
-                    case 2:
-                        hand[i] = new CookiesOfMadnessEthereal();
-                        break;
-                    case 3:
-                        hand[i] = new KingOfCookieEthereal();
-                        break;
-                    case 4:
-                        hand[i] = new CookieOfDobor();
-                        break;
-                }
-            }
-        }
-
+    public void giveMaxMana(int count){
+        manaPoolMax+=count;
     }
-
 
     public void takeDamage(int damage) {
             if (shield-damage>0){
@@ -171,13 +132,9 @@ public abstract class Player {
                 });
             }
     }
+
     public void useManaForCard(PlayingCard x){
             manaPool -= x.cost;
-    }
-
-
-    public int getManaPool() {
-        return manaPool;
     }
 }
 
