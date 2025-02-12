@@ -229,28 +229,16 @@ public class GameScreen implements Screen {
                 } else {
                     // Если карта не попадает на противника, обрабатываем ее
                     if (player.manaPool - player.hand[draggedCardIndex].cost >= 0 && enemy.isAlive() && enemy.getBounds().overlaps(new Rectangle(draggedCardX, draggedCardY, draggedCard.getRegionWidth(), draggedCard.getRegionHeight()))) {
-                        player.hand[draggedCardIndex].cardAction(enemy, player,draggedCardIndex);// Уменьшаем здоровье противника
-                        enemy.enemyReactionOfCard(player,draggedCardIndex);
-                        isCardInfoVisible = false; // Показываем информацию о карте
-                        player.shiftHand(draggedCardIndex);
-                        preRenderCards();
-                            // Проверка здоровья противника
+                        useCard();
                         if (enemy.getHealth() <= 0) {
                             backgroundMusic.stop();
                             this.dispose();
                             ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
                         }
                     } else if (player.hand[draggedCardIndex] instanceof CardAbility && player.manaPool - player.hand[draggedCardIndex].cost >= 0 &&!invisibleCardArea.contains(draggedCardX, draggedCardY)){
-                        player.hand[draggedCardIndex].cardAction(enemy, player, draggedCardIndex);
-                        enemy.enemyReactionOfCard(player,draggedCardIndex);
-                        isCardInfoVisible = false; // Показываем информацию о карте
-                        player.shiftHand(draggedCardIndex);
-                        preRenderCards();
+                        useCard();
                     } else {
-                        soundEffectNotEnoughMana.play(0.7f);
-                        cardBounds[draggedCardIndex].setPosition(initialCardPositionsX[draggedCardIndex], initialCardPositionsY[draggedCardIndex]);
-                        isCardVisible[draggedCardIndex] = true;
-                        isCardInfoVisible = false; // Показываем информацию о карте
+                        returnCard();
                     }
                 }
             }
@@ -275,6 +263,8 @@ public class GameScreen implements Screen {
             this.dispose();
             ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
         }
+
+        player.endTurn();
 
         playerTurn = true; // Ход переходит обратно к игроку
         player.beginTurn(); // Обновляем карты в руке игрока
@@ -339,13 +329,28 @@ public class GameScreen implements Screen {
         }
     }
 
-    public void renderingCards() {
+    private void renderingCards() {
         for (int i = 0; i < player.hand.length; i++) {
             if (isCardVisible[i] && player.hand[i] != null) {
                 // Используем координаты cardBounds для отрисовки карт
                 batch.draw(player.hand[i].texture, cardBounds[i].x, cardBounds[i].y);
             }
         }
+    }
+
+    private void useCard(){
+        player.playCard(enemy, draggedCardIndex);
+        enemy.enemyReactionOfCard(player,draggedCardIndex);
+        isCardInfoVisible = false; // Показываем информацию о карте
+        preRenderCards();
+    }
+
+    private void returnCard(){
+        soundEffectNotEnoughMana.play(0.7f);
+        cardBounds[draggedCardIndex].setPosition(initialCardPositionsX[draggedCardIndex], initialCardPositionsY[draggedCardIndex]);
+        isCardVisible[draggedCardIndex] = true;
+        isCardInfoVisible = false;
+
     }
 
 

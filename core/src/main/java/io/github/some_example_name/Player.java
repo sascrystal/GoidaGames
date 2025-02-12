@@ -28,10 +28,6 @@ public abstract class Player {
         return health;
     }
 
-    protected static int usedCardsInDeck;
-    static {
-        usedCardsInDeck = 0;
-    }
 
     public void beginFight(){
         draftDeck.addAll(deck);
@@ -45,6 +41,27 @@ public abstract class Player {
         shield = 0;
     }
 
+    public void endTurn(){
+        int notFreeSpace = findFreeSpaceIndex();
+        for (int i = 0; i<notFreeSpace;i++){
+            draftDeck.add(hand[i]);
+            hand[i] = null;
+        }
+
+    }
+
+    public void addDropDeck(PlayingCard x){
+        dropDeck.add(x);
+    }
+
+    public void playCard(Enemy enemy,int index){
+        hand[index].cardAction(enemy, this, index);
+        addDropDeck(hand[index]);
+        shiftHand(index);
+    }
+
+
+
     public void takeCardsFromDraftDeck(int count){
         for (int i = 0; i<count; i++){
             int freeSpace = findFreeSpaceIndex();
@@ -53,7 +70,6 @@ public abstract class Player {
             }
             else {
                 hand[freeSpace] =  draftDeck.get(0);
-                dropDeck.add(draftDeck.get(0));
                 draftDeck.remove(0);
                 if(draftDeck.isEmpty()){
                     draftDeck.addAll(dropDeck);
