@@ -1,0 +1,347 @@
+package io.github.some_example_name;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.audio.Music;
+
+import java.util.Arrays;
+
+public class GameScreen implements Screen {
+    private SpriteBatch batch;
+    private Rectangle[] cardBounds;
+    private boolean[] isCardVisible;
+    private TextureRegion draggedCard;
+    private float draggedCardX, draggedCardY;
+    private boolean isDragging;
+    private int draggedCardIndex;
+
+    private float[] initialCardPositionsX;
+    private float[] initialCardPositionsY;
+
+    private Music backgroundMusic;
+
+    private Sound soundEffectCardTaking, soundEffectPlaceCard, soundEffectEndTurn;
+    private Sound soundEffectNotEnoughMana;
+
+    private Texture cardInfoTexture;// Текстура для отображения информации о карте
+    private Texture attackImage, BGImage, interfaceImage;
+
+    private String cardName; // Название карты
+    private String cardDescription; // Описание карты
+    private boolean isCardInfoVisible;
+
+    // Добавляем противника и игрока
+    private final Enemy enemy;
+    private final Player player;
+    private boolean playerTurn;
+    private BitmapFont font;
+
+    // Кнопка завершения хода
+    private Texture endTurnButtonTexture;
+    private Rectangle endTurnButtonBounds;
+
+
+    // Невидимое поле для карт
+    private Rectangle invisibleCardArea;
+
+    public GameScreen(Enemy enemy, Player player){
+        this.enemy = enemy;
+        this.player = player;
+
+    }
+
+
+
+    @Override
+    public void show() {
+
+        batch = new SpriteBatch();
+        BGImage = new Texture(Gdx.files.internal("menu/BG_2.png"));
+        attackImage = new Texture(Gdx.files.internal("HUD/attak.png"));
+        interfaceImage = new Texture(Gdx.files.internal("HUD/interface.png"));
+
+        cardBounds = new Rectangle[6];
+        isCardVisible = new boolean[6];
+        initialCardPositionsX = new float[6];
+        initialCardPositionsY = new float[6];
+
+        preRenderCards();
+
+        // Создаем невидимое поле для карт
+        invisibleCardArea = new Rectangle(0, 0, Gdx.graphics.getWidth(), 250); // Задаем ширину и высоту
+        //invisibleCardArea = new Rectangle(0, 0, (cardBounds.length * 150 + 10) * 20, 250); // Задаем ширину и высоту
+        // cardFieldTexture = new Texture("HUD/card_field.png");
+
+        cardInfoTexture = new Texture(Gdx.files.internal("HUD/card_info.png")); // Загружаем текстуру
+        isCardInfoVisible = false; // Изначально информация о карте скрыта
+
+
+        // Инициализация шрифта
+        font = new BitmapFont(Gdx.files.internal("fonts/font.fnt"), Gdx.files.internal("fonts/font.png"), false);
+        font.getData().setScale(2.0f);
+
+        // Инициализация кнопки завершения хода
+        endTurnButtonTexture = new Texture(Gdx.files.internal("HUD/endhod_new.png"));
+        endTurnButtonBounds = new Rectangle((float) (Gdx.graphics.getWidth() / 1.173), (float) (Gdx.graphics.getHeight() / 2.8), endTurnButtonTexture.getWidth(), endTurnButtonTexture.getHeight());
+        //endTurnButtonBounds = new Rectangle((float)(Gdx.graphics.getWidth()/1.24), 330, endTurnButtonTexture.getWidth(), endTurnButtonTexture.getHeight());
+        playerTurn = true; // Начинаем с хода игрока
+
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/fightMusic.mp3"));
+
+        soundEffectCardTaking = Gdx.audio.newSound(Gdx.files.internal("sounds/takeCard.wav"));
+        soundEffectPlaceCard = Gdx.audio.newSound(Gdx.files.internal("sounds/placeCard.wav"));
+        soundEffectEndTurn = Gdx.audio.newSound(Gdx.files.internal("sounds/endTurn.wav"));
+        soundEffectNotEnoughMana = Gdx.audio.newSound(Gdx.files.internal("sounds/notEnoughMana.wav"));
+        
+    }
+
+    @Override
+    public void render(float delta) {
+
+        backgroundMusic.setLooping(true);
+        backgroundMusic.setVolume(0.3f);
+        backgroundMusic.play();
+
+        ScreenUtils.clear(0, 0, 0, 1);
+        batch.begin();
+        batch.draw(BGImage, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(attackImage, (float)(Gdx.graphics.getWidth()/1.7), (float)(Gdx.graphics.getHeight()/1.5));
+        batch.draw(interfaceImage, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        // Отображение значений здоровья и щита
+        font.draw(batch, String.valueOf(player.getHealth()), 20, (float)(Gdx.graphics.getHeight()/1.5));
+        font.draw(batch, String.valueOf(player.getShield()), 120, (float)(Gdx.graphics.getHeight()/1.5));
+        font.draw(batch, String.valueOf(player.getManaPool()), 220, (float)(Gdx.graphics.getHeight()/2.25));
+
+        // Отрисовка противника
+        enemy.draw(batch);
+        if (enemy.isAlive()) {
+            font.draw(batch, "Health: " + enemy.getHealth(), (float)(Gdx.graphics.getWidth() / 2.3), enemy.getBounds().y + enemy.getBounds().height + 70);
+            enemy.updateAnimation(Gdx.graphics.getDeltaTime()); // Обновляем состояние противника
+            enemy.draw(batch); // Рисуем противника
+        }
+
+        // Отображение атаки противника
+        if (enemy.isAlive()) {
+            font.draw(batch, String.valueOf(enemy.moveList[enemy.getIndexMoveList()].showNumericalValue()), (float)(Gdx.graphics.getWidth()/1.55), (float)(Gdx.graphics.getHeight()/1.38)); // Отображение Атаки
+        }
+
+        // Отображаем текстуру поля карт, масштабируя её под размеры невидимого поля
+        //batch.draw(cardFieldTexture, invisibleCardArea.x, invisibleCardArea.y,invisibleCardArea.width + 100, invisibleCardArea.height + 100);
+
+        // Отрисовка карт
+        renderingCards();
+
+        // Если карта перетаскивается, отрисовываем её в позиции курсора
+        if (isDragging && draggedCard != null) {
+            batch.draw(draggedCard, draggedCardX, draggedCardY);
+        }
+
+        //информация о карте
+        if (isCardInfoVisible) {
+            float cardInfoX = Gdx.graphics.getWidth() - cardInfoTexture.getWidth() - 10;
+            float cardInfoY = Gdx.graphics.getHeight() - cardInfoTexture.getHeight() - 10;
+
+            // Отрисовка текстуры информации о карте
+            batch.draw(cardInfoTexture, cardInfoX, cardInfoY);
+
+            // Отрисовка названия карты
+            font.draw(batch, cardName, cardInfoX + ((float) cardInfoTexture.getWidth() / 2) - 250, cardInfoY + cardInfoTexture.getHeight() - 10); // Отображаем название карты
+
+            // Отрисовка описания карты с переносом текста
+            float descriptionX = cardInfoX + 10; // Отступ для описания
+            float descriptionY = cardInfoY + cardInfoTexture.getHeight() - 110; // Позиция для описания
+            float maxWidth = cardInfoTexture.getWidth() - 20; // Максимальная ширина для текста (отступы)
+
+            // Используем метод draw с учетом ширины
+            font.draw(batch, cardDescription, descriptionX, descriptionY, maxWidth, 1, true); // true для переноса строк
+        }
+
+        // Отрисовка кнопки завершения хода
+        batch.draw(endTurnButtonTexture, endTurnButtonBounds.x, endTurnButtonBounds.y);
+        batch.end();
+
+        handleInput();
+    }
+
+    private boolean endTurnButtonPressed = false; // Флаг для отслеживания нажатия на кнопку завершения хода
+
+    private void handleInput() {
+        if (Gdx.input.isTouched()) {
+
+            float touchX = Gdx.input.getX();
+            float touchY = Gdx.graphics.getHeight() - Gdx.input.getY();
+
+            // Проверка нажатия на кнопку завершения хода
+            // Сбрасываем флаг, если не нажатие на кнопку
+            endTurnButtonPressed = endTurnButtonBounds.contains(touchX, touchY) && playerTurn; // Устанавливаем флаг нажатия
+
+            if (!isDragging) {
+
+                for (int i = 0; i < cardBounds.length; i++) {
+                    if (player.hand[i]!= null && isCardVisible[i] && cardBounds[i].contains(touchX, touchY)) {
+                        isDragging = true;
+                        draggedCard = new TextureRegion(player.hand[i].texture);
+                        draggedCardX = touchX - cardBounds[i].width / 2;
+                        draggedCardY = touchY - cardBounds[i].height / 2;
+
+                        // Сохраняем информацию о карте
+                        cardName = player.hand[i].getName();
+                        cardDescription = player.hand[i].getDescription();
+                        isCardInfoVisible = true; // Показываем информацию о карте
+
+                        // Сделаем карту невидимой сразу, как только она берется
+                        soundEffectCardTaking.play(0.7f);
+                        isCardVisible[i] = false;
+                        draggedCardIndex = i;
+                        break;
+                    }
+                }
+            } else {
+                isCardInfoVisible = true; // Скрываем информацию о карте
+                // Обновляем позицию перетаскиваемой карты
+                draggedCardX = touchX -  (float) draggedCard.getRegionWidth() / 2;
+                draggedCardY = touchY -  (float) draggedCard.getRegionHeight() / 2;
+            }
+        } else {
+            if (isDragging) {
+
+
+                // Проверяем, находится ли карта в невидимом поле
+                if (invisibleCardArea.contains(draggedCardX, draggedCardY)) {
+                    soundEffectPlaceCard.play(0.7f);
+                    // Возвращаем карту на исходную позицию
+                    cardBounds[draggedCardIndex].setPosition(initialCardPositionsX[draggedCardIndex], initialCardPositionsY[draggedCardIndex]);
+                    isCardVisible[draggedCardIndex] = true; // Делаем карту видимой
+                    isCardInfoVisible = false; // Показываем информацию о карте
+                } else {
+                    // Если карта не попадает на противника, обрабатываем ее
+                    if (player.manaPool - player.hand[draggedCardIndex].cost >= 0 && enemy.isAlive() && enemy.getBounds().overlaps(new Rectangle(draggedCardX, draggedCardY, draggedCard.getRegionWidth(), draggedCard.getRegionHeight()))) {
+                        player.hand[draggedCardIndex].cardAction(enemy, player,draggedCardIndex);// Уменьшаем здоровье противника
+                        enemy.enemyReactionOfCard(player,draggedCardIndex);
+                        isCardInfoVisible = false; // Показываем информацию о карте
+                        player.shiftHand(draggedCardIndex);
+                        preRenderCards();
+                            // Проверка здоровья противника
+                        if (enemy.getHealth() <= 0) {
+                            backgroundMusic.stop();
+                            this.dispose();
+                            ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
+                        }
+                    } else if (player.hand[draggedCardIndex] instanceof CardAbility && player.manaPool - player.hand[draggedCardIndex].cost >= 0 &&!invisibleCardArea.contains(draggedCardX, draggedCardY)){
+                        player.hand[draggedCardIndex].cardAction(enemy, player, draggedCardIndex);
+                        enemy.enemyReactionOfCard(player,draggedCardIndex);
+                        isCardInfoVisible = false; // Показываем информацию о карте
+                        player.shiftHand(draggedCardIndex);
+                        preRenderCards();
+                    } else {
+                        soundEffectNotEnoughMana.play(0.7f);
+                        cardBounds[draggedCardIndex].setPosition(initialCardPositionsX[draggedCardIndex], initialCardPositionsY[draggedCardIndex]);
+                        isCardVisible[draggedCardIndex] = true;
+                        isCardInfoVisible = false; // Показываем информацию о карте
+                    }
+                }
+            }
+            isDragging = false; // Завершаем перетаскивание
+            draggedCard = null; // Освобождаем ссылку на перетаскиваемую карту
+
+            // Если кнопка завершения хода была нажата, выполняем завершение хода
+            if (endTurnButtonPressed) {
+                soundEffectEndTurn.play(0.8f);
+                endTurn(); // Завершение хода
+                endTurnButtonPressed = false; // Сбрасываем флаг
+            }
+        }
+    }
+
+    private void endTurn() {
+        playerTurn = false;// Завершаем ход игрока
+        enemy.endTurn(player);
+        // Проверка здоровья игрока
+        if (player.getHealth() <= 0) {
+            backgroundMusic.stop();
+            this.dispose();
+            ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
+        }
+
+        playerTurn = true; // Ход переходит обратно к игроку
+        player.resetAfterTurn(); // Обновляем карты в руке игрока
+
+        // Обновляем видимость карт
+        // Делаем все карты видимыми (или можете настроить по вашему усмотрению)
+        Arrays.fill(isCardVisible, true);
+    }
+
+
+    @Override
+    public void resize(int width, int height) {}
+
+    @Override
+    public void pause() {}
+
+    @Override
+    public void resume() {}
+
+    @Override
+    public void hide() {}
+
+    @Override
+    public void dispose() {
+        cardInfoTexture.dispose();
+        batch.dispose();
+        BGImage.dispose();
+        interfaceImage.dispose();
+        attackImage.dispose();
+        endTurnButtonTexture.dispose();
+        enemy.dispose();
+        font.dispose();
+
+        for (int i = 0; i < player.hand.length-1 && player.hand[i] != null;  i++) {
+            player.hand[i].texture.dispose();
+        }
+
+        if (backgroundMusic != null) {
+            backgroundMusic.stop();
+            backgroundMusic.dispose();
+        }
+
+        soundEffectEndTurn.dispose();
+        soundEffectCardTaking.dispose();
+        soundEffectNotEnoughMana.dispose();
+        soundEffectPlaceCard.dispose();
+
+    }
+
+    public void preRenderCards() {
+        float cardWidth = 150; // Ширина карты
+        float cardHeight = 225; // Высота карты
+        float startX = (float) ((Gdx.graphics.getWidth() - (cardWidth * player.hand.length)) / 2.4); // Центрирование по X
+        float startY = 50; // Фиксированная позиция Y
+
+        for (int i = 0; i < cardBounds.length; i++) {
+            cardBounds[i] = new Rectangle(startX + i * cardWidth, startY, cardWidth, cardHeight);
+
+            isCardVisible[i] = true;
+            initialCardPositionsX[i] = cardBounds[i].x;
+            initialCardPositionsY[i] = cardBounds[i].y;
+        }
+    }
+
+    public void renderingCards() {
+        for (int i = 0; i < player.hand.length; i++) {
+            if (isCardVisible[i] && player.hand[i] != null) {
+                // Используем координаты cardBounds для отрисовки карт
+                batch.draw(player.hand[i].texture, cardBounds[i].x, cardBounds[i].y);
+            }
+        }
+    }
+
+
+}
