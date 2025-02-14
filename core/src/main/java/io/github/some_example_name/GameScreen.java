@@ -230,7 +230,7 @@ public class GameScreen implements Screen {
                     // Если карта не попадает на противника, обрабатываем ее
                     if (manaPoolCheck() && enemy.getBounds().overlaps(new Rectangle(draggedCardX, draggedCardY, draggedCard.getRegionWidth(), draggedCard.getRegionHeight()))) {
                         useCard();
-                    } else if (player.hand[draggedCardIndex] instanceof CardAbility && manaPoolCheck() &&!invisibleCardArea.contains(draggedCardX, draggedCardY)){
+                    } else if (player.hand[draggedCardIndex] instanceof nonTargetCard && manaPoolCheck() &&!invisibleCardArea.contains(draggedCardX, draggedCardY)){
                         useCard();
                     } else {
                         returnCard();

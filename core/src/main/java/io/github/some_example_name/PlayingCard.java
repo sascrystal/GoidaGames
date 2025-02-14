@@ -8,8 +8,13 @@ abstract class PlayingCard {
     protected  String name,description;
     protected int cost;
     protected  Texture texture;
-    protected Sound soundEffect;
-    abstract void cardAction(Enemy x, Player y,int index);
+    protected Sound soundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/Zaglushka.wav"));
+
+    public  void cardAction(Enemy x, Player y,int index){
+        y.useManaForCard(this);
+        soundEffect.play(0.7f);
+
+    }
 
 
     //cardAnimation - метод, который делает анимацию для карт. Он должен быть абстрактны.
@@ -33,8 +38,20 @@ abstract class PlayingCard {
     }
 
 }
-abstract class CardAttack extends PlayingCard {
-    int damage;
+
+abstract class TargetCard extends PlayingCard{
+
+}
+abstract class CardAttack extends TargetCard {
+    protected int damage;
+    protected int totalDamage;
+
+    @Override
+    public void cardAction(Enemy x, Player y, int index) {
+        super.cardAction(x, y, index);
+        x.takeDamage(totalDamage);
+    }
+
 }
 
 //CardAttackList
@@ -51,12 +68,10 @@ class Attack extends CardAttack {
         soundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/attackEffect.wav"));
     }
 
-    public  void cardAction(Enemy x,Player y,int index){
-        soundEffect.play(0.7f);
-
-        int totalDamage = damage+y.endlessBuffs[Power.getIndex()].stack;
-        x.takeDamage(totalDamage);
-        y.useManaForCard(this);
+    @Override
+    public void cardAction(Enemy x, Player y, int index) {
+        totalDamage = damage;
+        super.cardAction(x, y, index);
     }
 }
 
@@ -74,27 +89,28 @@ class ComboAttack extends CardAttack{
         name ="Комбо атака";
         description = "Тип: атака. Наносит 7 урона, если использовано в одному ходу 2 карты этого типа, то получаешь в руку бесплатную эфирную карту комбо атаки";
         texture = new Texture(Gdx.files.internal("cards/cardLetsGoGambling.png"));
-        damage = 5;
+        damage = 7;
         cost = 1;
     }
     public ComboAttack(int cost) {
         name ="Комбо атака";
         description = "Тип: атака. Наносит 7 урона, если использовано в одному ходу 2 карты этого типа, то получаешь в руку бесплатную эфирную карту комбо атаки эфирная";
         texture = new Texture(Gdx.files.internal("cards/cardLetsGoGambling.png"));
-        damage = 5;
+        damage = 7;
         this.cost =cost;
     }
 
     @Override
     public void cardAction(Enemy x, Player y, int index) {
-        x.takeDamage(damage);
         if(condition){
             y.giveTheCard(new ComboAttack(0));
             condition = false;
         } else {
             condition = true;
         }
-        y.useManaForCard(this);
+        totalDamage = damage;
+        super.cardAction(x,y,index);
+
     }
 }
 class LetsGoGambling extends CardAttack {
@@ -111,25 +127,38 @@ class LetsGoGambling extends CardAttack {
         int letsGoGambling = (int) (Math.random()*2);
         switch (letsGoGambling){
             case 0:
-                x.takeDamage((6+y.endlessBuffs[Power.getIndex()].stack)*2);
+                totalDamage = damage*2;
+                super.cardAction(x,y,index);
                 break;
             case 1:
                 x.moveList[x.indexMoveList].enemyAction(x,y);
                 x.moveList[x.indexMoveList].enemyAction(x,y);
+                soundEffect.play(0.7f);
+                y.useManaForCard(this);
                 break;
 
         }
-        y.useManaForCard(this);
+
     }
 }
 
 
 
-abstract class  CardAbility extends PlayingCard {
+abstract class  nonTargetCard extends PlayingCard {
 }
 //CardDefence
-class Defence extends CardAbility {
-    private final int shield;
+class DefenceCard extends nonTargetCard{
+    protected int shield;
+    protected int totalShield;
+    @Override
+    public void cardAction(Enemy x, Player y, int index) {
+        super.cardAction(x, y, index);
+        y.giveShield(totalShield);
+
+    }
+}
+class Defence extends DefenceCard {
+
 
 
     public Defence() {
@@ -144,14 +173,11 @@ class Defence extends CardAbility {
 
     @Override
     public  void cardAction(Enemy x, Player y,int index){
-        soundEffect.play(0.7f);
-        int totalShield = shield+y.endlessBuffs[Reinforce.getIndex()].stack;
-        y.shield += totalShield;
-        y.useManaForCard(this);
-
+        int totalShield = shield;
+        super.cardAction(x,y,index);
     }
 }
-class CookieOfPower extends CardAbility{
+class CookieOfPower extends nonTargetCard{
     int power;
     int damageSelf;
     public CookieOfPower() {
@@ -172,11 +198,11 @@ class CookieOfPower extends CardAbility{
         } else {
             y.health -= damageSelf;
         }
-        y.useManaForCard(this);
+
     }
 }
 
-class CookieOfReinforce extends CardAbility{
+class CookieOfReinforce extends nonTargetCard{
     int reinforce,damageSelf;
 
     public CookieOfReinforce() {
@@ -197,11 +223,11 @@ class CookieOfReinforce extends CardAbility{
         } else {
             y.health -= damageSelf;
         }
-        y.useManaForCard(this);
+
     }
 }
 
-class CookieOfDobor extends CardAbility{
+class CookieOfDobor extends nonTargetCard{
     int extraCards, damageSelf;
     public CookieOfDobor() {
         extraCards = 2;
@@ -220,14 +246,14 @@ class CookieOfDobor extends CardAbility{
         } else {
             y.health -= damageSelf;
         }
-        y.useManaForCard(this);
+
         y.takeCardsFromDraftDeck(extraCards);
     }
 
 
 }
 
-class CookieOfMana extends CardAbility{
+class CookieOfMana extends nonTargetCard{
     int extraMana,damageSelf;
 
     public CookieOfMana() {
@@ -247,12 +273,12 @@ class CookieOfMana extends CardAbility{
             y.health -= damageSelf;
         }
         y.giveMaxMana(extraMana);
-        y.useManaForCard(this);
+
     }
 }
 
 
-abstract class CardTalent extends CardAbility{
+abstract class CardTalent extends nonTargetCard{
 }
 
 class KingOfCookie extends  CardTalent {
@@ -266,7 +292,7 @@ class KingOfCookie extends  CardTalent {
     @Override
     public void cardAction(Enemy x, Player y, int index){
         y.talentsBuffs[KingOfCookieBuff.getIndex()].stack += 1;
-        y.useManaForCard(this);
+
     }
 }
 class CookiesOfMadness extends CardTalent{
@@ -280,7 +306,7 @@ class CookiesOfMadness extends CardTalent{
     @Override
     public void cardAction(Enemy x, Player y, int index) {
         y.talentsBuffs[CookiesOfMadnessBuff.getIndex()].stack += 1;
-        y.useManaForCard(this);
+
     }
 }
 
@@ -305,7 +331,7 @@ class KingOfCookieEthereal extends KingOfCookie {
     @Override
     public void cardAction(Enemy x, Player y, int index) {
             y.talentsBuffs[CookiesOfMadnessBuff.getIndex()].stack += 1;
-        y.useManaForCard(this);
+
     }
 }
 
