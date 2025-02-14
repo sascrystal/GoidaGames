@@ -133,6 +133,10 @@ public abstract class Player {
             }
     }
 
+    public void giveShield(int plusShield){
+        shield+=plusShield;
+    }
+
     public void useManaForCard(PlayingCard x){
             manaPool -= x.cost;
     }
