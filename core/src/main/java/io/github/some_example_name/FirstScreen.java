@@ -12,16 +12,14 @@ import com.badlogic.gdx.audio.Music;
 
 public class FirstScreen implements Screen {
     private SpriteBatch batch;
-    private Texture BG_image;
+    private final Texture BG_image;
     private Texture startButtonTexture;
     private Texture continueButtonTexture;
     private Rectangle startButtonBounds;
     private Rectangle continueButtonBounds;
     private BitmapFont font;
-    private GlyphLayout layout;
     private float backgroundX1; // Первая позиция фона
     private float backgroundX2; // Вторая позиция фона
-    private float speed = 1f; // Скорость прокрутки
     private Music backgroundMusic, backgroundNoiseMenu;
 
     private float screenWidth;
@@ -56,7 +54,7 @@ public class FirstScreen implements Screen {
         continueButtonBounds = new Rectangle(800 * scaleX, 1 * scaleY, (buttonWidth - 35) * scaleX, (buttonHeight - 35) * scaleY);
 
         font = new BitmapFont(); // Инициализация шрифта
-        layout = new GlyphLayout();
+        GlyphLayout layout = new GlyphLayout();
 
 
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/mainMenuMusic.mp3"));
@@ -75,6 +73,8 @@ public class FirstScreen implements Screen {
         ScreenUtils.clear(0, 0, 0, 1);
 
         // Обновление позиций фона
+        // Скорость прокрутки
+        float speed = 1f;
         backgroundX1 -= speed;
         backgroundX2 -= speed;
 
@@ -116,8 +116,8 @@ public class FirstScreen implements Screen {
                 Player gay = new CharacterKnight();
                 Stage.HamsterCombat(gay);
                 // Логика продолжения игры (если требуется)
-                //backgroundMusic.stop();
-                //dispose();
+                backgroundMusic.stop();
+                dispose();
             }
         }
     }

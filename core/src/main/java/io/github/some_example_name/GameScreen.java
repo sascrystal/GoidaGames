@@ -81,8 +81,7 @@ public class GameScreen implements Screen {
 
         // Создаем невидимое поле для карт
         invisibleCardArea = new Rectangle(0, 0, Gdx.graphics.getWidth(), 250); // Задаем ширину и высоту
-        //invisibleCardArea = new Rectangle(0, 0, (cardBounds.length * 150 + 10) * 20, 250); // Задаем ширину и высоту
-        // cardFieldTexture = new Texture("HUD/card_field.png");
+
 
         cardInfoTexture = new Texture(Gdx.files.internal("HUD/card_info.png")); // Загружаем текстуру
         isCardInfoVisible = false; // Изначально информация о карте скрыта

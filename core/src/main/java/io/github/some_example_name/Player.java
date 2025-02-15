@@ -120,7 +120,7 @@ public abstract class Player {
     public boolean buffExist(Buff x){
         boolean check = false;
         if (buffs.isEmpty()){
-            return check;
+            return false;
         }
         for (int i = 0;i<buffs.size(); i++){
             if(x.getName().equals(buffs.get(i).getName())){
@@ -180,9 +180,6 @@ public abstract class Player {
     }
 
 
-    public void giveMaxMana(int count){
-        manaPoolMax+=count;
-    }
 
     public void takeDamage(int damage) {
             if (shield-damage>0){

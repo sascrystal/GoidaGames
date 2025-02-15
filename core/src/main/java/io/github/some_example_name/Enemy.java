@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class Enemy {
+public abstract class Enemy {
     public Texture texture; // Текстура противника
     public Rectangle bounds; // Границы для проверки коллизий
     public Animation<TextureRegion> animation; // Анимация для противника
@@ -24,7 +24,7 @@ abstract class Enemy {
     public float stateTime;// Время для анимации
     public int indexMoveList;
 
-    protected Sound takingDamageSoundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/takingDamageGamblerSoundEffect.wav"));;
+    protected Sound takingDamageSoundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/takingDamageGamblerSoundEffect.wav"));
 
     public void draw(SpriteBatch batch) {
         if (isAlive()) {
@@ -73,6 +73,7 @@ abstract class Enemy {
 
     public void endTurn(Player y){
         identifyIndexMoveList();
+        decreaseBuff();
         moveList[getIndexMoveList()].enemyAction(this,y);// Противник наносит урон игроку
     }
 
