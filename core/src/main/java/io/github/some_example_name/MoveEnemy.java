@@ -1,8 +1,7 @@
 package io.github.some_example_name;
 
-abstract class MoveEnemy {
+public abstract class MoveEnemy {
     public void enemyAction(Enemy x, Player y){}
-    public void buff(int x){}
     abstract  String showNumericalValue(Enemy x, Player y);
 
 }
@@ -46,10 +45,7 @@ class AttackProgrammer extends AttackEnemy{
         super(damage);
     }
 
-    //@Override
-    //public void enemyAction(Enemy x, Player y) {
-        //y.takeDamage(damage*(int)(Math.pow(2,x.uniqueBuff[ProgrammerBuff.getIndex()].stack)));
-    //}
+
 
 
 }

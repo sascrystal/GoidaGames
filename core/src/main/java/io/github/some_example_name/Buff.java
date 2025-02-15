@@ -1,7 +1,7 @@
 package io.github.some_example_name;
 
 
-abstract class Buff {
+public abstract class Buff {
     protected boolean decrease;
     protected int  stack;
     protected   String name;
@@ -55,21 +55,6 @@ class Reinforce extends Buff{
 
     }
 }
-//class manaReservation extends Buff{
-    //public  manaReservation(){
-        //name = "Отложенная мана";
-        //duration = 1;
-        //description = "Дает 1 ману на следующий ход";
-        //stack++;
-    //}
-
-    //@Override
-    //public void buffAction(Player x){
-        //x.manaPool += stack;
-        //stack = 0;
-
-    //}
-//}
 
 class TalentBuff extends Buff{
 
@@ -114,16 +99,4 @@ class ProgrammerBuff extends TurnBuff {
 
 }
 
-class modifierBuff extends Buff{
-    float modifier = 0.25f;
-}
 
-class Weakness extends  modifierBuff{
-    public Weakness() {
-        name ="Печеньковое безумие";
-        description = "Дает за каждый стак в начале хода дает дополнительную карту печенек";
-        decrease = true;
-        stack = 1;
-        modifier = 0.75f;
-    }
-}

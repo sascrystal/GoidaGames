@@ -4,10 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
-abstract class PlayingCard {
+public abstract class PlayingCard {
     protected  String name,description;
     protected int cost;
-    protected  Texture texture = new Texture(Gdx.files.internal("cards/noDataCard.png"));;
+    protected  Texture texture = new Texture(Gdx.files.internal("cards/noDataCard.png"));
     protected Sound soundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/Zaglushka.wav"));
 
     public  void cardAction(Enemy x, Player y,int index){
@@ -196,7 +196,7 @@ class Defence extends DefenceCard {
 
     @Override
     public  void cardAction(Enemy x, Player y,int index){
-        totalShield = shield+y.buffStack(new Reinforce());;
+        totalShield = shield+y.buffStack(new Reinforce());
         super.cardAction(x,y,index);
     }
 }
