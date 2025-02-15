@@ -167,10 +167,10 @@ class  FeintCard extends CardAttack{
 
 
 
-abstract class  nonTargetCard extends PlayingCard {
+abstract class  NonTargetCard extends PlayingCard {
 }
 //CardDefence
-class DefenceCard extends nonTargetCard{
+class DefenceCard extends NonTargetCard{
     protected int shield;
     protected int totalShield;
     @Override
@@ -200,7 +200,7 @@ class Defence extends DefenceCard {
         super.cardAction(x,y,index);
     }
 }
-class CookieOfPower extends nonTargetCard{
+class CookieOfPower extends NonTargetCard{
     int power;
     int damageSelf;
     public CookieOfPower() {
@@ -222,7 +222,7 @@ class CookieOfPower extends nonTargetCard{
     }
 }
 
-class CookieOfReinforce extends nonTargetCard{
+class CookieOfReinforce extends NonTargetCard{
     int reinforce,damageSelf;
 
     public CookieOfReinforce() {
@@ -244,7 +244,7 @@ class CookieOfReinforce extends nonTargetCard{
     }
 }
 
-class CookieOfDobor extends nonTargetCard{
+class CookieOfDobor extends NonTargetCard{
     int extraCards, damageSelf;
     public CookieOfDobor() {
         extraCards = 2;
@@ -265,7 +265,7 @@ class CookieOfDobor extends nonTargetCard{
 
 }
 
-class CookieOfMana extends nonTargetCard{
+class CookieOfMana extends NonTargetCard{
     int extraMana,damageSelf;
 
     public CookieOfMana() {
@@ -285,7 +285,7 @@ class CookieOfMana extends nonTargetCard{
 }
 
 
-abstract class CardTalent extends nonTargetCard{
+abstract class CardTalent extends NonTargetCard{
 }
 
 
