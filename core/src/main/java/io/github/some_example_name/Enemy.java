@@ -9,18 +9,22 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.ArrayList;
+import java.util.List;
+
 abstract class Enemy {
     public Texture texture; // Текстура противника
     public Rectangle bounds; // Границы для проверки коллизий
     public Animation<TextureRegion> animation; // Анимация для противника
     public int health; // Здоровье противника
-    public EndlessBuff[] endlessBuffs = new EndlessBuff[2];
-    public Buff[] uniqueBuff = new Buff[1];
+
+    protected List<Buff> buffs = new ArrayList<>();
+
     public MoveEnemy[] moveList;
     public float stateTime;// Время для анимации
     public int indexMoveList;
 
-    protected Sound takingDamageSoundEffect;
+    protected Sound takingDamageSoundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/takingDamageGamblerSoundEffect.wav"));;
 
     public void draw(SpriteBatch batch) {
         if (isAlive()) {
@@ -75,11 +79,72 @@ abstract class Enemy {
     public void updateAnimation(float delta) {
         stateTime += delta;
     }
+
+    public boolean buffExist(Buff x){
+        boolean check = false;
+        if (buffs.isEmpty()){
+            return check;
+        }
+        for (int i = 0;i<buffs.size(); i++){
+            if(x.getName().equals(buffs.get(i).getName())){
+                check = true;
+                break;
+            }
+        }
+        return  check;
+    }
+
+    public void giveBuff (Buff x){
+        if(buffExist(x)){
+            for (int i = 0;i<buffs.size(); i++){
+                if(x.getName().equals(buffs.get(i).getName())){
+                    buffs.get(i).addStack();
+                }
+            }
+        }else {
+            buffs.add(x);
+        }
+    }
+
+    public int buffStack(Buff x){
+        if(buffs.isEmpty()){
+            return  0;
+        }
+        for (int i = 0; i<buffs.size(); i++){
+            if(x.getName().equals(buffs.get(i).getName())) {
+                return buffs.get(i).getStack();
+            }
+        }
+        return 0;
+    }
+
+    public float modifierBuff(modifierBuff x){
+        float modifier = 1;
+        if(buffs.isEmpty()){
+            return  1;
+        }
+        for (int i = 0; i<buffs.size(); i++){
+            if(x.getName().equals(buffs.get(i).getName())) {
+                return x.modifier;
+            }
+        }
+        return  1;
+    }
+
+    public void decreaseBuff(){
+        if(buffs.isEmpty()){
+            return;
+        }
+        for (int i = 0; i<buffs.size(); i++){
+            if(buffs.get(i).decrease) {
+                buffs.get(i).decreaseStack();
+            }
+        }
+    }
 }
 
 class   EnemyGhost extends Enemy {
     public EnemyGhost() {
-        Buff.setStaticBuff(this);
         // Загрузка текстуры спрайт-листа
         Texture spriteSheet = new Texture(Gdx.files.internal("enemies/Enemy_sprite.png"));
 
@@ -114,7 +179,7 @@ class   EnemyGhost extends Enemy {
 }
 class EnemyHamster extends Enemy{
     public EnemyHamster() {
-        Buff.setStaticBuff(this);
+
         // Загрузка текстуры спрайт-листа
         Texture spriteSheet = new Texture(Gdx.files.internal("enemies/hmstr_sprite.png"));
 
@@ -143,13 +208,13 @@ class EnemyHamster extends Enemy{
 
     @Override
     public void enemyReactionOfCard( Player y, int index){
-        moveList[0].buff(1);
+        giveBuff(new Power());
     }
 }
 
 class EnemyGambler extends Enemy{
     public EnemyGambler() {
-        Buff.setStaticBuff(this);
+
         // Загрузка текстуры спрайт-листа
         Texture spriteSheet = new Texture(Gdx.files.internal("enemies/Gambler.png"));
 
@@ -183,8 +248,8 @@ class EnemyGambler extends Enemy{
 
 class EnemyProgrammer extends Enemy{
     public EnemyProgrammer() {
-        Buff.setStaticBuff(this);
-        uniqueBuff[0] = new ProgrammerBuff();
+
+
         Texture spriteSheet = new Texture(Gdx.files.internal("enemies/Gambler.png"));
 
         // Создание TextureRegion для каждого кадра анимации
@@ -219,17 +284,17 @@ class EnemyProgrammer extends Enemy{
         switch (indexMoveList){
             case 0:
                 if(!(y.hand[index] instanceof CardAttack)){
-                    uniqueBuff[ProgrammerBuff.getIndex()].stack = 1;
+                    //uniqueBuff[ProgrammerBuff.getIndex()].stack = 1;
                 }
                 break;
             case 1:
                 if(y.hand[index] instanceof CardTalent || y.hand[index] instanceof CardAttack){
-                    uniqueBuff[ProgrammerBuff.getIndex()].stack = 1;
+                    //uniqueBuff[ProgrammerBuff.getIndex()].stack = 1;
                 }
                 break;
             case 2:
                 if(!(y.hand[index] instanceof CardTalent)){
-                    uniqueBuff[ProgrammerBuff.getIndex()].stack = 1;
+                    //uniqueBuff[ProgrammerBuff.getIndex()].stack = 1;
                 }
                 break;
         }
@@ -239,6 +304,6 @@ class EnemyProgrammer extends Enemy{
     @Override
     public void endTurn(Player y) {
         super.endTurn(y);
-        uniqueBuff[ProgrammerBuff.getIndex()].stack = 0;
+        //uniqueBuff[ProgrammerBuff.getIndex()].stack = 0;
     }
 }

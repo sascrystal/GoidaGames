@@ -1,19 +1,23 @@
 package io.github.some_example_name;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public abstract class Player {
-    public EndlessBuff[] endlessBuffs = new EndlessBuff[2];
-    public TalentBuff[] talentsBuffs = new TalentBuff[2];
-    public int health;
-    public int manaPool;
-    public int manaPoolMax;
-    public  int shield;// Здоровье игрока
-    public Animation animation;// Анимация для игрока
+
+
+    //penis
+
+    protected List<Buff> buffs = new ArrayList<>();
+
+
+    protected int health;
+    protected int manaPool;
+    protected int manaPoolMax;
+    protected   int shield;// Здоровье игрока
+    protected Animation animation;// Анимация для игрока
 
     protected List<PlayingCard> dropDeck = new ArrayList<>();
     protected List<PlayingCard> deck = new ArrayList<>();
@@ -50,6 +54,7 @@ public abstract class Player {
             draftDeck.add(hand[i]);
             hand[i] = null;
         }
+        decreaseBuff();
     }
 
     public void playCard(Enemy enemy,int index){
@@ -112,6 +117,69 @@ public abstract class Player {
         }
     }
 
+    public boolean buffExist(Buff x){
+        boolean check = false;
+        if (buffs.isEmpty()){
+            return check;
+        }
+        for (int i = 0;i<buffs.size(); i++){
+            if(x.getName().equals(buffs.get(i).getName())){
+                check = true;
+                break;
+            }
+        }
+        return  check;
+    }
+
+    public void giveBuff (Buff x){
+        if(buffExist(x)){
+            for (int i = 0;i<buffs.size(); i++){
+                if(x.getName().equals(buffs.get(i).getName())){
+                    buffs.get(i).addStack();
+                }
+            }
+        }else {
+            buffs.add(x);
+        }
+    }
+
+    public int buffStack(Buff x){
+        if(buffs.isEmpty()){
+            return  0;
+        }
+        for (int i = 0; i<buffs.size(); i++){
+            if(x.getName().equals(buffs.get(i).getName())) {
+                return buffs.get(i).getStack();
+            }
+        }
+        return 0;
+    }
+
+    public float modifierBuff(modifierBuff x){
+        float modifier = 1;
+        if(buffs.isEmpty()){
+            return  1;
+        }
+        for (int i = 0; i<buffs.size(); i++){
+            if(x.getName().equals(buffs.get(i).getName())) {
+                return x.modifier;
+            }
+        }
+        return  modifier;
+    }
+
+    public void decreaseBuff(){
+        if(buffs.isEmpty()){
+            return;
+        }
+        for (int i = 0; i<buffs.size(); i++){
+            if(buffs.get(i).decrease) {
+                buffs.get(i).decreaseStack();
+            }
+        }
+    }
+
+
     public void giveMaxMana(int count){
         manaPoolMax+=count;
     }
@@ -134,18 +202,18 @@ public abstract class Player {
     }
 
     public void giveShield(int plusShield){
-        shield+=plusShield;
+        shield+=plusShield  ;
     }
 
     public void useManaForCard(PlayingCard x){
             manaPool -= x.cost;
     }
+
 }
 
 
 class    CharacterKnight extends Player{
     public CharacterKnight() {
-        Buff.setStaticBuff(this);
         for(int i=0 ; i<2; i++){
             deck.add(new Attack());
 
@@ -154,9 +222,10 @@ class    CharacterKnight extends Player{
             deck.add(new Defence());
 
         }
-        for(int i=2; i<4; i++){
-            deck.add(new ComboAttack());
-        }
+        deck.add(new CookieOfReinforce());
+        deck.add(new CookieOfPower());
+        deck.add(new CookieOfDobor());
+        deck.add(new FeintCard());
         health = 60;// Начальное здоровье игрока
         shield = 0;
         manaPool = 2;
