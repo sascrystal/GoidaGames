@@ -155,7 +155,7 @@ public abstract class Player {
         return 0;
     }
 
-    public float modifierBuff(modifierBuff x){
+    public float modifierBuff(ModifierBuff x){
         float modifier = 1;
         if(buffs.isEmpty()){
             return  1;
@@ -175,6 +175,9 @@ public abstract class Player {
         for (int i = 0; i<buffs.size(); i++){
             if(buffs.get(i).decrease) {
                 buffs.get(i).decreaseStack();
+                if(buffs.get(i).stack == 0){
+                    buffs.remove(i);
+                }
             }
         }
     }

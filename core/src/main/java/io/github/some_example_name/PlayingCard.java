@@ -161,7 +161,7 @@ class  FeintCard extends CardAttack{
     public void cardAction(Enemy x, Player y, int index) {
         totalDamage = totalDamageCalculation(y);
         super.cardAction(x, y, index);
-        x.giveBuff(new Weakness());
+        x.giveBuff(new Weakness(2));
     }
 }
 
