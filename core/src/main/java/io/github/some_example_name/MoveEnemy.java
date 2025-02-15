@@ -1,11 +1,9 @@
 package io.github.some_example_name;
 
-public class MoveEnemy {
+abstract class MoveEnemy {
     public void enemyAction(Enemy x, Player y){}
     public void buff(int x){}
-    public String showNumericalValue(){
-        return "ЛОХ";
-    }
+    abstract  String showNumericalValue(Enemy x, Player y);
 
 }
 class AttackEnemy extends MoveEnemy{
@@ -17,18 +15,17 @@ class AttackEnemy extends MoveEnemy{
 
     @Override
     public void enemyAction(Enemy x, Player y){
-        y.takeDamage(damage);
+        int totalDamage = (int)((damage +x.buffStack(new Power()))*x.modifierBuff(new Weakness()));
+        y.takeDamage(totalDamage);
     }
 
 
-    @Override
-    public void buff(int x){
-        damage+= x;
-    }
+
 
     @Override
-    public String showNumericalValue(){
-        return String.valueOf(damage);
+    public String showNumericalValue(Enemy x, Player y){
+        int totalDamage = (int)((damage +x.buffStack(new Power()))*x.modifierBuff(new Weakness()));
+        return String.valueOf(totalDamage);
     }
 
 }
@@ -49,10 +46,10 @@ class AttackProgrammer extends AttackEnemy{
         super(damage);
     }
 
-    @Override
-    public void enemyAction(Enemy x, Player y) {
-        y.takeDamage(damage*(int)(Math.pow(2,x.uniqueBuff[ProgrammerBuff.getIndex()].stack)));
-    }
+    //@Override
+    //public void enemyAction(Enemy x, Player y) {
+        //y.takeDamage(damage*(int)(Math.pow(2,x.uniqueBuff[ProgrammerBuff.getIndex()].stack)));
+    //}
 
 
 }

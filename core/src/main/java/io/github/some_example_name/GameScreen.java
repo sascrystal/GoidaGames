@@ -135,7 +135,7 @@ public class GameScreen implements Screen {
 
         // Отображение атаки противника
         if (enemy.isAlive()) {
-            font.draw(batch, String.valueOf(enemy.moveList[enemy.getIndexMoveList()].showNumericalValue()), (float)(Gdx.graphics.getWidth()/1.55), (float)(Gdx.graphics.getHeight()/1.38)); // Отображение Атаки
+            font.draw(batch, String.valueOf(enemy.moveList[enemy.getIndexMoveList()].showNumericalValue(enemy, player)), (float)(Gdx.graphics.getWidth()/1.55), (float)(Gdx.graphics.getHeight()/1.38)); // Отображение Атаки
         }
 
         // Отображаем текстуру поля карт, масштабируя её под размеры невидимого поля

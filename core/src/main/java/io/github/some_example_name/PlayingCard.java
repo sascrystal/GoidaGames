@@ -1,5 +1,5 @@
 package io.github.some_example_name;
-import com.badlogic.gdx.Audio;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 abstract class PlayingCard {
     protected  String name,description;
     protected int cost;
-    protected  Texture texture;
+    protected  Texture texture = new Texture(Gdx.files.internal("cards/noDataCard.png"));;
     protected Sound soundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/Zaglushka.wav"));
 
     public  void cardAction(Enemy x, Player y,int index){
@@ -52,6 +52,11 @@ abstract class CardAttack extends TargetCard {
         x.takeDamage(totalDamage);
     }
 
+    public int totalDamageCalculation(Player y){
+        return (int)((damage+y.buffStack(new Power()))*y.modifierBuff(new Weakness()));
+
+    }
+
 }
 
 //CardAttackList
@@ -70,7 +75,7 @@ class Attack extends CardAttack {
 
     @Override
     public void cardAction(Enemy x, Player y, int index) {
-        totalDamage = damage;
+        totalDamage = totalDamageCalculation(y);
         super.cardAction(x, y, index);
     }
 }
@@ -108,7 +113,7 @@ class ComboAttack extends CardAttack{
         } else {
             condition = true;
         }
-        totalDamage = damage;
+        totalDamage = totalDamageCalculation(y);
         super.cardAction(x,y,index);
 
     }
@@ -127,7 +132,7 @@ class LetsGoGambling extends CardAttack {
         int letsGoGambling = (int) (Math.random()*2);
         switch (letsGoGambling){
             case 0:
-                totalDamage = damage*2;
+                totalDamage = totalDamageCalculation(y)*2;
                 super.cardAction(x,y,index);
                 break;
             case 1:
@@ -139,6 +144,24 @@ class LetsGoGambling extends CardAttack {
 
         }
 
+    }
+}
+
+class  FeintCard extends CardAttack{
+    protected int weaknessStack;
+    public FeintCard() {
+        name = "Финт";
+        description = "Тип: атака. Наносит 8 урона и накладывает 2 слабости";
+        cost = 1;
+        damage = 8;
+        weaknessStack = 2;
+    }
+
+    @Override
+    public void cardAction(Enemy x, Player y, int index) {
+        totalDamage = totalDamageCalculation(y);
+        super.cardAction(x, y, index);
+        x.giveBuff(new Weakness());
     }
 }
 
@@ -173,7 +196,7 @@ class Defence extends DefenceCard {
 
     @Override
     public  void cardAction(Enemy x, Player y,int index){
-        int totalShield = shield;
+        totalShield = shield+y.buffStack(new Reinforce());;
         super.cardAction(x,y,index);
     }
 }
@@ -192,12 +215,9 @@ class CookieOfPower extends nonTargetCard{
 
     @Override
     public  void cardAction(Enemy x, Player y,int index){
-        y.endlessBuffs[Power.getIndex()].stack+=power;
-        if(y.talentsBuffs[KingOfCookieBuff.getIndex()].stack>0){
-            y.takeDamage(damageSelf);
-        } else {
-            y.health -= damageSelf;
-        }
+        super.cardAction(x,y,index);
+        y.giveBuff(new Power());
+        y.takeDamage(damageSelf);
 
     }
 }
@@ -217,12 +237,9 @@ class CookieOfReinforce extends nonTargetCard{
 
     @Override
     public  void cardAction(Enemy x, Player y,int index){
-        y.endlessBuffs[Reinforce.getIndex()].stack+=reinforce;
-        if(y.talentsBuffs[KingOfCookieBuff.getIndex()].stack>0){
-            y.takeDamage(damageSelf);
-        } else {
-            y.health -= damageSelf;
-        }
+        super.cardAction(x,y,index);
+        y.giveBuff(new Reinforce());
+        y.takeDamage(damageSelf);
 
     }
 }
@@ -240,14 +257,9 @@ class CookieOfDobor extends nonTargetCard{
 
     @Override
     public void cardAction(Enemy x, Player y, int index) {
-
-        if(y.talentsBuffs[KingOfCookieBuff.getIndex()].stack>0){
-            y.takeDamage(damageSelf);
-        } else {
-            y.health -= damageSelf;
-        }
-
+        super.cardAction(x,y,index);
         y.takeCardsFromDraftDeck(extraCards);
+        y.takeDamage(damageSelf);
     }
 
 
@@ -267,12 +279,7 @@ class CookieOfMana extends nonTargetCard{
 
     @Override
     public void cardAction(Enemy x, Player y, int index) {
-        if(y.talentsBuffs[KingOfCookieBuff.getIndex()].stack>0){
-            y.takeDamage(damageSelf);
-        } else {
-            y.health -= damageSelf;
-        }
-        y.giveMaxMana(extraMana);
+        super.cardAction(x,y,index);
 
     }
 }
@@ -281,20 +288,7 @@ class CookieOfMana extends nonTargetCard{
 abstract class CardTalent extends nonTargetCard{
 }
 
-class KingOfCookie extends  CardTalent {
-    public KingOfCookie(){
-        name = "Король Печенек";
-        description = "Тип: талант. Если используется, то карты печенек сначала наносит урон щиту";
-        texture = new Texture(Gdx.files.internal("cards/card6.png"));
-        cost = 2;
-    }
 
-    @Override
-    public void cardAction(Enemy x, Player y, int index){
-        y.talentsBuffs[KingOfCookieBuff.getIndex()].stack += 1;
-
-    }
-}
 class CookiesOfMadness extends CardTalent{
     public CookiesOfMadness() {
         name = "Печеньковое безумие";
@@ -305,7 +299,8 @@ class CookiesOfMadness extends CardTalent{
 
     @Override
     public void cardAction(Enemy x, Player y, int index) {
-        y.talentsBuffs[CookiesOfMadnessBuff.getIndex()].stack += 1;
+        y.giveBuff(new CookiesOfMadnessBuff());
+
 
     }
 }
@@ -320,18 +315,7 @@ class  CookiesOfMadnessEthereal extends CookiesOfMadness{
 
 }
 
-class KingOfCookieEthereal extends KingOfCookie {
-    public KingOfCookieEthereal() {
-        name = "Король Печенек";
-        description = "Тип: талант. Если используется, то карты печенек сначала наносит урон щиту. Эфирная. Одноразовая";
-        texture = new Texture(Gdx.files.internal("cards/card6.png"));
-        cost = 2;
-    }
 
-    @Override
-    public void cardAction(Enemy x, Player y, int index) {
-            y.talentsBuffs[CookiesOfMadnessBuff.getIndex()].stack += 1;
 
-    }
-}
+
 
