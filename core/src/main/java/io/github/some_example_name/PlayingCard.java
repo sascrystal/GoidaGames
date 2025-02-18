@@ -291,8 +291,8 @@ abstract class CardTalent extends NonTargetCard{
 
 class CookiesOfMadness extends CardTalent{
     public CookiesOfMadness() {
-        name = "Печеньковое безумие";
-        description = "Тип: талант. За каждый стак в начале хода дает дополнительную карту печенек";
+            name = "Печеньковое безумие";
+            description = "Тип: талант. За каждый стак в начале хода дает дополнительную карту печенек";
         texture = new Texture(Gdx.files.internal("cards/card6.png"));
         cost = 2;
     }
