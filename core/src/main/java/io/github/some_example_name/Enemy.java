@@ -99,7 +99,7 @@ public abstract class Enemy {
         if(buffExist(x)){
             for (int i = 0;i<buffs.size(); i++){
                 if(x.getName().equals(buffs.get(i).getName())){
-                    buffs.get(i).addStack();
+                    buffs.get(i).addStack(x);
                 }
             }
         }else {

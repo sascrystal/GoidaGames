@@ -55,7 +55,8 @@ public class GameScreen implements Screen {
         this.enemy = enemy;
         this.player = player;
         player.beginFight();
-        player.beginTurn();
+        player.beginTurn(enemy, player);
+
 
     }
 
@@ -261,7 +262,7 @@ public class GameScreen implements Screen {
         player.endTurn();
 
         playerTurn = true; // Ход переходит обратно к игроку
-        player.beginTurn(); // Обновляем карты в руке игрока
+        player.beginTurn(enemy,player); // Обновляем карты в руке игрока
 
         // Обновляем видимость карт
         // Делаем все карты видимыми (или можете настроить по вашему усмотрению)

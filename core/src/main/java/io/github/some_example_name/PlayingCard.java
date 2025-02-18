@@ -180,6 +180,39 @@ class DefenceCard extends NonTargetCard{
 
     }
 }
+
+class Evade extends DefenceCard{
+    public Evade() {
+        name = "Уворот";
+        description = "Тип: способность. Дает 8 защиты, 1 карту из колоды и 1 карту в следующем ходу";
+        shield = 8;
+        cost = 1;
+    }
+
+    @Override
+    public void cardAction(Enemy x, Player y, int index) {
+        totalShield = shield+y.buffStack(new Reinforce());
+        super.cardAction(x, y, index);
+        y.takeCardsFromDraftDeck(1);
+        y.giveBuff(new BonusCard(1));
+    }
+}
+
+class BarricadeCard extends DefenceCard{
+    public BarricadeCard() {
+        name = "Баррикада";
+        description ="Тип: талант. Дает 4 защиты, дает баф: баррикада";
+        shield = 4;
+        cost = 2;
+    }
+
+    @Override
+    public void cardAction(Enemy x, Player y, int index) {
+        totalShield = shield+y.buffStack(new Reinforce());
+        super.cardAction(x, y, index);
+        y.giveBuff(new Barricade());
+    }
+}
 class Defence extends DefenceCard {
 
 

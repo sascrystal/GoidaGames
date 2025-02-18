@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.MenuElement;
+
 public abstract class Player {
 
 
@@ -42,10 +44,22 @@ public abstract class Player {
         ComboAttack.setCondition(false);
     }
 
-    public void beginTurn(){
+    public void beginTurn(Enemy enemy, Player player){
         takeCardsFromDraftDeck(4);
         manaPool = manaPoolMax;
         shield = 0;
+        beginTurnBuffAction(enemy, player);
+        decreaseBuff();
+    }
+
+    public void beginTurnBuffAction(Enemy enemy, Player player){
+        if(!buffs.isEmpty()){
+            for(int i = 0; i<buffs.size(); i++){
+                if(buffs.get(i).beginTurn){
+                    buffs.get(i).buffAction(enemy, player);
+                }
+            }
+        }
     }
 
     public void endTurn(){
@@ -54,7 +68,7 @@ public abstract class Player {
             draftDeck.add(hand[i]);
             hand[i] = null;
         }
-        decreaseBuff();
+
     }
 
     public void playCard(Enemy enemy,int index){
@@ -135,7 +149,7 @@ public abstract class Player {
         if(buffExist(x)){
             for (int i = 0;i<buffs.size(); i++){
                 if(x.getName().equals(buffs.get(i).getName())){
-                    buffs.get(i).addStack();
+                    buffs.get(i).addStack(x);
                 }
             }
         }else {
@@ -225,7 +239,8 @@ class    CharacterKnight extends Player{
         deck.add(new CookieOfReinforce());
         deck.add(new CookieOfPower());
         deck.add(new CookieOfDobor());
-        deck.add(new FeintCard());
+        deck.add(new BarricadeCard());
+        deck.add(new Evade());
         health = 60;// Начальное здоровье игрока
         shield = 0;
         manaPool = 2;
