@@ -31,7 +31,27 @@ public abstract class Buff {
 
 }
 
+class BonusCard extends Buff{
 
+    public BonusCard(int stack) {
+        name = "Дополнительные карты";
+        description = "За каждый стак дает доп 1 карту в доборе";
+        this.stack = stack;
+        decrease = true;
+    }
+
+    public BonusCard() {
+        name = "Дополнительные карты";
+        description = "За каждый стак дает доп 1 карту в доборе";
+        stack = 1;
+        decrease = true;
+    }
+
+    @Override
+    public void decreaseStack() {
+        stack = 0;
+    }
+}
 
 class Power extends Buff{
 
