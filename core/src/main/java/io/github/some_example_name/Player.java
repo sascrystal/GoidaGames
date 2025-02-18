@@ -43,9 +43,10 @@ public abstract class Player {
     }
 
     public void beginTurn(){
-        takeCardsFromDraftDeck(4);
+        takeCardsFromDraftDeck(4+buffStack(new BonusCard()));
         manaPool = manaPoolMax;
         shield = 0;
+        decreaseBuff();
     }
 
     public void endTurn(){
@@ -54,7 +55,7 @@ public abstract class Player {
             draftDeck.add(hand[i]);
             hand[i] = null;
         }
-        decreaseBuff();
+
     }
 
     public void playCard(Enemy enemy,int index){
@@ -226,6 +227,7 @@ class    CharacterKnight extends Player{
         deck.add(new CookieOfPower());
         deck.add(new CookieOfDobor());
         deck.add(new FeintCard());
+        deck.add(new Evade());
         health = 60;// Начальное здоровье игрока
         shield = 0;
         manaPool = 2;
