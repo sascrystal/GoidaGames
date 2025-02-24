@@ -327,7 +327,7 @@ public class GameScreen implements Screen {
         for (int i = 0; i < player.hand.length; i++) {
             if (isCardVisible[i] && player.hand[i] != null) {
                 // Используем координаты cardBounds для отрисовки карт
-                batch.draw(player.hand[i].texture, cardBounds[i].x, cardBounds[i].y);
+                batch.draw(player.hand[i].getTexture(), cardBounds[i].x, cardBounds[i].y);
             }
         }
     }
