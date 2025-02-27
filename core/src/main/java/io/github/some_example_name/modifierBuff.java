@@ -1,7 +1,7 @@
 package io.github.some_example_name;
 
 public class ModifierBuff extends Buff{
-    float modifier = 0.25f;
+    float modifier = 0.75f;
 }
 
 class Weakness extends  ModifierBuff{

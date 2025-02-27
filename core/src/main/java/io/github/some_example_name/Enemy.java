@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Enemy {
+public abstract class Enemy  {
     public Texture texture; // Текстура противника
     public Rectangle bounds; // Границы для проверки коллизий
     public Animation<TextureRegion> animation; // Анимация для противника
