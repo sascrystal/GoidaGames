@@ -37,12 +37,14 @@ public abstract class Player {
     }
 
     public void beginFight(){
+        buffActionTrigger("BeginFight");
         draftDeck.addAll(deck);
         Collections.shuffle(draftDeck);
         ComboAttack.setCondition(false);
     }
 
     public void beginTurn(){
+        buffActionTrigger("BeginTurn");
         takeCardsFromDraftDeck(4+buffStack(new BonusCard()));
         manaPool = manaPoolMax;
         shield = 0;
@@ -50,6 +52,7 @@ public abstract class Player {
     }
 
     public void endTurn(){
+        buffActionTrigger("EndTurn");
         int notFreeSpace = findFreeSpaceIndex();
         for (int i = 0; i<notFreeSpace;i++) {
             draftDeck.add(hand[i]);
@@ -59,6 +62,7 @@ public abstract class Player {
     }
 
     public void playCard(Enemy enemy,int index){
+        buffActionTrigger("cardAction");
         hand[index].cardAction(enemy, this, index);
         addDropDeck(hand[index]);
         shiftHand(index);
@@ -169,6 +173,17 @@ public abstract class Player {
         return  modifier;
     }
 
+    public void buffActionTrigger(String situation){
+        if(buffs.isEmpty()){
+            return;
+        }
+        for (int i = 0; i<buffs.size(); i++){
+            if(buffs.get(i).triggerBuff(situation)){
+                buffs.get(i).buffAction();
+            }
+        }
+    }
+
     public void decreaseBuff(){
         if(buffs.isEmpty()){
             return;
@@ -182,8 +197,6 @@ public abstract class Player {
             }
         }
     }
-
-
 
     public void takeDamage(int damage) {
             if (shield-damage>0){
@@ -213,7 +226,7 @@ public abstract class Player {
 }
 
 
-class    CharacterKnight extends Player{
+class    CharacterKnight extends Player {
     public CharacterKnight() {
         for(int i=0 ; i<2; i++){
             deck.add(new Attack());
@@ -228,12 +241,15 @@ class    CharacterKnight extends Player{
         deck.add(new CookieOfDobor());
         deck.add(new FeintCard());
         deck.add(new Evade());
+        deck.add(new CookieOfMana());
+        deck.add(new LetsGoGambling());
         health = 60;// Начальное здоровье игрока
         shield = 0;
         manaPool = 2;
         manaPoolMax = 2;
         animation = new Animation(0.9f, 1.1f, 0.5f, 300f); // Инициализация анимации
     }
+
 
 }
 //goida

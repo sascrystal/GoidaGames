@@ -3,9 +3,12 @@ package io.github.some_example_name;
 
 public abstract class Buff {
     protected boolean decrease;
+    //это флаги, которые показывают когда триггерится бафф
+    protected boolean inEndTurn = false, inBeginTurn = false, inCardAction = false,
+        inBeginFight = false, inReaction = false;
     protected int  stack;
-    protected   String name;
-    protected   String description;
+    protected String name, description;
+
 
 
     public  String getName() {
@@ -18,6 +21,27 @@ public abstract class Buff {
 
     public  String getDescription() {
         return description;
+    }
+
+    public boolean triggerBuff(String situation){
+        switch (situation){
+            case "EndTurn":
+                return inEndTurn;
+            case "BeginTurn":
+                return inBeginTurn;
+            case "CardAction":
+                return inCardAction;
+            case "BeginFight":
+                return inBeginFight;
+            case "Reaction":
+                return  inReaction;
+            default:
+                return false;
+        }
+    }
+
+    public void buffAction(){
+
     }
 
     public void addStack(){
@@ -45,6 +69,11 @@ class BonusCard extends Buff{
         description = "За каждый стак дает доп 1 карту в доборе";
         stack = 1;
         decrease = true;
+    }
+
+    @Override
+    public void buffAction() {
+
     }
 
     @Override

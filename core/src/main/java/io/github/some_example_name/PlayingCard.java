@@ -169,7 +169,7 @@ class  FeintCard extends CardAttack{
 
 abstract class  NonTargetCard extends PlayingCard {
 }
-//CardDefence
+
 class DefenceCard extends NonTargetCard{
     protected int shield;
     protected int totalShield;
@@ -315,6 +315,7 @@ class CookiesOfMadness extends CardTalent{
 
     @Override
     public void cardAction(Enemy x, Player y, int index) {
+        super.cardAction(x,y,index);
         y.giveBuff(new CookiesOfMadnessBuff());
 
 
