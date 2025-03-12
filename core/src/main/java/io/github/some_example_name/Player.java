@@ -17,7 +17,6 @@ public abstract class Player {
     protected int manaPool;
     protected int manaPoolMax;
     protected   int shield;// Здоровье игрока
-    protected Animation animation;// Анимация для игрока
 
     protected List<PlayingCard> dropDeck = new ArrayList<>();
     protected List<PlayingCard> deck = new ArrayList<>();
@@ -207,11 +206,6 @@ public abstract class Player {
                 if (health < 0) {
                     health = 0; // Убедитесь, что здоровье не становится отрицательным
                 }
-                animation.setRotation(15); // Наклон вправо при получении урона
-                // Возврат в исходное положение через некоторое время
-                Gdx.app.postRunnable(() -> {
-                    animation.setRotation(0); // Возврат в исходное положение
-                });
             }
     }
 
@@ -247,7 +241,6 @@ class    CharacterKnight extends Player {
         shield = 0;
         manaPool = 2;
         manaPoolMax = 2;
-        animation = new Animation(0.9f, 1.1f, 0.5f, 300f); // Инициализация анимации
     }
 
 
