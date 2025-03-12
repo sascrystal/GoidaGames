@@ -3,8 +3,12 @@ package io.github.some_example_name;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public abstract class PlayingCard {
+    private static final int FRAME_COLS = 4, FRAME_ROWS = 4;
     protected  String name,description;
     protected int cost;
     protected  Texture texture = new Texture(Gdx.files.internal("cards/noDataCard.png"));
