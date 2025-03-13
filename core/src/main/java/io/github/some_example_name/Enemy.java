@@ -26,9 +26,9 @@ public abstract class Enemy  {
 
     protected Sound takingDamageSoundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/takingDamageGamblerSoundEffect.wav"));
 
-    public void draw(SpriteBatch batch) {
+    public void draw(SpriteBatch batch, float elapsedTime) {
         if (isAlive()) {
-            TextureRegion currentFrame = animation.getKeyFrame(stateTime, true); // Получаем текущий кадр анимации
+            TextureRegion currentFrame = animation.getKeyFrame(elapsedTime, true); // Получаем текущий кадр анимации
             batch.draw(currentFrame, bounds.x, bounds.y, bounds.width, bounds.height); // Рисуем противника с анимацией
         }
     }
@@ -56,8 +56,7 @@ public abstract class Enemy  {
     }
     public  void enemyReactionOfCard( Player y, int index){}//реакция мобов на использование карт
 
-    public void update(float deltaTime) {
-    }
+
 
     public void identifyIndexMoveList(){ // определение действия моба
         indexMoveList = (int)(Math.random()*moveList.length);
@@ -77,9 +76,6 @@ public abstract class Enemy  {
         moveList[getIndexMoveList()].enemyAction(this,y);// Противник наносит урон игроку
     }
 
-    public void updateAnimation(float delta) {
-        stateTime += delta;
-    }
 
     public boolean buffExist(Buff x){
         boolean check = false;
