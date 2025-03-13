@@ -13,6 +13,7 @@ public abstract class Player {
     protected List<Buff> buffs = new ArrayList<>();
 
 
+
     protected int health;
     protected int manaPool;
     protected int manaPoolMax;
@@ -21,6 +22,7 @@ public abstract class Player {
     protected List<PlayingCard> dropDeck = new ArrayList<>();
     protected List<PlayingCard> deck = new ArrayList<>();
     protected List<PlayingCard> draftDeck = new ArrayList<>();
+
     protected PlayingCard[] hand = new PlayingCard[6];
 
     public int getShield(){
@@ -214,13 +216,13 @@ public abstract class Player {
     }
 
     public void useManaForCard(PlayingCard x){
-            manaPool -= x.cost;
+            manaPool -= x.getCost();
     }
 
 }
 
 
-class    CharacterKnight extends Player {
+class CharacterKnight extends Player {
     public CharacterKnight() {
         for(int i=0 ; i<2; i++){
             deck.add(new Attack());
@@ -230,13 +232,7 @@ class    CharacterKnight extends Player {
             deck.add(new Defence());
 
         }
-        deck.add(new CookieOfReinforce());
-        deck.add(new CookieOfPower());
-        deck.add(new CookieOfDobor());
-        deck.add(new FeintCard());
-        deck.add(new Evade());
-        deck.add(new CookieOfMana());
-        deck.add(new LetsGoGambling());
+
         health = 60;// Начальное здоровье игрока
         shield = 0;
         manaPool = 2;

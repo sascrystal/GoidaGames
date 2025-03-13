@@ -4,20 +4,31 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+
 public abstract class PlayingCard {
-    private static final int FRAME_COLS = 4, FRAME_ROWS = 4;
     protected  String name,description;
     protected int cost;
     protected  Texture texture = new Texture(Gdx.files.internal("cards/noDataCard.png"));
     protected Sound soundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/Zaglushka.wav"));
+    TextureAtlas frames = new TextureAtlas(Gdx.files.internal("animationCards/gravity.atlas"));
+    Animation<TextureRegion> effect = new Animation<>(1/15F,
+        frames.findRegions("Gravity-Sheet"),
+        Animation.PlayMode.NORMAL);
+
 
     public  void cardAction(Enemy x, Player y,int index){
         y.useManaForCard(this);
         soundEffect.play(0.7f);
 
+    }
+
+    public void draw(float time, Batch batch,float x , float y){
+        TextureRegion currentFrame = effect.getKeyFrame(time, false);
+        batch.draw(currentFrame, x, y);
     }
 
 
@@ -205,6 +216,11 @@ class Defence extends DefenceCard {
 
 
     public Defence() {
+        frames = new TextureAtlas(Gdx.files.internal("animationCards/electic.atlas"));
+        effect = new Animation<>(1/15F,
+            frames.findRegions("Eletric A-Sheet"),
+            Animation.PlayMode.NORMAL);
+
         name = "Защита";
         description = "Тип: способность. Дает 6 брони";
         shield = 6;

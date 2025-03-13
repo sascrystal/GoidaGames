@@ -7,14 +7,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.audio.Music;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-public class GameScreen implements Screen {
+    public class GameScreen implements Screen {
     private boolean endTurnButtonPressed = false;
     private SpriteBatch batch;
     private Rectangle[] cardBounds;
@@ -24,16 +27,14 @@ public class GameScreen implements Screen {
     private boolean isDragging;
     private int draggedCardIndex;
 
-    private float[] initialCardPositionsX;
-    private float[] initialCardPositionsY;
+    private float[] initialCardPositionsX,initialCardPositionsY;
 
     private Music backgroundMusic;
 
-    private Sound soundEffectCardTaking, soundEffectPlaceCard, soundEffectEndTurn;
-    private Sound soundEffectNotEnoughMana;
+    private Sound soundEffectCardTaking, soundEffectPlaceCard, soundEffectEndTurn,
+        soundEffectNotEnoughMana;
 
-    private Texture cardInfoTexture;// Текстура для отображения информации о карте
-    private Texture attackImage, BGImage, interfaceImage;
+    private Texture cardInfoTexture,attackImage, BGImage, interfaceImage;// Текстура для отображения информации о карте
 
     private String cardName; // Название карты
     private String cardDescription; // Описание карты
@@ -48,6 +49,11 @@ public class GameScreen implements Screen {
     // Кнопка завершения хода
     private Texture endTurnButtonTexture;
     private Rectangle endTurnButtonBounds;
+
+    private  float elapsedTime = 0;
+
+    private float cardAnimationTime;
+    private List<PlayingCard> animationCardQueue =  new ArrayList<>();
 
 
     // Невидимое поле для карт
@@ -64,8 +70,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-
-        batch = new SpriteBatch();
         BGImage = new Texture(Gdx.files.internal("menu/BG_2.png"));
         attackImage = new Texture(Gdx.files.internal("HUD/attak.png"));
         interfaceImage = new Texture(Gdx.files.internal("HUD/interface.png"));
@@ -75,10 +79,7 @@ public class GameScreen implements Screen {
         initialCardPositionsX = new float[6];
         initialCardPositionsY = new float[6];
 
-
-
         preRenderCards();
-
 
         // Создаем невидимое поле для карт
         invisibleCardArea = new Rectangle(0, 0, Gdx.graphics.getWidth(), 250); // Задаем ширину и высоту
@@ -94,21 +95,40 @@ public class GameScreen implements Screen {
 
         // Инициализация кнопки завершения хода
         endTurnButtonTexture = new Texture(Gdx.files.internal("HUD/endhod_new.png"));
-        endTurnButtonBounds = new Rectangle((float) (Gdx.graphics.getWidth() / 1.173), (float) (Gdx.graphics.getHeight() / 2.8), endTurnButtonTexture.getWidth(), endTurnButtonTexture.getHeight());
-        //endTurnButtonBounds = new Rectangle((float)(Gdx.graphics.getWidth()/1.24), 330, endTurnButtonTexture.getWidth(), endTurnButtonTexture.getHeight());
-        playerTurn = true; // Начинаем с хода игрока
+        endTurnButtonBounds = new Rectangle(
+            (float) (Gdx.graphics.getWidth() / 1.173),
+            (float) (Gdx.graphics.getHeight() / 2.8),
+            endTurnButtonTexture.getWidth(),
+            endTurnButtonTexture.getHeight());
+
+        batch = new SpriteBatch();
 
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/fightMusic.mp3"));
-
         soundEffectCardTaking = Gdx.audio.newSound(Gdx.files.internal("sounds/takeCard.wav"));
         soundEffectPlaceCard = Gdx.audio.newSound(Gdx.files.internal("sounds/placeCard.wav"));
         soundEffectEndTurn = Gdx.audio.newSound(Gdx.files.internal("sounds/endTurn.wav"));
         soundEffectNotEnoughMana = Gdx.audio.newSound(Gdx.files.internal("sounds/notEnoughMana.wav"));
 
+        playerTurn = true; // Начинаем с хода игрока
+
+        cardAnimationTime = 0F;
+
     }
 
     @Override
     public void render(float delta) {
+        elapsedTime += Gdx.graphics.getDeltaTime();
+
+        if (!animationCardQueue.isEmpty()) {
+            cardAnimationTime += delta;
+
+            // Проверка завершения анимации
+            if (animationCardQueue.get(0).effect.isAnimationFinished(cardAnimationTime)) {
+                animationCardQueue.remove(0);
+                cardAnimationTime = 0F;
+            }
+        }
+
 
         backgroundMusic.setLooping(true);
         backgroundMusic.setVolume(0.3f);
@@ -126,11 +146,14 @@ public class GameScreen implements Screen {
         font.draw(batch, String.valueOf(player.getManaPool()), 220, (float)(Gdx.graphics.getHeight()/2.25));
 
         // Отрисовка противника
-        enemies[0].draw(batch);
+        enemies[0].draw(batch, elapsedTime);
+
         if (enemies[0].isAlive()) {
             font.draw(batch, "Health: " + enemies[0].getHealth(), (float)(Gdx.graphics.getWidth() / 2.3), enemies[0].getBounds().y + enemies[0].getBounds().height + 70);
-            enemies[0].updateAnimation(Gdx.graphics.getDeltaTime()); // Обновляем состояние противника
-            enemies[0].draw(batch); // Рисуем противника
+            //enemies[0].updateAnimation(elapsedTime); // Обновляем состояние противника
+            elapsedTime += Gdx.graphics.getDeltaTime();
+            enemies[0].draw(batch,elapsedTime); // Рисуем противника
+
         }
 
         // Отображение атаки противника
@@ -173,8 +196,17 @@ public class GameScreen implements Screen {
         batch.draw(endTurnButtonTexture, endTurnButtonBounds.x, endTurnButtonBounds.y);
 
 
-        handleInput();
+        if(!animationCardQueue.isEmpty()){//вместо x и y должно стоять координаты моба
+            animationCardQueue.get(0).draw(cardAnimationTime, batch, 150, 150);
+            if (animationCardQueue.get(0).effect.isAnimationFinished(cardAnimationTime)) {
+                animationCardQueue.remove(0);
+                cardAnimationTime = 0F;
+            }
+        }
+
+
         batch.end();
+        handleInput();
 
     }
 
@@ -308,6 +340,7 @@ public class GameScreen implements Screen {
         soundEffectNotEnoughMana.dispose();
         soundEffectPlaceCard.dispose();
 
+
     }
 
     private void preRenderCards() {
@@ -336,6 +369,7 @@ public class GameScreen implements Screen {
     }
 
     private void useCard(){
+        animationCardQueue.add(player.hand[draggedCardIndex]);
         player.playCard(enemies[0], draggedCardIndex);
         enemies[0].enemyReactionOfCard(player,draggedCardIndex);
         isCardInfoVisible = false; // Показываем информацию о карте
@@ -348,10 +382,11 @@ public class GameScreen implements Screen {
     }
 
     private void returnCard(){
-        cardBounds[draggedCardIndex].setPosition(initialCardPositionsX[draggedCardIndex], initialCardPositionsY[draggedCardIndex]);
+        cardBounds[draggedCardIndex].setPosition(initialCardPositionsX[draggedCardIndex],
+            initialCardPositionsY[draggedCardIndex]);
+
         isCardVisible[draggedCardIndex] = true;
         isCardInfoVisible = false;
-
     }
 
     private boolean manaPoolCheck(){
@@ -363,11 +398,6 @@ public class GameScreen implements Screen {
         return enemies[index] == null;
     }
 
-    public void drawAnimation(TextureRegion currentFrame){
-        batch.begin();
-        batch.draw(currentFrame, 50, 50);
-        batch.end();
-    }
 
 
 }
