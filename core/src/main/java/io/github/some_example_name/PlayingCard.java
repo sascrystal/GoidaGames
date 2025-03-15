@@ -26,9 +26,10 @@ public abstract class PlayingCard {
 
     }
 
-    public void draw(float time, Batch batch,float x , float y){
+    public void draw(float time, Batch batch,Enemy enemy){
         TextureRegion currentFrame = effect.getKeyFrame(time, false);
-        batch.draw(currentFrame, x, y);
+        batch.draw(currentFrame, enemy.bounds.x,enemy.bounds.y,
+            enemy.bounds.width, enemy.bounds.height);
     }
 
 
@@ -64,6 +65,7 @@ abstract class CardAttack extends TargetCard {
     @Override
     public void cardAction(Enemy x, Player y, int index) {
         super.cardAction(x, y, index);
+        totalDamage = totalDamageCalculation(y);
         x.takeDamage(totalDamage);
     }
 
@@ -177,6 +179,28 @@ class  FeintCard extends CardAttack{
         totalDamage = totalDamageCalculation(y);
         super.cardAction(x, y, index);
         x.giveBuff(new Weakness(2));
+    }
+}
+
+class attackVoid extends  CardAttack{
+
+    public attackVoid() {
+        name = "Войд";
+        description = "Тип: атака. Наносит 8x2 урона и восстанавливает нанесенный урон";
+        cost = 2;
+        damage = 8;
+    }
+
+    @Override
+    public int totalDamageCalculation(Player y) {
+        return super.totalDamageCalculation(y)*2;
+    }
+
+    @Override
+    public void cardAction(Enemy x, Player y, int index) {
+        super.cardAction(x, y, index);
+        y.healing(totalDamage);
+
     }
 }
 

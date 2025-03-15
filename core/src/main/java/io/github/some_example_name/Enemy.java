@@ -14,7 +14,7 @@ import java.util.List;
 
 public abstract class Enemy  {
     public Texture texture; // Текстура противника
-    public Rectangle bounds; // Границы для проверки коллизий
+    protected Rectangle bounds; // Границы для проверки коллизий
     public Animation<TextureRegion> animation; // Анимация для противника
     public int health; // Здоровье противника
 
