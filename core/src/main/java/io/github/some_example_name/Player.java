@@ -1,6 +1,5 @@
 package io.github.some_example_name;
 
-import com.badlogic.gdx.Gdx;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +22,7 @@ public abstract class Player {
     protected List<PlayingCard> deck = new ArrayList<>();
     protected List<PlayingCard> draftDeck = new ArrayList<>();
 
-    protected PlayingCard[] hand = new PlayingCard[6];
+    protected PlayingCard[] hand = new PlayingCard[GameScreen.HAND_META];
 
     public int getShield(){
         return shield;
@@ -56,7 +55,9 @@ public abstract class Player {
         buffActionTrigger("EndTurn");
         int notFreeSpace = findFreeSpaceIndex();
         for (int i = 0; i<notFreeSpace;i++) {
-            draftDeck.add(hand[i]);
+            if(!hand[i].ethereal){
+                dropDeck.add(hand[i]);
+            }
             hand[i] = null;
         }
 
@@ -65,7 +66,9 @@ public abstract class Player {
     public void playCard(Enemy enemy,int index){
         buffActionTrigger("cardAction");
         hand[index].cardAction(enemy, this, index);
-        addDropDeck(hand[index]);
+        if(!hand[index].burnable){
+            addDropDeck(hand[index]);
+        }
         shiftHand(index);
     }
 
@@ -239,7 +242,6 @@ class CharacterKnight extends Player {
             deck.add(new Defence());
 
         }
-        deck.add(new attackVoid());
 
         maxHealth = 60;
         health = maxHealth;// Начальное здоровье игрока

@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public abstract class PlayingCard {
     protected  String name,description;
     protected int cost;
+    protected boolean burnable = false, ethereal = false;
     protected  Texture texture = new Texture(Gdx.files.internal("cards/noDataCard.png"));
     protected Sound soundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/Zaglushka.wav"));
     TextureAtlas frames = new TextureAtlas(Gdx.files.internal("animationCards/gravity.atlas"));
@@ -77,6 +78,21 @@ abstract class CardAttack extends TargetCard {
 }
 
 //CardAttackList
+
+class PhantomPain extends CardAttack{
+    public PhantomPain() {
+        name = "Фантомная боль";
+        description = "тип: атака. Наносит 8 урона. Накладывает дебафф ментальные повреждения";
+        damage = 8;
+        cost  = 1;
+    }
+
+    @Override
+    public void cardAction(Enemy x, Player y, int index) {
+        super.cardAction(x, y, index);
+        x.giveBuff(new MentalDamage());
+    }
+}
 class Attack extends CardAttack {
     public Attack() {
 
@@ -138,7 +154,7 @@ class ComboAttack extends CardAttack{
 class LetsGoGambling extends CardAttack {
     public LetsGoGambling() {
         name = "LetsGoGambling";
-        description = "Тип: Атака. Наносит врагу 12 урона ИЛИ враг делает ДВОЙНОЕ ДЕЙСТВИЕ";
+        description = "Тип: Атака. Наносит врагу 12 урона ИЛИ враг делает действие";
         damage = 12;
         cost = 1;
         texture = new Texture(Gdx.files.internal("cards/cardLetsGoGambling.png"));
@@ -153,7 +169,6 @@ class LetsGoGambling extends CardAttack {
                 super.cardAction(x,y,index);
                 break;
             case 1:
-                x.moveList[x.indexMoveList].enemyAction(x,y);
                 x.moveList[x.indexMoveList].enemyAction(x,y);
                 soundEffect.play(0.7f);
                 y.useManaForCard(this);

@@ -44,6 +44,14 @@ public abstract class Buff {
 
     }
 
+    public void buffAction(Enemy owner){
+
+    }
+
+    public void buffAction(Player player,Enemy[] enemies){
+
+    }
+
     public void addStack(){
         stack += 1;
     }
@@ -53,6 +61,22 @@ public abstract class Buff {
     }
 
 
+}
+class MentalDamage extends Buff{
+
+    public MentalDamage() {
+        name = "Ментальный урон";
+        description = "В начале хода наносит за каждый стак";
+        stack = 4;
+
+        decrease = false;
+        inEndTurn = true;
+    }
+
+    @Override
+    public void buffAction(Enemy owner) {
+        owner.takeDamage(stack);
+    }
 }
 
 class BonusCard extends Buff{
@@ -71,10 +95,6 @@ class BonusCard extends Buff{
         decrease = true;
     }
 
-    @Override
-    public void buffAction() {
-
-    }
 
     @Override
     public void decreaseStack() {
