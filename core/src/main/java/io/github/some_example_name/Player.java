@@ -14,7 +14,7 @@ public abstract class Player {
 
 
 
-    protected int health;
+    protected int health, maxHealth;
     protected int manaPool;
     protected int manaPoolMax;
     protected   int shield;// Здоровье игрока
@@ -219,6 +219,13 @@ public abstract class Player {
             manaPool -= x.getCost();
     }
 
+    public void healing(int heal){
+        if(maxHealth==heal+health){
+            return;
+        }
+        health += heal;
+    }
+
 }
 
 
@@ -232,11 +239,13 @@ class CharacterKnight extends Player {
             deck.add(new Defence());
 
         }
+        deck.add(new attackVoid());
 
-        health = 60;// Начальное здоровье игрока
+        maxHealth = 60;
+        health = maxHealth;// Начальное здоровье игрока
         shield = 0;
-        manaPool = 2;
-        manaPoolMax = 2;
+        manaPool = 3;
+        manaPoolMax = 3;
     }
 
 

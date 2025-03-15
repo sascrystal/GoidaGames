@@ -117,7 +117,7 @@ import java.util.List;
 
     @Override
     public void render(float delta) {
-        elapsedTime += Gdx.graphics.getDeltaTime();
+        elapsedTime += delta;
 
         if (!animationCardQueue.isEmpty()) {
             cardAnimationTime += delta;
@@ -149,9 +149,10 @@ import java.util.List;
         enemies[0].draw(batch, elapsedTime);
 
         if (enemies[0].isAlive()) {
-            font.draw(batch, "Health: " + enemies[0].getHealth(), (float)(Gdx.graphics.getWidth() / 2.3), enemies[0].getBounds().y + enemies[0].getBounds().height + 70);
-            //enemies[0].updateAnimation(elapsedTime); // Обновляем состояние противника
-            elapsedTime += Gdx.graphics.getDeltaTime();
+            font.draw(batch,
+                "Health: " + enemies[0].getHealth(),
+                (float)(Gdx.graphics.getWidth() / 2.3),
+                enemies[0].getBounds().y + enemies[0].getBounds().height + 70);
             enemies[0].draw(batch,elapsedTime); // Рисуем противника
 
         }
@@ -164,7 +165,6 @@ import java.util.List;
         // Отображаем текстуру поля карт, масштабируя её под размеры невидимого поля
         //batch.draw(cardFieldTexture, invisibleCardArea.x, invisibleCardArea.y,invisibleCardArea.width + 100, invisibleCardArea.height + 100);
 
-        // Отрисовка карт
         renderingCards();
 
         // Если карта перетаскивается, отрисовываем её в позиции курсора
@@ -196,8 +196,8 @@ import java.util.List;
         batch.draw(endTurnButtonTexture, endTurnButtonBounds.x, endTurnButtonBounds.y);
 
 
-        if(!animationCardQueue.isEmpty()){//вместо x и y должно стоять координаты моба
-            animationCardQueue.get(0).draw(cardAnimationTime, batch, 150, 150);
+        if(!animationCardQueue.isEmpty()){
+            animationCardQueue.get(0).draw(cardAnimationTime, batch, enemies[0]);
             if (animationCardQueue.get(0).effect.isAnimationFinished(cardAnimationTime)) {
                 animationCardQueue.remove(0);
                 cardAnimationTime = 0F;
