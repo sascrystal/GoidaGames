@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Enemy  {
+public abstract class Enemy {
     public Texture texture; // Текстура противника
     protected Rectangle bounds; // Границы для проверки коллизий
     public Animation<TextureRegion> animation; // Анимация для противника
@@ -72,6 +72,7 @@ public abstract class Enemy  {
 
     public void endTurn(Player y){
         identifyIndexMoveList();
+        buffActionTrigger("EndTurn");
         decreaseBuff();
         moveList[getIndexMoveList()].enemyAction(this,y);// Противник наносит урон игроку
     }
@@ -138,6 +139,17 @@ public abstract class Enemy  {
                 if(buffs.get(i).stack == 0){
                     buffs.remove(i);
                 }
+            }
+        }
+    }
+
+    public void buffActionTrigger(String situation){
+        if(buffs.isEmpty()){
+            return;
+        }
+        for (int i = 0; i<buffs.size(); i++){
+            if(buffs.get(i).triggerBuff(situation)){
+                buffs.get(i).buffAction(this);
             }
         }
     }

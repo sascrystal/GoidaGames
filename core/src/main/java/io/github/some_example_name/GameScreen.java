@@ -4,10 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -26,6 +24,8 @@ import java.util.List;
     private float draggedCardX, draggedCardY;
     private boolean isDragging;
     private int draggedCardIndex;
+
+    public static final int HAND_META = 10;
 
     private float[] initialCardPositionsX,initialCardPositionsY;
 
@@ -74,10 +74,10 @@ import java.util.List;
         attackImage = new Texture(Gdx.files.internal("HUD/attak.png"));
         interfaceImage = new Texture(Gdx.files.internal("HUD/interface.png"));
 
-        cardBounds = new Rectangle[6];
-        isCardVisible = new boolean[6];
-        initialCardPositionsX = new float[6];
-        initialCardPositionsY = new float[6];
+        cardBounds = new Rectangle[HAND_META];
+        isCardVisible = new boolean[HAND_META];
+        initialCardPositionsX = new float[HAND_META];
+        initialCardPositionsY = new float[HAND_META];
 
         preRenderCards();
 
