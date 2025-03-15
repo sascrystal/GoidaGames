@@ -59,6 +59,11 @@ public abstract class Player {
                 dropDeck.add(hand[i]);
             }
             hand[i] = null;
+            if(draftDeck.isEmpty()){
+                draftDeck.addAll(dropDeck);
+                Collections.shuffle(draftDeck);
+                dropDeck.clear();
+            }
         }
 
     }
@@ -84,6 +89,7 @@ public abstract class Player {
                 if(draftDeck.isEmpty()){
                     draftDeck.addAll(dropDeck);
                     Collections.shuffle(draftDeck);
+                    dropDeck.clear();
                 }
             }
 
@@ -242,6 +248,7 @@ class CharacterKnight extends Player {
             deck.add(new Defence());
 
         }
+
 
         maxHealth = 60;
         health = maxHealth;// Начальное здоровье игрока
