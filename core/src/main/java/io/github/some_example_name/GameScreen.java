@@ -344,9 +344,10 @@ import java.util.List;
     }
 
     private void preRenderCards() {
-        float cardWidth = 150; // Ширина карты
-        float cardHeight = 225; // Высота карты
-        float startX = (float) ((Gdx.graphics.getWidth() - (cardWidth * player.hand.length)) / 2.4); // Центрирование по X
+        float cardHeight = 300;
+        float cardWidth = (float)(cardHeight*0.7); // Ширина карты
+         // Высота карты
+        float startX = (float) ((Gdx.graphics.getWidth() - (cardWidth * player.hand.length)) / 1.2); // Центрирование по X
         float startY = 50; // Фиксированная позиция Y
 
         for (int i = 0; i < cardBounds.length; i++) {
@@ -362,7 +363,7 @@ import java.util.List;
         for (int i = 0; i < player.hand.length; i++) {
             if (isCardVisible[i] && player.hand[i] != null) {
                 // Используем координаты cardBounds для отрисовки карт
-                batch.draw(player.hand[i].getTexture(), cardBounds[i].x, cardBounds[i].y);
+                batch.draw(player.hand[i].getTexture(), cardBounds[i].x, cardBounds[i].y, cardBounds[i].width,cardBounds[i].height);
 
             }
         }
