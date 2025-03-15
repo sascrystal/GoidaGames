@@ -169,7 +169,7 @@ import java.util.List;
 
         // Если карта перетаскивается, отрисовываем её в позиции курсора
         if (isDragging && draggedCard != null) {
-            batch.draw(draggedCard, draggedCardX, draggedCardY);
+            batch.draw(draggedCard, draggedCardX, draggedCardY,cardBounds[0].width, cardBounds[0].height);
         }
 
         //информация о карте
@@ -363,7 +363,9 @@ import java.util.List;
         for (int i = 0; i < player.hand.length; i++) {
             if (isCardVisible[i] && player.hand[i] != null) {
                 // Используем координаты cardBounds для отрисовки карт
-                batch.draw(player.hand[i].getTexture(), cardBounds[i].x, cardBounds[i].y, cardBounds[i].width,cardBounds[i].height);
+                batch.draw(player.hand[i].getTexture(),
+                    cardBounds[i].x, cardBounds[i].y,
+                    cardBounds[i].width,cardBounds[i].height);
 
             }
         }
