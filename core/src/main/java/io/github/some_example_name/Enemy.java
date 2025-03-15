@@ -65,6 +65,7 @@ public abstract class Enemy {
     public void takeDamage(int damage) {
         health -= damage; // Уменьшение здоровья
         takingDamageSoundEffect.play(0.7f);
+        buffActionTrigger("TakeDamage");
         if (health <= 0) {
             health = 0; // Убедитесь, что здоровье не становится отрицательным
         }

@@ -12,8 +12,8 @@ public abstract class Player {
     protected List<Buff> buffs = new ArrayList<>();
 
 
-
     protected int health, maxHealth;
+    protected int draftCount;
     protected int manaPool;
     protected int manaPoolMax;
     protected   int shield;// Здоровье игрока
@@ -45,7 +45,7 @@ public abstract class Player {
 
     public void beginTurn(){
         buffActionTrigger("BeginTurn");
-        takeCardsFromDraftDeck(4+buffStack(new BonusCard()));
+        takeCardsFromDraftDeck(draftCount);
         manaPool = manaPoolMax;
         shield = 0;
         decreaseBuff();
@@ -189,7 +189,7 @@ public abstract class Player {
         }
         for (int i = 0; i<buffs.size(); i++){
             if(buffs.get(i).triggerBuff(situation)){
-                buffs.get(i).buffAction();
+                buffs.get(i).buffAction(this);
             }
         }
     }
@@ -248,6 +248,8 @@ class CharacterKnight extends Player {
             deck.add(new Defence());
 
         }
+        deck.add(new Evade());
+        deck.add(new CookiesOfMadness());
 
 
         maxHealth = 60;
@@ -255,6 +257,7 @@ class CharacterKnight extends Player {
         shield = 0;
         manaPool = 3;
         manaPoolMax = 3;
+        draftCount = 4;
     }
 
 

@@ -48,7 +48,7 @@ public abstract class Buff {
 
     }
 
-    public void buffAction(Player player,Enemy[] enemies){
+    public void buffAction(Player player){
 
     }
 
@@ -86,6 +86,8 @@ class BonusCard extends Buff{
         description = "За каждый стак дает доп 1 карту в доборе";
         this.stack = stack;
         decrease = true;
+        inBeginTurn = true;
+
     }
 
     public BonusCard() {
@@ -93,8 +95,13 @@ class BonusCard extends Buff{
         description = "За каждый стак дает доп 1 карту в доборе";
         stack = 1;
         decrease = true;
+        inBeginTurn = true;
     }
 
+    @Override
+    public void buffAction(Player player) {
+        player.takeCardsFromDraftDeck(stack);
+    }
 
     @Override
     public void decreaseStack() {
@@ -149,10 +156,35 @@ class CookiesOfMadnessBuff extends TalentBuff{
     public CookiesOfMadnessBuff(){
         name ="Печеньковое безумие";
         description = "Дает за каждый стак в начале хода дает дополнительную карту печенек";
-        decrease = true;
+        decrease = false;
+        inBeginTurn = true;
         stack = 1;
     }
 
+    @Override
+    public void buffAction(Player player) {
+        int COUNT_OF_TYPE_COOKIES = 4;
+        PlayingCard card = null;
+
+        int answer = (int) (Math.random() * COUNT_OF_TYPE_COOKIES);
+        switch (answer) {
+            case 0:
+                card = new CookieOfReinforce();
+                break;
+            case 1:
+                card = new CookieOfMana();
+                break;
+            case 2:
+                card = new CookieOfPower();
+                break;
+            case 3:
+                card = new CookieOfDobor();
+                break;
+        }
+        player.giveTheCard(card);
+
+
+    }
 }
 
 class TurnBuff extends  Buff {

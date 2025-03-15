@@ -370,6 +370,7 @@ class CookiesOfMadness extends CardTalent{
             description = "Тип: талант. За каждый стак в начале хода дает дополнительную карту печенек";
         texture = new Texture(Gdx.files.internal("cards/card6.png"));
         cost = 2;
+        burnable = true;
     }
 
     @Override
