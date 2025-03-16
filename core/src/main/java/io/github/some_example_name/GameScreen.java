@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +26,8 @@ import java.util.List;
     private float draggedCardX, draggedCardY;
     private boolean isDragging;
     private int draggedCardIndex;
+
+    private Viewport viewport;
 
     public static final int HAND_META = 10;
 
@@ -53,7 +57,11 @@ import java.util.List;
     private  float elapsedTime = 0;
 
     private float cardAnimationTime;
-    private List<PlayingCard> animationCardQueue =  new ArrayList<>();
+    private final List<PlayingCard> animationCardQueue =  new ArrayList<>();
+
+
+
+
 
 
     // Невидимое поле для карт
@@ -78,6 +86,13 @@ import java.util.List;
         isCardVisible = new boolean[HAND_META];
         initialCardPositionsX = new float[HAND_META];
         initialCardPositionsY = new float[HAND_META];
+
+        if(enemies[1]!= null){
+            enemies[1].getBounds().setX(enemies[0].getBounds().getX()+ enemies[0].getBounds().getWidth() + 200);
+        }
+        if(enemies[2] != null){
+            enemies[2].getBounds().setX(enemies[0].getBounds().getX()- enemies[1].getBounds().getWidth() - 200);
+        }
 
         preRenderCards();
 
@@ -146,16 +161,26 @@ import java.util.List;
         font.draw(batch, String.valueOf(player.getManaPool()), 220, (float)(Gdx.graphics.getHeight()/2.25));
 
         // Отрисовка противника
-        enemies[0].draw(batch, elapsedTime);
+        for (int i = 0; i<3; i++){
+            if(enemies[i] != null && enemies[i].isAlive()){
+                enemies[i].draw(batch, elapsedTime, i);
+            }
+        }
 
-        if (enemies[0].isAlive()) {
-            font.draw(batch,
-                "Health: " + enemies[0].getHealth(),
-                (float)(Gdx.graphics.getWidth() / 2.3),
-                enemies[0].getBounds().y + enemies[0].getBounds().height + 70);
-            enemies[0].draw(batch,elapsedTime); // Рисуем противника
+        for (int i = 0; i<3; i++){
+            if(enemies[i] != null && enemies[i].isAlive()){
+                font.draw(batch,
+                    "Health: " + enemies[i].getHealth(),
+                    (enemies[i].getBounds().getX()),
+                    enemies[i].getBounds().getY() + enemies[i].getBounds().getHeight() + 70);
+            }
+        }
+
+        for(int i = 0; i<3; i++){
+            font.draw(batch, String.valueOf(enemies[i].moveList[enemies[i].getIndexMoveList()].showNumericalValue(enemies[i], player)), (float)(Gdx.graphics.getWidth()/1.55), (float)(Gdx.graphics.getHeight()/1.38)); // Отображение Атаки
 
         }
+
 
         // Отображение атаки противника
         if (enemies[0].isAlive()) {
@@ -258,15 +283,26 @@ import java.util.List;
                     // Возвращаем карту на исходную позицию
                     returnCard();
                 } else {
-
-                    // Если карта не попадает на противника, обрабатываем ее
-                    if (manaPoolCheck() && enemies[0].getBounds().overlaps(new Rectangle(draggedCardX, draggedCardY, draggedCard.getRegionWidth(), draggedCard.getRegionHeight()))) {
-                        useCard();
-                    } else if (player.hand[draggedCardIndex] instanceof NonTargetCard && manaPoolCheck() &&!invisibleCardArea.contains(draggedCardX, draggedCardY)){
-                        useCard();
-                    } else {
-                        soundEffectNotEnoughMana.play(0.7f);
-                        returnCard();
+                    boolean returnCard = true;
+                    if (manaPoolCheck()){
+                        if(player.hand[draggedCardIndex] instanceof NonTargetCard &&
+                            !invisibleCardArea.contains(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY())){
+                            useCard();
+                            returnCard = false;
+                        }else {
+                            for(int i = 0; true; i++) {
+                                if (manaPoolCheck() && enemies[i] != null &&
+                                    enemies[i].getBounds().contains(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY())) {
+                                    useCard(i);
+                                    returnCard = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (returnCard){
+                            soundEffectNotEnoughMana.play(0.7f);
+                            returnCard();
+                        }
                     }
                 }
             }
@@ -371,10 +407,9 @@ import java.util.List;
         }
     }
 
-    private void useCard(){
+    private void useCard(int i){
         animationCardQueue.add(player.hand[draggedCardIndex]);
-        player.playCard(enemies[0], draggedCardIndex);
-        enemies[0].enemyReactionOfCard(player,draggedCardIndex);
+        player.playCard(enemies[i], draggedCardIndex);
         isCardInfoVisible = false; // Показываем информацию о карте
         preRenderCards();
         if (enemies[0].getHealth() <= 0) {
@@ -382,7 +417,19 @@ import java.util.List;
             this.dispose();
             ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
         }
+
     }
+        private void useCard(){
+            animationCardQueue.add(player.hand[draggedCardIndex]);
+            player.playCard(enemies[0], draggedCardIndex);
+            isCardInfoVisible = false; // Показываем информацию о карте
+            preRenderCards();
+            if (enemies[0].getHealth() <= 0) {
+                backgroundMusic.stop();
+                this.dispose();
+                ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
+            }
+        }
 
     private void returnCard(){
         cardBounds[draggedCardIndex].setPosition(initialCardPositionsX[draggedCardIndex],

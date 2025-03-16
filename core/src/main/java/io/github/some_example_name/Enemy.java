@@ -18,23 +18,41 @@ public abstract class Enemy {
     public Animation<TextureRegion> animation; // Анимация для противника
     public int health; // Здоровье противника
 
+    protected int frameHeight; // Количество кадров в спрайт-листе
+    protected int frameWidth;
+
     protected List<Buff> buffs = new ArrayList<>();
 
     public MoveEnemy[] moveList;
     public float stateTime;// Время для анимации
     public int indexMoveList;
 
+
+
+
     protected Sound takingDamageSoundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/takingDamageGamblerSoundEffect.wav"));
 
-    public void draw(SpriteBatch batch, float elapsedTime) {
-        if (isAlive()) {
-            TextureRegion currentFrame = animation.getKeyFrame(elapsedTime, true); // Получаем текущий кадр анимации
-            batch.draw(currentFrame, bounds.x, bounds.y, bounds.width, bounds.height); // Рисуем противника с анимацией
-        }
+    public void draw(SpriteBatch batch, float elapsedTime,int modifier) {
+        TextureRegion currentFrame = animation.getKeyFrame(elapsedTime, true);
+        batch.draw(currentFrame,
+            bounds.x,
+            bounds.y,
+            bounds.width,
+            bounds.height);// Получаем текущий кадр анимации
+
+
     }
 
     public int getIndexMoveList() {
         return indexMoveList;
+    }
+
+    public int getFrameHeight() {
+        return frameHeight;
+    }
+
+    public int getFrameWidth() {
+        return frameWidth;
     }
 
     public boolean isAlive() {
@@ -65,6 +83,7 @@ public abstract class Enemy {
     public void takeDamage(int damage) {
         health -= damage; // Уменьшение здоровья
         takingDamageSoundEffect.play(0.7f);
+        buffActionTrigger("TakeDamage");
         if (health <= 0) {
             health = 0; // Убедитесь, что здоровье не становится отрицательным
         }
@@ -178,7 +197,10 @@ class   EnemyGhost extends Enemy {
         stateTime = 0f; // Инициализация времени состояния
 
         // Установка границ
-        bounds = new Rectangle((float)(Gdx.graphics.getWidth()/2.4), (float)(Gdx.graphics.getHeight()/2.5), (float)(frameWidth/1.5), (float)(frameHeight/1.5));
+        bounds = new Rectangle((float)(Gdx.graphics.getWidth()/2.4),
+            (float)(Gdx.graphics.getHeight()/2.5),
+            (float)(frameWidth/1.5),
+            (float)(frameHeight/1.5));
         health = 35; // Установка здоровья
         moveList = new MoveEnemy[3]; // Установка массива возможностей моба
         for (int i = 0; i <moveList.length; i++) {
@@ -212,7 +234,11 @@ class EnemyHamster extends Enemy{
         stateTime = 0f; // Инициализация времени состояния
 
         // Установка границ
-        bounds = new Rectangle((float)(Gdx.graphics.getWidth()/2.4), (float)(Gdx.graphics.getHeight()/3.2), (float)(frameWidth/1.5), (float)(frameHeight/1.5));
+        bounds = new Rectangle(
+            (float)(Gdx.graphics.getWidth()/2.4),
+            (float)(Gdx.graphics.getHeight()/3.2),
+            (float)(frameWidth/1.5),
+            (float)(frameHeight/1.5));
         health = 70; // Установка здоровья
         moveList = new MoveEnemy[1];// Установка массива возможностей моба
         moveList[0] = new AttackEnemy(0);
