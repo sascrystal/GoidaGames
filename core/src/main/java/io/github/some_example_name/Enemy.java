@@ -241,7 +241,7 @@ class EnemyHamster extends Enemy{
             (float)(frameHeight/1.5));
         health = 70; // Установка здоровья
         moveList = new MoveEnemy[1];// Установка массива возможностей моба
-        moveList[0] = new AttackEnemy(0);
+        moveList[0] = new AttackEnemy(4);
     }
 
     @Override
