@@ -118,11 +118,7 @@ import java.util.List;
 
         batch = new SpriteBatch();
 
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/fightMusic.mp3"));
-        soundEffectCardTaking = Gdx.audio.newSound(Gdx.files.internal("sounds/takeCard.wav"));
-        soundEffectPlaceCard = Gdx.audio.newSound(Gdx.files.internal("sounds/placeCard.wav"));
-        soundEffectEndTurn = Gdx.audio.newSound(Gdx.files.internal("sounds/endTurn.wav"));
-        soundEffectNotEnoughMana = Gdx.audio.newSound(Gdx.files.internal("sounds/notEnoughMana.wav"));
+        musicShow();
 
         playerTurn = true; // Начинаем с хода игрока
 
@@ -143,6 +139,7 @@ import java.util.List;
                 cardAnimationTime = 0F;
             }
         }
+
 
 
         backgroundMusic.setLooping(true);
@@ -320,7 +317,12 @@ import java.util.List;
 
     private void endTurn() {
         playerTurn = false;// Завершаем ход игрока
-        enemies[0].endTurn(player);
+        for (int i = 0; i<3; i++){
+            if(enemies[i] != null && enemies[i].isAlive()){
+                enemies[i].endTurn(player);
+            }
+        }
+
         // Проверка здоровья игрока
         if (player.getHealth() <= 0) {
             backgroundMusic.stop();
@@ -446,6 +448,14 @@ import java.util.List;
 
     private boolean enemyExist(short index){
         return enemies[index] == null;
+    }
+
+    private void musicShow(){
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/fightMusic.mp3"));
+        soundEffectCardTaking = Gdx.audio.newSound(Gdx.files.internal("sounds/takeCard.wav"));
+        soundEffectPlaceCard = Gdx.audio.newSound(Gdx.files.internal("sounds/placeCard.wav"));
+        soundEffectEndTurn = Gdx.audio.newSound(Gdx.files.internal("sounds/endTurn.wav"));
+        soundEffectNotEnoughMana = Gdx.audio.newSound(Gdx.files.internal("sounds/notEnoughMana.wav"));
     }
 
 
