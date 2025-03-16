@@ -15,8 +15,8 @@ public abstract class PlayingCard {
     protected boolean burnable = false, ethereal = false;
     protected  Texture texture = new Texture(Gdx.files.internal("cards/noDataCard.png"));
     protected Sound soundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/Zaglushka.wav"));
-    TextureAtlas frames = new TextureAtlas(Gdx.files.internal("animationCards/gravity.atlas"));
-    Animation<TextureRegion> effect = new Animation<>(1/15F,
+    protected TextureAtlas frames = new TextureAtlas(Gdx.files.internal("animationCards/gravity.atlas"));
+    protected Animation<TextureRegion> effect = new Animation<>(1/15F,
         frames.findRegions("Gravity-Sheet"),
         Animation.PlayMode.NORMAL);
 

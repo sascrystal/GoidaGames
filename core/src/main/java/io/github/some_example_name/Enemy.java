@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -15,11 +16,8 @@ import java.util.List;
 public abstract class Enemy {
     public Texture texture; // Текстура противника
     protected Rectangle bounds; // Границы для проверки коллизий
-    public Animation<TextureRegion> animation; // Анимация для противника
+    protected Animation<TextureRegion> animation; // Анимация для противника
     public int health; // Здоровье противника
-
-    protected int frameHeight; // Количество кадров в спрайт-листе
-    protected int frameWidth;
 
     protected List<Buff> buffs = new ArrayList<>();
 
@@ -30,9 +28,13 @@ public abstract class Enemy {
 
 
 
+
+
+
+
     protected Sound takingDamageSoundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/takingDamageGamblerSoundEffect.wav"));
 
-    public void draw(SpriteBatch batch, float elapsedTime,int modifier) {
+    public void draw(SpriteBatch batch, float elapsedTime) {
         TextureRegion currentFrame = animation.getKeyFrame(elapsedTime, true);
         batch.draw(currentFrame,
             bounds.x,
@@ -45,14 +47,6 @@ public abstract class Enemy {
 
     public int getIndexMoveList() {
         return indexMoveList;
-    }
-
-    public int getFrameHeight() {
-        return frameHeight;
-    }
-
-    public int getFrameWidth() {
-        return frameWidth;
     }
 
     public boolean isAlive() {
@@ -254,28 +248,21 @@ class EnemyGambler extends Enemy{
     public EnemyGambler() {
 
         // Загрузка текстуры спрайт-листа
-        Texture spriteSheet = new Texture(Gdx.files.internal("enemies/Gambler.png"));
+        TextureAtlas frames = new TextureAtlas(Gdx.files.internal("enemies/Gambler.atlas"));
+        animation = new Animation<>(0.3f,
+            frames.findRegions("Gambler"),
+            Animation.PlayMode.LOOP);
 
-        takingDamageSoundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/takingDamageGamblerSoundEffect.wav"));
-
-        // Создание TextureRegion для каждого кадра анимации
-        int frameCount = 3; // Количество кадров в спрайт-листе
-        int frameWidth = spriteSheet.getWidth() / frameCount; // Ширина каждого кадра
-        int frameHeight = spriteSheet.getHeight(); // Высота каждого кадра
-
-        Array<TextureRegion> frames = new Array<>();
-
-        // Извлечение кадров из спрайт-листа
-        for (int i = 0; i < frameCount; i++) {
-            frames.add(new TextureRegion(spriteSheet, i * frameWidth, 0, frameWidth, frameHeight));
-        }
 
         // Инициализация анимации
-        animation = new Animation<>(0.3f, frames); // 0.1f - время между кадрами
         stateTime = 0f; // Инициализация времени состояния
+        Texture texture = new Texture(Gdx.files.internal("enemies/Gambler.png"));
+        int FRAMES = 3;
+        bounds = new Rectangle((float)(Gdx.graphics.getWidth()/2.4),
+            (float)(Gdx.graphics.getHeight()/3.2),
+            (float)((texture.getWidth()/FRAMES)/1.5),
+            (float)(texture.getHeight()/1.5));
 
-        // Установка границ
-        bounds = new Rectangle((float)(Gdx.graphics.getWidth()/2.4), (float)(Gdx.graphics.getHeight()/3.2), (float)(frameWidth/1.5), (float)(frameHeight/1.5));
         health = 70; // Установка здоровья
         moveList = new MoveEnemy[2];// Установка массива возможностей моба
         moveList[0] = new AttackEnemy(6);
