@@ -10,7 +10,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
@@ -65,6 +67,8 @@ import java.util.List;
 
 
 
+
+
     // Невидимое поле для карт
     private Rectangle invisibleCardArea;
 
@@ -79,6 +83,8 @@ import java.util.List;
 
     @Override
     public void show() {
+
+
         BGImage = new Texture(Gdx.files.internal("menu/BG_2.png"));
         attackImage = new Texture(Gdx.files.internal("HUD/attak.png"));
         interfaceImage = new Texture(Gdx.files.internal("HUD/interface.png"));
@@ -161,7 +167,7 @@ import java.util.List;
         // Отрисовка противника
         for (int i = 0; i<3; i++){
             if(enemies[i] != null && enemies[i].isAlive()){
-                enemies[i].draw(batch, elapsedTime, i);
+                enemies[i].draw(batch, elapsedTime);
             }
         }
 
@@ -348,7 +354,8 @@ import java.util.List;
 
 
     @Override
-    public void resize(int width, int height) {}
+    public void resize(int width, int height) {
+    }
 
     @Override
     public void pause() {}
