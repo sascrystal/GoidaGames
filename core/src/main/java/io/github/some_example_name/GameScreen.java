@@ -58,6 +58,7 @@ import java.util.List;
 
     private float cardAnimationTime;
     private final List<PlayingCard> animationCardQueue =  new ArrayList<>();
+    private final List<Integer> animationCardQueueIndex = new ArrayList<>();
 
 
 
@@ -136,6 +137,7 @@ import java.util.List;
             // Проверка завершения анимации
             if (animationCardQueue.get(0).effect.isAnimationFinished(cardAnimationTime)) {
                 animationCardQueue.remove(0);
+                animationCardQueueIndex.remove(0);
                 cardAnimationTime = 0F;
             }
         }
@@ -149,7 +151,6 @@ import java.util.List;
         ScreenUtils.clear(0, 0, 0, 1);
         batch.begin();
         batch.draw(BGImage, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.draw(attackImage, (float)(Gdx.graphics.getWidth()/1.7), (float)(Gdx.graphics.getHeight()/1.5));
         batch.draw(interfaceImage, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // Отображение значений здоровья и щита
@@ -169,20 +170,29 @@ import java.util.List;
                 font.draw(batch,
                     "Health: " + enemies[i].getHealth(),
                     (enemies[i].getBounds().getX()),
-                    enemies[i].getBounds().getY() + enemies[i].getBounds().getHeight() + 70);
+                    enemies[i].getBounds().getY() + enemies[i].getBounds().getHeight() + 100);
             }
         }
 
         for(int i = 0; i<3; i++){
-            font.draw(batch, String.valueOf(enemies[i].moveList[enemies[i].getIndexMoveList()].showNumericalValue(enemies[i], player)), (float)(Gdx.graphics.getWidth()/1.55), (float)(Gdx.graphics.getHeight()/1.38)); // Отображение Атаки
+            if(enemies[i] != null && enemies[i].isAlive()){
+                font.draw(batch, String.valueOf(enemies[i].moveList[enemies[i].getIndexMoveList()].showNumericalValue(enemies[i], player)),
+                    (enemies[i].getBounds().getX()+enemies[i].getBounds().getWidth()+50),
+                    enemies[i].getBounds().getY() + enemies[i].getBounds().getHeight()+100);
+            }
+
+        }
+
+        for(int i = 0; i<3;i++){
+            if(enemies[i] != null && enemies[i].isAlive()){
+                batch.draw(attackImage,
+                    enemies[i].getBounds().getX()+enemies[i].getBounds().getWidth()-80,
+                    enemies[i].getBounds().getY() + enemies[i].getBounds().getHeight()+30);
+            }
 
         }
 
 
-        // Отображение атаки противника
-        if (enemies[0].isAlive()) {
-            font.draw(batch, String.valueOf(enemies[0].moveList[enemies[0].getIndexMoveList()].showNumericalValue(enemies[0], player)), (float)(Gdx.graphics.getWidth()/1.55), (float)(Gdx.graphics.getHeight()/1.38)); // Отображение Атаки
-        }
 
         // Отображаем текстуру поля карт, масштабируя её под размеры невидимого поля
         //batch.draw(cardFieldTexture, invisibleCardArea.x, invisibleCardArea.y,invisibleCardArea.width + 100, invisibleCardArea.height + 100);
@@ -219,11 +229,7 @@ import java.util.List;
 
 
         if(!animationCardQueue.isEmpty()){
-            animationCardQueue.get(0).draw(cardAnimationTime, batch, enemies[0]);
-            if (animationCardQueue.get(0).effect.isAnimationFinished(cardAnimationTime)) {
-                animationCardQueue.remove(0);
-                cardAnimationTime = 0F;
-            }
+            animationCardQueue.get(0).draw(cardAnimationTime, batch, enemies[animationCardQueueIndex.get(0)]);
         }
 
 
@@ -361,7 +367,11 @@ import java.util.List;
         interfaceImage.dispose();
         attackImage.dispose();
         endTurnButtonTexture.dispose();
-        enemies[0].dispose();
+        for(int i = 0; i<3 ; i++){
+            if(enemies[i] != null){
+                enemies[i].dispose();
+            }
+        }
         font.dispose();
 
         for (int i = 0; i < player.hand.length-1 && player.hand[i] != null;  i++) {
@@ -377,6 +387,8 @@ import java.util.List;
         soundEffectCardTaking.dispose();
         soundEffectNotEnoughMana.dispose();
         soundEffectPlaceCard.dispose();
+        animationCardQueue.clear();
+
 
 
     }
@@ -411,6 +423,7 @@ import java.util.List;
 
     private void useCard(int i){
         animationCardQueue.add(player.hand[draggedCardIndex]);
+        animationCardQueueIndex.add(i);
         player.playCard(enemies[i], draggedCardIndex);
         isCardInfoVisible = false; // Показываем информацию о карте
         preRenderCards();
@@ -423,6 +436,7 @@ import java.util.List;
     }
         private void useCard(){
             animationCardQueue.add(player.hand[draggedCardIndex]);
+            animationCardQueueIndex.add(0);
             player.playCard(enemies[0], draggedCardIndex);
             isCardInfoVisible = false; // Показываем информацию о карте
             preRenderCards();
@@ -446,9 +460,7 @@ import java.util.List;
 
     }
 
-    private boolean enemyExist(short index){
-        return enemies[index] == null;
-    }
+
 
     private void musicShow(){
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/fightMusic.mp3"));
