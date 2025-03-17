@@ -411,10 +411,11 @@ public class GameScreen implements Screen {
                                 }
                             }
                         }
-                        if (returnCard){
-                            soundEffectNotEnoughMana.play(0.7f);
-                            returnCard();
-                        }
+
+                    }
+                    if (returnCard){
+                        soundEffectNotEnoughMana.play(0.7f);
+                        returnCard();
                     }
                 }
             }
