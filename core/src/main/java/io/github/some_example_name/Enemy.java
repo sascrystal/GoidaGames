@@ -259,9 +259,9 @@ class EnemyGambler extends Enemy{
         Texture texture = new Texture(Gdx.files.internal("enemies/Gambler.png"));
         int FRAMES = 3;
         bounds = new Rectangle((float)(GameScreen.viewport.getWorldWidth()/2.4),
-            (float)(GameScreen.viewport.getWorldHeight()/3.2),
-            (float)((texture.getWidth()/FRAMES)/2),
-            (float)(texture.getHeight()/2));
+            (float)(GameScreen.viewport.getWorldHeight()/2.2),
+            (float)((texture.getWidth()/FRAMES)/2.2),
+            (float)(texture.getHeight()/2.2));
 
         health = 70; // Установка здоровья
         moveList = new MoveEnemy[2];// Установка массива возможностей моба

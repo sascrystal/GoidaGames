@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.audio.Music;
@@ -78,6 +80,8 @@ public class GameScreen implements Screen {
     private float cardAnimationTime;
     private final List<PlayingCard> animationCardQueue =  new ArrayList<>();
     private final List<Integer> animationCardQueueIndex = new ArrayList<>();
+
+    private Vector2 touchPos;
 
 
 
@@ -328,11 +332,13 @@ public class GameScreen implements Screen {
             animationCardQueue.get(0).draw(cardAnimationTime, batch, enemies[animationCardQueueIndex.get(0)]);
         }
 
+        handleInput();
+
 
 
 
         batch.end();
-        handleInput();
+
 
 
     }
@@ -342,10 +348,12 @@ public class GameScreen implements Screen {
 
     private void handleInput() {
         if (Gdx.input.isTouched()) {
+            Vector2 touchPos = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+            viewport.unproject(touchPos);
 
 
-            float touchX = Gdx.input.getX();
-            float touchY = viewport.getWorldHeight() - Gdx.input.getY();
+            float touchX = touchPos.x;
+            float touchY = touchPos.y;
 
 
             // Проверка нажатия на кнопку завершения хода
@@ -398,11 +406,11 @@ public class GameScreen implements Screen {
                     boolean returnCard = true;
                     if (manaPoolCheck()){
                         if(player.hand[draggedCardIndex] instanceof NonTargetCard &&
-                            !invisibleCardArea.contains(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY())){
+                            !invisibleCardArea.overlaps(cardBounds[draggedCardIndex])){
                             useCard();
                             returnCard = false;
                         }else {
-                            for(int i = 0; true; i++) {
+                            for(int i = 0; i<3; i++) {
                                 if (manaPoolCheck() && enemies[i] != null &&
                                     enemies[i].getBounds().contains(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY())) {
                                     useCard(i);
@@ -530,8 +538,8 @@ public class GameScreen implements Screen {
         float cardHeight = 300;
         float cardWidth = (float)(cardHeight * 0.6); // Ширина карты
         float worldWidth = viewport.getWorldWidth();
-        float startX = (float) ((worldWidth - (cardWidth * player.hand.length)) / 1.2); // Центрирование по X
-        float startY = 50; // Фиксированная позиция Y
+        float startX = 500; // Центрирование по X
+        float startY = 20; // Фиксированная позиция Y
 
 
         for (int i = 0; i < cardBounds.length; i++) {
