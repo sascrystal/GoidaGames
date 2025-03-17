@@ -193,8 +193,8 @@ class   EnemyGhost extends Enemy {
         // Установка границ
         bounds = new Rectangle((float)(Gdx.graphics.getWidth()/2.4),
             (float)(Gdx.graphics.getHeight()/2.5),
-            (float)(frameWidth/1.5),
-            (float)(frameHeight/1.5));
+            (float)(frameWidth/291.0),
+            (float)(frameHeight/291.0));
         health = 35; // Установка здоровья
         moveList = new MoveEnemy[3]; // Установка массива возможностей моба
         for (int i = 0; i <moveList.length; i++) {
@@ -258,10 +258,10 @@ class EnemyGambler extends Enemy{
         stateTime = 0f; // Инициализация времени состояния
         Texture texture = new Texture(Gdx.files.internal("enemies/Gambler.png"));
         int FRAMES = 3;
-        bounds = new Rectangle((float)(Gdx.graphics.getWidth()/2.4),
-            (float)(Gdx.graphics.getHeight()/3.2),
-            (float)((texture.getWidth()/FRAMES)/1.5),
-            (float)(texture.getHeight()/1.5));
+        bounds = new Rectangle((float)(GameScreen.viewport.getWorldWidth()/2.4),
+            (float)(GameScreen.viewport.getWorldHeight()/3.2),
+            (float)((texture.getWidth()/FRAMES)/2),
+            (float)(texture.getHeight()/2));
 
         health = 70; // Установка здоровья
         moveList = new MoveEnemy[2];// Установка массива возможностей моба

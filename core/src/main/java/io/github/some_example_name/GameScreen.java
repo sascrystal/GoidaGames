@@ -1,5 +1,6 @@
 package io.github.some_example_name;
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
@@ -14,12 +15,17 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-    public class GameScreen implements Screen {
+
+public class GameScreen implements Screen {
+
+
     private boolean endTurnButtonPressed = false;
     private SpriteBatch batch;
     private Rectangle[] cardBounds;
@@ -28,23 +34,31 @@ import java.util.List;
     private float draggedCardX, draggedCardY;
     private boolean isDragging;
     private int draggedCardIndex;
+    public static StretchViewport viewport = new StretchViewport(2400, 1080);;
 
-    private Viewport viewport;
+
+
 
     public static final int HAND_META = 10;
 
+
     private float[] initialCardPositionsX,initialCardPositionsY;
 
+
     private Music backgroundMusic;
+
 
     private Sound soundEffectCardTaking, soundEffectPlaceCard, soundEffectEndTurn,
         soundEffectNotEnoughMana;
 
+
     private Texture cardInfoTexture,attackImage, BGImage, interfaceImage;// Текстура для отображения информации о карте
+
 
     private String cardName; // Название карты
     private String cardDescription; // Описание карты
     private boolean isCardInfoVisible;
+
 
     // Добавляем противника и игрока
     private Enemy[] enemies = new Enemy[3];
@@ -52,11 +66,14 @@ import java.util.List;
     private boolean playerTurn;
     private BitmapFont font;
 
+
     // Кнопка завершения хода
     private Texture endTurnButtonTexture;
     private Rectangle endTurnButtonBounds;
 
+
     private  float elapsedTime = 0;
+
 
     private float cardAnimationTime;
     private final List<PlayingCard> animationCardQueue =  new ArrayList<>();
@@ -69,8 +86,17 @@ import java.util.List;
 
 
 
+
+
+
+
+
+
+
+
     // Невидимое поле для карт
     private Rectangle invisibleCardArea;
+
 
     public GameScreen(Enemy[] enemies, Player player){
         this.enemies = enemies;
@@ -81,18 +107,32 @@ import java.util.List;
 
 
 
+
+
+
     @Override
     public void show() {
+
+
+        // Инициализация StretchViewport
+        batch = new SpriteBatch();
+
+
+        // Используем viewport для получения размеров
+        float worldWidth = viewport.getWorldWidth();
+        float worldHeight = viewport.getWorldHeight();
 
 
         BGImage = new Texture(Gdx.files.internal("menu/BG_2.png"));
         attackImage = new Texture(Gdx.files.internal("HUD/attak.png"));
         interfaceImage = new Texture(Gdx.files.internal("HUD/interface.png"));
 
+
         cardBounds = new Rectangle[HAND_META];
         isCardVisible = new boolean[HAND_META];
         initialCardPositionsX = new float[HAND_META];
         initialCardPositionsY = new float[HAND_META];
+
 
         if(enemies[1]!= null){
             enemies[1].getBounds().setX(enemies[0].getBounds().getX()+ enemies[0].getBounds().getWidth() + 200);
@@ -101,44 +141,75 @@ import java.util.List;
             enemies[2].getBounds().setX(enemies[0].getBounds().getX()- enemies[1].getBounds().getWidth() - 200);
         }
 
+
         preRenderCards();
 
+
         // Создаем невидимое поле для карт
-        invisibleCardArea = new Rectangle(0, 0, Gdx.graphics.getWidth(), 250); // Задаем ширину и высоту
+        invisibleCardArea = new Rectangle(0, 0, viewport.getWorldWidth(), 250); // Задаем ширину и высоту
+
+
 
 
         cardInfoTexture = new Texture(Gdx.files.internal("HUD/card_info.png")); // Загружаем текстуру
         isCardInfoVisible = false; // Изначально информация о карте скрыта
 
 
+
+
         // Инициализация шрифта
         font = new BitmapFont(Gdx.files.internal("fonts/font.fnt"), Gdx.files.internal("fonts/font.png"), false);
         font.getData().setScale(2.0f);
 
+
+
+
+
+
         // Инициализация кнопки завершения хода
         endTurnButtonTexture = new Texture(Gdx.files.internal("HUD/endhod_new.png"));
+        // Пример обновления кнопки завершения хода
         endTurnButtonBounds = new Rectangle(
-            (float) (Gdx.graphics.getWidth() / 1.173),
-            (float) (Gdx.graphics.getHeight() / 2.8),
-            endTurnButtonTexture.getWidth(),
-            endTurnButtonTexture.getHeight());
+            (float) (viewport.getWorldWidth() / 1.173),
+            (float) (viewport.getWorldHeight() / 2.8),
+            (float) (endTurnButtonTexture.getWidth()/0.7),
+            (float)(endTurnButtonTexture.getHeight()/0.7));
+
 
         batch = new SpriteBatch();
 
+
         musicShow();
+
 
         playerTurn = true; // Начинаем с хода игрока
 
+
         cardAnimationTime = 0F;
+
+
+
+
+
 
     }
 
+
     @Override
     public void render(float delta) {
+
+
+        // Обновляем viewport
+        viewport.apply();
+        batch.setProjectionMatrix(viewport.getCamera().combined);
+
+
         elapsedTime += delta;
+
 
         if (!animationCardQueue.isEmpty()) {
             cardAnimationTime += delta;
+
 
             // Проверка завершения анимации
             if (animationCardQueue.get(0).effect.isAnimationFinished(cardAnimationTime)) {
@@ -150,19 +221,25 @@ import java.util.List;
 
 
 
+
+
+
         backgroundMusic.setLooping(true);
         backgroundMusic.setVolume(0.3f);
         backgroundMusic.play();
 
+
         ScreenUtils.clear(0, 0, 0, 1);
         batch.begin();
-        batch.draw(BGImage, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.draw(interfaceImage, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(BGImage, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        batch.draw(interfaceImage, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+
 
         // Отображение значений здоровья и щита
-        font.draw(batch, String.valueOf(player.getHealth()), 20, (float)(Gdx.graphics.getHeight()/1.5));
-        font.draw(batch, String.valueOf(player.getShield()), 120, (float)(Gdx.graphics.getHeight()/1.5));
-        font.draw(batch, String.valueOf(player.getManaPool()), 220, (float)(Gdx.graphics.getHeight()/2.25));
+        font.draw(batch, String.valueOf(player.getHealth()), 20, (float)(viewport.getWorldHeight() / 1.5));
+        font.draw(batch, String.valueOf(player.getShield()), 120, (float)(viewport.getWorldHeight() / 1.5));
+        font.draw(batch, String.valueOf(player.getManaPool()), 220, (float)(viewport.getWorldHeight() / 2.25));
+
 
         // Отрисовка противника
         for (int i = 0; i<3; i++){
@@ -171,14 +248,13 @@ import java.util.List;
             }
         }
 
+
         for (int i = 0; i<3; i++){
             if(enemies[i] != null && enemies[i].isAlive()){
-                font.draw(batch,
-                    "Health: " + enemies[i].getHealth(),
-                    (enemies[i].getBounds().getX()),
-                    enemies[i].getBounds().getY() + enemies[i].getBounds().getHeight() + 100);
+                font.draw(batch, "Health: " + enemies[i].getHealth(), enemies[i].getBounds().getX(), enemies[i].getBounds().getY() + enemies[i].getBounds().getHeight() + 100);
             }
         }
+
 
         for(int i = 0; i<3; i++){
             if(enemies[i] != null && enemies[i].isAlive()){
@@ -187,51 +263,65 @@ import java.util.List;
                     enemies[i].getBounds().getY() + enemies[i].getBounds().getHeight()+100);
             }
 
+
         }
+
 
         for(int i = 0; i<3;i++){
             if(enemies[i] != null && enemies[i].isAlive()){
-                batch.draw(attackImage,
-                    enemies[i].getBounds().getX()+enemies[i].getBounds().getWidth()-80,
-                    enemies[i].getBounds().getY() + enemies[i].getBounds().getHeight()+30);
+                batch.draw(attackImage, enemies[i].getBounds().getX() + enemies[i].getBounds().getWidth() - 80, enemies[i].getBounds().getY() + enemies[i].getBounds().getHeight() + 30);
             }
 
+
         }
+
+
+
 
 
 
         // Отображаем текстуру поля карт, масштабируя её под размеры невидимого поля
         //batch.draw(cardFieldTexture, invisibleCardArea.x, invisibleCardArea.y,invisibleCardArea.width + 100, invisibleCardArea.height + 100);
 
+
         renderingCards();
+
 
         // Если карта перетаскивается, отрисовываем её в позиции курсора
         if (isDragging && draggedCard != null) {
-            batch.draw(draggedCard, draggedCardX, draggedCardY,cardBounds[0].width, cardBounds[0].height);
+            batch.draw(draggedCard, draggedCardX, draggedCardY, cardBounds[0].width, cardBounds[0].height);
         }
+
 
         //информация о карте
         if (isCardInfoVisible) {
-            float cardInfoX = Gdx.graphics.getWidth() - cardInfoTexture.getWidth() - 10;
-            float cardInfoY = Gdx.graphics.getHeight() - cardInfoTexture.getHeight() - 10;
+            float cardInfoX = viewport.getWorldWidth() - cardInfoTexture.getWidth() - 10;
+            float cardInfoY = viewport.getWorldHeight() - cardInfoTexture.getHeight() - 10;
+
 
             // Отрисовка текстуры информации о карте
             batch.draw(cardInfoTexture, cardInfoX, cardInfoY);
 
+
             // Отрисовка названия карты
             font.draw(batch, cardName, cardInfoX + ((float) cardInfoTexture.getWidth() / 2) - 250, cardInfoY + cardInfoTexture.getHeight() - 10); // Отображаем название карты
+
 
             // Отрисовка описания карты с переносом текста
             float descriptionX = cardInfoX + 10; // Отступ для описания
             float descriptionY = cardInfoY + cardInfoTexture.getHeight() - 110; // Позиция для описания
             float maxWidth = cardInfoTexture.getWidth() - 20; // Максимальная ширина для текста (отступы)
 
+
             // Используем метод draw с учетом ширины
             font.draw(batch, cardDescription, descriptionX, descriptionY, maxWidth, 1, true); // true для переноса строк
         }
 
+
         // Отрисовка кнопки завершения хода
         batch.draw(endTurnButtonTexture, endTurnButtonBounds.x, endTurnButtonBounds.y);
+
+
 
 
         if(!animationCardQueue.isEmpty()){
@@ -239,23 +329,32 @@ import java.util.List;
         }
 
 
+
+
         batch.end();
         handleInput();
 
+
     }
+
+
 
 
     private void handleInput() {
         if (Gdx.input.isTouched()) {
 
+
             float touchX = Gdx.input.getX();
-            float touchY = Gdx.graphics.getHeight() - Gdx.input.getY();
+            float touchY = viewport.getWorldHeight() - Gdx.input.getY();
+
 
             // Проверка нажатия на кнопку завершения хода
             // Сбрасываем флаг, если не нажатие на кнопку
             endTurnButtonPressed = endTurnButtonBounds.contains(touchX, touchY) && playerTurn; // Устанавливаем флаг нажатия
 
+
             if (!isDragging) {
+
 
                 for (int i = 0; i < cardBounds.length; i++) {
                     if (player.hand[i]!= null && isCardVisible[i] && cardBounds[i].contains(touchX, touchY)) {
@@ -264,10 +363,12 @@ import java.util.List;
                         draggedCardX = touchX - cardBounds[i].width / 2;
                         draggedCardY = touchY - cardBounds[i].height / 2;
 
+
                         // Сохраняем информацию о карте
                         cardName = player.hand[i].getName();
                         cardDescription = player.hand[i].getDescription();
                         isCardInfoVisible = true; // Показываем информацию о карте
+
 
                         // Сделаем карту невидимой сразу, как только она берется
                         soundEffectCardTaking.play(0.7f);
@@ -284,6 +385,8 @@ import java.util.List;
             }
         } else {
             if (isDragging) {
+
+
 
 
                 // Проверяем, находится ли карта в невидимом поле
@@ -318,6 +421,7 @@ import java.util.List;
             isDragging = false; // Завершаем перетаскивание
             draggedCard = null; // Освобождаем ссылку на перетаскиваемую карту
 
+
             // Если кнопка завершения хода была нажата, выполняем завершение хода
             if (endTurnButtonPressed) {
                 soundEffectEndTurn.play(0.8f);
@@ -327,6 +431,7 @@ import java.util.List;
         }
     }
 
+
     private void endTurn() {
         playerTurn = false;// Завершаем ход игрока
         for (int i = 0; i<3; i++){
@@ -335,6 +440,7 @@ import java.util.List;
             }
         }
 
+
         // Проверка здоровья игрока
         if (player.getHealth() <= 0) {
             backgroundMusic.stop();
@@ -342,10 +448,13 @@ import java.util.List;
             ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
         }
 
+
         player.endTurn();
+
 
         playerTurn = true; // Ход переходит обратно к игроку
         player.beginTurn(); // Обновляем карты в руке игрока
+
 
         // Обновляем видимость карт
         // Делаем все карты видимыми (или можете настроить по вашему усмотрению)
@@ -353,18 +462,27 @@ import java.util.List;
     }
 
 
+
+
     @Override
     public void resize(int width, int height) {
+        viewport.update(width, height, true);
     }
+
+
+
 
     @Override
     public void pause() {}
 
+
     @Override
     public void resume() {}
 
+
     @Override
     public void hide() {}
+
 
     @Override
     public void dispose() {
@@ -381,14 +499,17 @@ import java.util.List;
         }
         font.dispose();
 
+
         for (int i = 0; i < player.hand.length-1 && player.hand[i] != null;  i++) {
             player.hand[i].texture.dispose();
         }
+
 
         if (backgroundMusic != null) {
             backgroundMusic.stop();
             backgroundMusic.dispose();
         }
+
 
         soundEffectEndTurn.dispose();
         soundEffectCardTaking.dispose();
@@ -398,17 +519,23 @@ import java.util.List;
 
 
 
+
+
+
     }
+
 
     private void preRenderCards() {
         float cardHeight = 300;
-        float cardWidth = (float)(cardHeight*0.7); // Ширина карты
-         // Высота карты
-        float startX = (float) ((Gdx.graphics.getWidth() - (cardWidth * player.hand.length)) / 1.2); // Центрирование по X
+        float cardWidth = (float)(cardHeight * 0.6); // Ширина карты
+        float worldWidth = viewport.getWorldWidth();
+        float startX = (float) ((worldWidth - (cardWidth * player.hand.length)) / 1.2); // Центрирование по X
         float startY = 50; // Фиксированная позиция Y
+
 
         for (int i = 0; i < cardBounds.length; i++) {
             cardBounds[i] = new Rectangle(startX + i * cardWidth, startY, cardWidth, cardHeight);
+
 
             isCardVisible[i] = true;
             initialCardPositionsX[i] = cardBounds[i].x;
@@ -416,17 +543,18 @@ import java.util.List;
         }
     }
 
+
     private void renderingCards() {
         for (int i = 0; i < player.hand.length; i++) {
             if (isCardVisible[i] && player.hand[i] != null) {
                 // Используем координаты cardBounds для отрисовки карт
-                batch.draw(player.hand[i].getTexture(),
-                    cardBounds[i].x, cardBounds[i].y,
-                    cardBounds[i].width,cardBounds[i].height);
+                batch.draw(player.hand[i].getTexture(), cardBounds[i].x, cardBounds[i].y, cardBounds[i].width, cardBounds[i].height);
+
 
             }
         }
     }
+
 
     private void useCard(int i){
         animationCardQueue.add(player.hand[draggedCardIndex]);
@@ -440,32 +568,40 @@ import java.util.List;
             ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
         }
 
+
     }
-        private void useCard(){
-            animationCardQueue.add(player.hand[draggedCardIndex]);
-            animationCardQueueIndex.add(0);
-            player.playCard(enemies[0], draggedCardIndex);
-            isCardInfoVisible = false; // Показываем информацию о карте
-            preRenderCards();
-            if (enemies[0].getHealth() <= 0) {
-                backgroundMusic.stop();
-                this.dispose();
-                ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
-            }
+    private void useCard(){
+        animationCardQueue.add(player.hand[draggedCardIndex]);
+        animationCardQueueIndex.add(0);
+        player.playCard(enemies[0], draggedCardIndex);
+        isCardInfoVisible = false; // Показываем информацию о карте
+        preRenderCards();
+        if (enemies[0].getHealth() <= 0) {
+            backgroundMusic.stop();
+            this.dispose();
+            ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
         }
+    }
+
 
     private void returnCard(){
         cardBounds[draggedCardIndex].setPosition(initialCardPositionsX[draggedCardIndex],
             initialCardPositionsY[draggedCardIndex]);
 
+
         isCardVisible[draggedCardIndex] = true;
         isCardInfoVisible = false;
     }
 
+
     private boolean manaPoolCheck(){
         return player.manaPool - player.hand[draggedCardIndex].cost >= 0;
 
+
     }
+
+
+
 
 
 
@@ -479,5 +615,9 @@ import java.util.List;
 
 
 
+
+
+
 }
 //СОСАТЬ АМЕРИКА
+
