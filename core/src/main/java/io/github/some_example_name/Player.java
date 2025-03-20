@@ -84,13 +84,17 @@ public abstract class   Player {
                 break;
             }
             else {
-                hand[freeSpace] =  draftDeck.get(0);
-                draftDeck.remove(0);
                 if(draftDeck.isEmpty()){
                     draftDeck.addAll(dropDeck);
                     Collections.shuffle(draftDeck);
                     dropDeck.clear();
                 }
+                if(draftDeck.isEmpty()){
+                    break;
+                }
+                hand[freeSpace] =  draftDeck.get(0);
+                draftDeck.remove(0);
+
             }
 
         }
@@ -242,8 +246,7 @@ class CharacterKnight extends Player {
     public CharacterKnight() {
         deck.add(new Defence());
         deck.add(new Attack());
-        deck.add(new CookieOfPower());
-        deck.add(new CookieOfReinforce());
+
 
 
 
