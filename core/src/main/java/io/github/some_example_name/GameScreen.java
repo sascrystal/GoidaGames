@@ -420,7 +420,6 @@ public class GameScreen implements Screen {
         animationCardQueue.add(player.hand[draggedCardIndex]);
         animationCardQueueIndex.add(i);
 
-        player.buffActionTrigger("CardAction");
         enemies[i].buffActionTrigger("CardAction");
 
         player.playCard(enemies[i], draggedCardIndex);
