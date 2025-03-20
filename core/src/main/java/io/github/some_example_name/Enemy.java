@@ -2,6 +2,7 @@ package io.github.some_example_name;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -12,9 +13,9 @@ import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
 import java.util.List;
-
 public abstract class Enemy {
     public Texture texture; // Текстура противника
+    protected static final Texture heart = new Texture(Gdx.files.internal("HUD/heart.png"));
     protected Rectangle bounds; // Границы для проверки коллизий
     protected Animation<TextureRegion> animation; // Анимация для противника
     public int health; // Здоровье противника
@@ -34,13 +35,19 @@ public abstract class Enemy {
 
     protected Sound takingDamageSoundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/takingDamageGamblerSoundEffect.wav"));
 
-    public void draw(SpriteBatch batch, float elapsedTime) {
+    public void draw(SpriteBatch batch, BitmapFont font, float elapsedTime,Player player) {
         TextureRegion currentFrame = animation.getKeyFrame(elapsedTime, true);
         batch.draw(currentFrame,
             bounds.x,
             bounds.y,
             bounds.width,
             bounds.height);// Получаем текущий кадр анимации
+
+        font.draw(batch, "Health: " + health, bounds.getX(), bounds.getY() + bounds.getHeight() + 100);
+        // кто читает эту заметку тот лох
+
+
+        moveList[getIndexMoveList()].draw(batch,font, elapsedTime,this,player);
 
 
     }
@@ -205,43 +212,33 @@ class   EnemyGhost extends Enemy {
     // Метод обновления состояния (вызывается в каждом кадре)
 
 }
-class EnemyHamster extends Enemy{
+class EnemyHamster extends Enemy {
     public EnemyHamster() {
 
         // Загрузка текстуры спрайт-листа
-        Texture spriteSheet = new Texture(Gdx.files.internal("enemies/hmstr_sprite.png"));
+        TextureAtlas frames = new TextureAtlas(Gdx.files.internal("enemies/hamster.atlas"));
+        animation = new Animation<>(0.3f,
+            frames.findRegions("hmstr_sprite"),
+            Animation.PlayMode.LOOP);
 
-        // Создание TextureRegion для каждого кадра анимации
-        int frameCount = 3; // Количество кадров в спрайт-листе
-        int frameWidth = spriteSheet.getWidth() / frameCount; // Ширина каждого кадра
-        int frameHeight = spriteSheet.getHeight(); // Высота каждого кадра
+        Texture texture = new Texture(Gdx.files.internal("enemies/hamster.png"));
 
-        Array<TextureRegion> frames = new Array<>();
-
-        // Извлечение кадров из спрайт-листа
-        for (int i = 0; i < frameCount; i++) {
-            frames.add(new TextureRegion(spriteSheet, i * frameWidth, 0, frameWidth, frameHeight));
-        }
-
-        // Инициализация анимации
-        animation = new Animation<>(0.3f, frames); // 0.1f - время между кадрами
-        stateTime = 0f; // Инициализация времени состояния
-
+        int FRAMES = 3;
         // Установка границ
         bounds = new Rectangle(
-            (float)(Gdx.graphics.getWidth()/2.4),
-            (float)(Gdx.graphics.getHeight()/3.2),
-            (float)(frameWidth/1.5),
-            (float)(frameHeight/1.5));
+            (float) (float) (GameScreen.viewport.getWorldWidth() / 2.4),
+            (float) (GameScreen.viewport.getWorldHeight() / 3),
+            (float) ((texture.getWidth() / FRAMES) / 2.2),
+            (float) (texture.getHeight() / 2.2));
+
+
         health = 70; // Установка здоровья
         moveList = new MoveEnemy[1];// Установка массива возможностей моба
+        giveBuff(new HamsterBuff());
+
         moveList[0] = new AttackEnemy(4);
     }
 
-    @Override
-    public void enemyReactionOfCard( Player y, int index){
-        giveBuff(new Power());
-    }
 }
 
 class EnemyGambler extends Enemy{
@@ -259,7 +256,7 @@ class EnemyGambler extends Enemy{
         Texture texture = new Texture(Gdx.files.internal("enemies/Gambler.png"));
         int FRAMES = 3;
         bounds = new Rectangle((float)(GameScreen.viewport.getWorldWidth()/2.4),
-            (float)(GameScreen.viewport.getWorldHeight()/2.2),
+            (float)(GameScreen.viewport.getWorldHeight()/3),
             (float)((texture.getWidth()/FRAMES)/2.2),
             (float)(texture.getHeight()/2.2));
 

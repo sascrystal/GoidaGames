@@ -21,8 +21,6 @@ import java.util.List;
 
 
 public class GameScreen implements Screen {
-
-
     private boolean endTurnButtonPressed = false;
     private SpriteBatch batch;
     private Rectangle[] cardBounds;
@@ -32,7 +30,6 @@ public class GameScreen implements Screen {
     private boolean isDragging;
     private int draggedCardIndex;
     public static StretchViewport viewport = new StretchViewport(2400, 1080);;
-
 
 
 
@@ -78,24 +75,8 @@ public class GameScreen implements Screen {
 
     private Vector2 touchPos;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // Невидимое поле для карт
     private Rectangle invisibleCardArea;
-
 
     public GameScreen(Enemy[] enemies, Player player){
         this.enemies = enemies;
@@ -104,34 +85,19 @@ public class GameScreen implements Screen {
         player.beginTurn();
     }
 
-
-
-
-
-
     @Override
     public void show() {
-
-
         // Инициализация StretchViewport
         batch = new SpriteBatch();
-
-
-        // Используем viewport для получения размеров
-        float worldWidth = viewport.getWorldWidth();
-        float worldHeight = viewport.getWorldHeight();
-
 
         BGImage = new Texture(Gdx.files.internal("menu/BG_2.png"));
         attackImage = new Texture(Gdx.files.internal("HUD/attak.png"));
         interfaceImage = new Texture(Gdx.files.internal("HUD/interface.png"));
 
-
         cardBounds = new Rectangle[HAND_META];
         isCardVisible = new boolean[HAND_META];
         initialCardPositionsX = new float[HAND_META];
         initialCardPositionsY = new float[HAND_META];
-
 
         if(enemies[1]!= null){
             enemies[1].getBounds().setX(enemies[0].getBounds().getX()+ enemies[0].getBounds().getWidth() + 200);
@@ -140,30 +106,17 @@ public class GameScreen implements Screen {
             enemies[2].getBounds().setX(enemies[0].getBounds().getX()- enemies[1].getBounds().getWidth() - 200);
         }
 
-
         preRenderCards();
-
 
         // Создаем невидимое поле для карт
         invisibleCardArea = new Rectangle(0, 0, viewport.getWorldWidth(), 250); // Задаем ширину и высоту
 
-
-
-
         cardInfoTexture = new Texture(Gdx.files.internal("HUD/card_info.png")); // Загружаем текстуру
         isCardInfoVisible = false; // Изначально информация о карте скрыта
-
-
-
 
         // Инициализация шрифта
         font = new BitmapFont(Gdx.files.internal("fonts/font.fnt"), Gdx.files.internal("fonts/font.png"), false);
         font.getData().setScale(2.0f);
-
-
-
-
-
 
         // Инициализация кнопки завершения хода
         endTurnButtonTexture = new Texture(Gdx.files.internal("HUD/endhod_new.png"));
@@ -174,41 +127,25 @@ public class GameScreen implements Screen {
             (float) (endTurnButtonTexture.getWidth()/0.7),
             (float)(endTurnButtonTexture.getHeight()/0.7));
 
-
         batch = new SpriteBatch();
-
 
         musicShow();
 
-
         playerTurn = true; // Начинаем с хода игрока
 
-
         cardAnimationTime = 0F;
-
-
-
-
-
-
     }
 
 
     @Override
     public void render(float delta) {
-
-
-        // Обновляем viewport
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
-
         elapsedTime += delta;
-
 
         if (!animationCardQueue.isEmpty()) {
             cardAnimationTime += delta;
-
 
             // Проверка завершения анимации
             if (animationCardQueue.get(0).effect.isAnimationFinished(cardAnimationTime)) {
@@ -218,79 +155,32 @@ public class GameScreen implements Screen {
             }
         }
 
-
-
-
-
-
         backgroundMusic.setLooping(true);
         backgroundMusic.setVolume(0.3f);
         backgroundMusic.play();
-
 
         ScreenUtils.clear(0, 0, 0, 1);
         batch.begin();
         batch.draw(BGImage, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
         batch.draw(interfaceImage, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
 
-
         // Отображение значений здоровья и щита
         font.draw(batch, String.valueOf(player.getHealth()), 20, (float)(viewport.getWorldHeight() / 1.5));
         font.draw(batch, String.valueOf(player.getShield()), 120, (float)(viewport.getWorldHeight() / 1.5));
         font.draw(batch, String.valueOf(player.getManaPool()), 220, (float)(viewport.getWorldHeight() / 2.25));
 
-
         // Отрисовка противника
         for (int i = 0; i<3; i++){
             if(enemies[i] != null && enemies[i].isAlive()){
-                enemies[i].draw(batch, elapsedTime);
+                enemies[i].draw(batch, font, elapsedTime,player);
             }
         }
-
-
-        for (int i = 0; i<3; i++){
-            if(enemies[i] != null && enemies[i].isAlive()){
-                font.draw(batch, "Health: " + enemies[i].getHealth(), enemies[i].getBounds().getX(), enemies[i].getBounds().getY() + enemies[i].getBounds().getHeight() + 100);
-            }
-        }
-
-
-        for(int i = 0; i<3; i++){
-            if(enemies[i] != null && enemies[i].isAlive()){
-                font.draw(batch, String.valueOf(enemies[i].moveList[enemies[i].getIndexMoveList()].showNumericalValue(enemies[i], player)),
-                    (enemies[i].getBounds().getX()+enemies[i].getBounds().getWidth()+50),
-                    enemies[i].getBounds().getY() + enemies[i].getBounds().getHeight()+100);
-            }
-
-
-        }
-
-
-        for(int i = 0; i<3;i++){
-            if(enemies[i] != null && enemies[i].isAlive()){
-                batch.draw(attackImage, enemies[i].getBounds().getX() + enemies[i].getBounds().getWidth() - 80, enemies[i].getBounds().getY() + enemies[i].getBounds().getHeight() + 30);
-            }
-
-
-        }
-
-
-
-
-
-
-        // Отображаем текстуру поля карт, масштабируя её под размеры невидимого поля
-        //batch.draw(cardFieldTexture, invisibleCardArea.x, invisibleCardArea.y,invisibleCardArea.width + 100, invisibleCardArea.height + 100);
-
 
         renderingCards();
 
-
-        // Если карта перетаскивается, отрисовываем её в позиции курсора
         if (isDragging && draggedCard != null) {
             batch.draw(draggedCard, draggedCardX, draggedCardY, cardBounds[0].width, cardBounds[0].height);
         }
-
 
         //информация о карте
         if (isCardInfoVisible) {
@@ -316,26 +206,15 @@ public class GameScreen implements Screen {
             font.draw(batch, cardDescription, descriptionX, descriptionY, maxWidth, 1, true); // true для переноса строк
         }
 
-
         // Отрисовка кнопки завершения хода
         batch.draw(endTurnButtonTexture, endTurnButtonBounds.x, endTurnButtonBounds.y);
-
-
-
 
         if(!animationCardQueue.isEmpty()){
             animationCardQueue.get(0).draw(cardAnimationTime, batch, enemies[animationCardQueueIndex.get(0)]);
         }
 
         handleInput();
-
-
-
-
         batch.end();
-
-
-
     }
 
 
@@ -401,13 +280,13 @@ public class GameScreen implements Screen {
                     boolean returnCard = true;
                     if (manaPoolCheck()){
                         if(player.hand[draggedCardIndex] instanceof NonTargetCard &&
-                            !invisibleCardArea.overlaps(cardBounds[draggedCardIndex])){
+                            !invisibleCardArea.contains(cardBounds[draggedCardIndex])){
                             useCard();
                             returnCard = false;
                         }else {
                             for(int i = 0; i<3; i++) {
                                 if (manaPoolCheck() && enemies[i] != null &&
-                                    enemies[i].getBounds().contains(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY())) {
+                                    enemies[i].getBounds().contains(touchPos.x, Gdx.graphics.getHeight() - touchPos.y)) {
                                     useCard(i);
                                     returnCard = false;
                                     break;
@@ -435,7 +314,6 @@ public class GameScreen implements Screen {
         }
     }
 
-
     private void endTurn() {
         playerTurn = false;// Завершаем ход игрока
         for (int i = 0; i<3; i++){
@@ -444,7 +322,6 @@ public class GameScreen implements Screen {
             }
         }
 
-
         // Проверка здоровья игрока
         if (player.getHealth() <= 0) {
             backgroundMusic.stop();
@@ -452,29 +329,20 @@ public class GameScreen implements Screen {
             ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
         }
 
-
         player.endTurn();
-
 
         playerTurn = true; // Ход переходит обратно к игроку
         player.beginTurn(); // Обновляем карты в руке игрока
-
 
         // Обновляем видимость карт
         // Делаем все карты видимыми (или можете настроить по вашему усмотрению)
         Arrays.fill(isCardVisible, true);
     }
 
-
-
-
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
     }
-
-
-
 
     @Override
     public void pause() {}
@@ -503,31 +371,21 @@ public class GameScreen implements Screen {
         }
         font.dispose();
 
-
         for (int i = 0; i < player.hand.length-1 && player.hand[i] != null;  i++) {
             player.hand[i].texture.dispose();
         }
-
 
         if (backgroundMusic != null) {
             backgroundMusic.stop();
             backgroundMusic.dispose();
         }
 
-
         soundEffectEndTurn.dispose();
         soundEffectCardTaking.dispose();
         soundEffectNotEnoughMana.dispose();
         soundEffectPlaceCard.dispose();
         animationCardQueue.clear();
-
-
-
-
-
-
     }
-
 
     private void preRenderCards() {
         float cardHeight = 300;
@@ -547,7 +405,6 @@ public class GameScreen implements Screen {
         }
     }
 
-
     private void renderingCards() {
         for (int i = 0; i < player.hand.length; i++) {
             if (isCardVisible[i] && player.hand[i] != null) {
@@ -559,10 +416,13 @@ public class GameScreen implements Screen {
         }
     }
 
-
     private void useCard(int i){
         animationCardQueue.add(player.hand[draggedCardIndex]);
         animationCardQueueIndex.add(i);
+
+        player.buffActionTrigger("CardAction");
+        enemies[i].buffActionTrigger("CardAction");
+
         player.playCard(enemies[i], draggedCardIndex);
         isCardInfoVisible = false; // Показываем информацию о карте
         preRenderCards();
@@ -574,6 +434,7 @@ public class GameScreen implements Screen {
 
 
     }
+
     private void useCard(){
         animationCardQueue.add(player.hand[draggedCardIndex]);
         animationCardQueueIndex.add(0);
@@ -587,7 +448,6 @@ public class GameScreen implements Screen {
         }
     }
 
-
     private void returnCard(){
         cardBounds[draggedCardIndex].setPosition(initialCardPositionsX[draggedCardIndex],
             initialCardPositionsY[draggedCardIndex]);
@@ -597,17 +457,11 @@ public class GameScreen implements Screen {
         isCardInfoVisible = false;
     }
 
-
     private boolean manaPoolCheck(){
         return player.manaPool - player.hand[draggedCardIndex].cost >= 0;
 
 
     }
-
-
-
-
-
 
     private void musicShow(){
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/fightMusic.mp3"));
@@ -616,12 +470,6 @@ public class GameScreen implements Screen {
         soundEffectEndTurn = Gdx.audio.newSound(Gdx.files.internal("sounds/endTurn.wav"));
         soundEffectNotEnoughMana = Gdx.audio.newSound(Gdx.files.internal("sounds/notEnoughMana.wav"));
     }
-
-
-
-
-
-
 }
 //СОСАТЬ АМЕРИКА
 
