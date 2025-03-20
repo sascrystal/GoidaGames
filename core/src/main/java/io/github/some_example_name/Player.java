@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class Player {
+public abstract class   Player {
 
 
     //penis
@@ -12,11 +12,11 @@ public abstract class Player {
     protected List<Buff> buffs = new ArrayList<>();
 
 
-    protected int health, maxHealth;
+    protected int health, maxHealth         ;
     protected int draftCount;
     protected int manaPool;
     protected int manaPoolMax;
-    protected   int shield;// Здоровье игрока
+    protected int shield;// Здоровье игрока
 
     protected List<PlayingCard> dropDeck = new ArrayList<>();
     protected List<PlayingCard> deck = new ArrayList<>();
@@ -250,6 +250,8 @@ class CharacterKnight extends Player {
         }
         deck.add(new Evade());
         deck.add(new CookiesOfMadness());
+        deck.add(new PhantomPain());
+        deck.add(new CookieOfPower());
 
 
         maxHealth = 60;
