@@ -1,0 +1,12 @@
+hamster.png
+size:2048,1024
+repeat:none
+hmstr_sprite
+index:1
+bounds:2,2,496,704
+hmstr_sprite
+index:3
+bounds:500,2,496,704
+hmstr_sprite
+index:2
+bounds:998,2,496,704
