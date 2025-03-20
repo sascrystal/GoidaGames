@@ -132,23 +132,7 @@ class Reinforce extends Buff{
     }
 }
 
-class TalentBuff extends Buff{
-
-}
-
-class KingOfCookieBuff extends TalentBuff{
-
-
-    public KingOfCookieBuff() {
-        name = "Король печенек";
-        description = "Дает возможность защищаться от урона печенек";
-        decrease = false;
-        stack = 1;
-    }
-
-}
-
-class CookiesOfMadnessBuff extends TalentBuff{
+class CookiesOfMadnessBuff extends Buff{
 
 
 
@@ -185,19 +169,24 @@ class CookiesOfMadnessBuff extends TalentBuff{
 
 
     }
+
+
 }
 
-class TurnBuff extends  Buff {
-}
-
-class ProgrammerBuff extends TurnBuff {
-
-    public ProgrammerBuff() {
-        stack = 0;
+class  HamsterBuff extends Buff{
+    public HamsterBuff() {
+        name ="Хомячье Безумие";
+        description = "Дает 1 силу каждый раз, когда используется карта на него";
+        decrease = false;
+        inCardAction = true;
+        stack = 1;
     }
 
-
-
+    @Override
+    public void buffAction(Enemy owner) {
+        super.buffAction(owner);
+        owner.giveBuff(new Power());
+    }
 }
 
 

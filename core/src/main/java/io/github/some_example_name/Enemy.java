@@ -212,7 +212,7 @@ class   EnemyGhost extends Enemy {
     // Метод обновления состояния (вызывается в каждом кадре)
 
 }
-class EnemyHamster extends Enemy{
+class EnemyHamster extends Enemy {
     public EnemyHamster() {
 
         // Загрузка текстуры спрайт-листа
@@ -226,21 +226,19 @@ class EnemyHamster extends Enemy{
         int FRAMES = 3;
         // Установка границ
         bounds = new Rectangle(
-            (float)(float)(GameScreen.viewport.getWorldWidth()/2.4),
-            (float)(GameScreen.viewport.getWorldHeight()/3),
-            (float)((texture.getWidth()/FRAMES)/2.2),
-            (float)(texture.getHeight()/2.2));
+            (float) (float) (GameScreen.viewport.getWorldWidth() / 2.4),
+            (float) (GameScreen.viewport.getWorldHeight() / 3),
+            (float) ((texture.getWidth() / FRAMES) / 2.2),
+            (float) (texture.getHeight() / 2.2));
 
 
         health = 70; // Установка здоровья
         moveList = new MoveEnemy[1];// Установка массива возможностей моба
+        giveBuff(new HamsterBuff());
+
         moveList[0] = new AttackEnemy(4);
     }
 
-    @Override
-    public void enemyReactionOfCard( Player y, int index){
-        giveBuff(new Power());
-    }
 }
 
 class EnemyGambler extends Enemy{

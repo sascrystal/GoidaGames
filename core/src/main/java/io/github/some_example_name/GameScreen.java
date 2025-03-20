@@ -419,6 +419,10 @@ public class GameScreen implements Screen {
     private void useCard(int i){
         animationCardQueue.add(player.hand[draggedCardIndex]);
         animationCardQueueIndex.add(i);
+
+        player.buffActionTrigger("CardAction");
+        enemies[i].buffActionTrigger("CardAction");
+
         player.playCard(enemies[i], draggedCardIndex);
         isCardInfoVisible = false; // Показываем информацию о карте
         preRenderCards();
