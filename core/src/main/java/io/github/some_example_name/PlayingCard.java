@@ -59,6 +59,21 @@ public abstract class PlayingCard {
 abstract class TargetCard extends PlayingCard{
 
 }
+
+class Overload extends TargetCard{
+
+    public Overload() {
+        name = "Перегрузка";
+        description = "Накладывает дебафф <<Перегрузка>>";
+        cost = 3;
+    }
+
+    @Override
+    public void cardAction(Enemy x, Player y, int index) {
+        super.cardAction(x, y, index);
+        x.giveBuff(new OverloadBuff());
+    }
+}
 abstract class CardAttack extends TargetCard {
     protected int damage;
     protected int totalDamage;

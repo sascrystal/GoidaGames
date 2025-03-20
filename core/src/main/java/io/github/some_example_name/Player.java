@@ -248,10 +248,7 @@ class CharacterKnight extends Player {
             deck.add(new Defence());
 
         }
-        deck.add(new Evade());
-        deck.add(new CookiesOfMadness());
-        deck.add(new PhantomPain());
-        deck.add(new CookieOfPower());
+
 
 
         maxHealth = 60;
