@@ -14,13 +14,13 @@ class AttackEnemy extends MoveEnemy  {
 
     @Override
     public void enemyAction(Enemy x, Player y){
-        int totalDamage = (int)((damage +x.buffStack(new Power()))*x.modifierBuff(new Weakness()));
+        int totalDamage = (int)((damage +x.buffStack(new Power()))*x.modifierBuff(new Weakness())*x.modifierBuff(new OverloadBuff()));
         y.takeDamage(totalDamage);
     }
 
   @Override
     public String showNumericalValue(Enemy x, Player y){
-        int totalDamage = (int)((damage +x.buffStack(new Power()))*x.modifierBuff(new Weakness()));
+        int totalDamage = (int)((damage +x.buffStack(new Power()))*x.modifierBuff(new Weakness())*x.modifierBuff(new OverloadBuff()));
         return String.valueOf(totalDamage);
     }
 }
@@ -62,7 +62,8 @@ class SelfHarm extends AttackEnemy{
 
     @Override
     public void enemyAction(Enemy x, Player y) {
-        x.takeDamage(damage);
+        int totalDamage = (int)((damage +x.buffStack(new Power()))*x.modifierBuff(new Weakness())*x.modifierBuff(new OverloadBuff()));
+        x.takeDamage(totalDamage);
     }
 }
 
