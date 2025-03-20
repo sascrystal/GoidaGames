@@ -2,6 +2,7 @@ package io.github.some_example_name;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -12,7 +13,6 @@ import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
 import java.util.List;
-
 public abstract class Enemy {
     public Texture texture; // Текстура противника
     protected Rectangle bounds; // Границы для проверки коллизий
@@ -34,13 +34,17 @@ public abstract class Enemy {
 
     protected Sound takingDamageSoundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/takingDamageGamblerSoundEffect.wav"));
 
-    public void draw(SpriteBatch batch, float elapsedTime) {
+    public void draw(SpriteBatch batch, BitmapFont font, float elapsedTime,Player player) {
         TextureRegion currentFrame = animation.getKeyFrame(elapsedTime, true);
         batch.draw(currentFrame,
             bounds.x,
             bounds.y,
             bounds.width,
             bounds.height);// Получаем текущий кадр анимации
+
+        font.draw(batch, "Health: " + health, bounds.getX(), bounds.getY() + bounds.getHeight() + 100);
+
+        moveList[getIndexMoveList()].draw(batch,font, elapsedTime,this,player);
 
 
     }
@@ -259,7 +263,7 @@ class EnemyGambler extends Enemy{
         Texture texture = new Texture(Gdx.files.internal("enemies/Gambler.png"));
         int FRAMES = 3;
         bounds = new Rectangle((float)(GameScreen.viewport.getWorldWidth()/2.4),
-            (float)(GameScreen.viewport.getWorldHeight()/2.2),
+            (float)(GameScreen.viewport.getWorldHeight()/3),
             (float)((texture.getWidth()/FRAMES)/2.2),
             (float)(texture.getHeight()/2.2));
 

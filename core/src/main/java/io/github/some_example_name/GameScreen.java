@@ -243,16 +243,10 @@ public class GameScreen implements Screen {
         // Отрисовка противника
         for (int i = 0; i<3; i++){
             if(enemies[i] != null && enemies[i].isAlive()){
-                enemies[i].draw(batch, elapsedTime);
+                enemies[i].draw(batch, font, elapsedTime,player);
             }
         }
 
-
-        for (int i = 0; i<3; i++){
-            if(enemies[i] != null && enemies[i].isAlive()){
-                font.draw(batch, "Health: " + enemies[i].getHealth(), enemies[i].getBounds().getX(), enemies[i].getBounds().getY() + enemies[i].getBounds().getHeight() + 100);
-            }
-        }
 
 
         for(int i = 0; i<3; i++){
@@ -266,13 +260,6 @@ public class GameScreen implements Screen {
         }
 
 
-        for(int i = 0; i<3;i++){
-            if(enemies[i] != null && enemies[i].isAlive()){
-                batch.draw(attackImage, enemies[i].getBounds().getX() + enemies[i].getBounds().getWidth() - 80, enemies[i].getBounds().getY() + enemies[i].getBounds().getHeight() + 30);
-            }
-
-
-        }
 
 
 

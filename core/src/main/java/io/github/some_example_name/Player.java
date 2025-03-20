@@ -240,14 +240,10 @@ public abstract class   Player {
 
 class CharacterKnight extends Player {
     public CharacterKnight() {
-        for(int i=0 ; i<2; i++){
-            deck.add(new Attack());
-
-        }
-        for(int i=2; i<4; i++){
-            deck.add(new Defence());
-
-        }
+        deck.add(new Defence());
+        deck.add(new Attack());
+        deck.add(new CookieOfPower());
+        deck.add(new CookieOfReinforce());
 
 
 
