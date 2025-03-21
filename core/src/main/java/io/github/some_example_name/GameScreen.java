@@ -425,7 +425,7 @@ public class GameScreen implements Screen {
         player.playCard(enemies[i], draggedCardIndex);
         isCardInfoVisible = false; // Показываем информацию о карте
         preRenderCards();
-        if (enemies[0].getHealth() <= 0) {
+        if (isPlayerWin()) {
             backgroundMusic.stop();
             this.dispose();
             ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
@@ -440,7 +440,7 @@ public class GameScreen implements Screen {
         player.playCard(enemies[0], draggedCardIndex);
         isCardInfoVisible = false; // Показываем информацию о карте
         preRenderCards();
-        if (enemies[0].getHealth() <= 0) {
+        if (isPlayerWin()) {
             backgroundMusic.stop();
             this.dispose();
             ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
@@ -468,6 +468,17 @@ public class GameScreen implements Screen {
         soundEffectPlaceCard = Gdx.audio.newSound(Gdx.files.internal("sounds/placeCard.wav"));
         soundEffectEndTurn = Gdx.audio.newSound(Gdx.files.internal("sounds/endTurn.wav"));
         soundEffectNotEnoughMana = Gdx.audio.newSound(Gdx.files.internal("sounds/notEnoughMana.wav"));
+    }
+    private boolean isPlayerWin(){
+        boolean isPlayerWin = true;
+        for(int i = 0; i<3;i++){
+            if(enemies[0]!= null && enemies[0].isAlive()){
+                isPlayerWin = false;
+                break;
+            }
+        }
+        return isPlayerWin;
+
     }
 }
 //СОСАТЬ АМЕРИКА
