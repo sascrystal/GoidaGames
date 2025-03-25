@@ -108,13 +108,12 @@ public class FirstScreen implements Screen {
                 backgroundMusic.stop();
                 dispose();
                 Player gay = new CharacterKnight();
-                Stage.levelGambler(gay);
+                ((Main) Gdx.app.getApplicationListener()).setScreen(new MapScreen(gay));
             } else if (continueButtonBounds.contains(screenX, screenY)) {
                 System.out.println("Continue button pressed!");
                 backgroundMusic.stop();
                 dispose();
                 Player gay = new CharacterKnight();
-                Stage.HamsterCombat(gay);
                 // Логика продолжения игры (если требуется)
                 backgroundMusic.stop();
                 dispose();
@@ -149,6 +148,7 @@ public class FirstScreen implements Screen {
 
     @Override
     public void hide() {
+
 
     }
 

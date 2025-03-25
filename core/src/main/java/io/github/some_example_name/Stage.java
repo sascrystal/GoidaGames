@@ -3,6 +3,16 @@ package io.github.some_example_name;
 import com.badlogic.gdx.Gdx;
 
 public class Stage {
+    Enemy[] enemies;
+
+    public Stage(Enemy[] enemies) {
+        this.enemies = enemies;
+    }
+
+    public void stageAction(Player player){
+        ((Main) Gdx.app.getApplicationListener()).setScreen(new GameScreen(enemies,player));
+    }
+
     public static void BeginnerLevelBegin(Player player){
         Enemy[] enemies = new Enemy[3];
         enemies[0] = new EnemyGhost();
@@ -20,10 +30,6 @@ public class Stage {
 
         ((Main) Gdx.app.getApplicationListener()).setScreen(new GameScreen(enemies,player));
     }
-    public static void levelProgrammer(Player player){
-        Enemy[] enemies = new Enemy[3];
-        enemies[0] = new EnemyProgrammer();
-        ((Main) Gdx.app.getApplicationListener()).setScreen(new GameScreen(enemies,player));
-    }
+
 }
 

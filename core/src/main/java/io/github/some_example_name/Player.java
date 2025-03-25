@@ -1,5 +1,10 @@
 package io.github.some_example_name;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,6 +22,7 @@ public abstract class   Player {
     protected int manaPool;
     protected int manaPoolMax;
     protected int shield;// Здоровье игрока
+    protected Texture texture = new Texture(Gdx.files.internal("enemies/enemy_1.png"));
 
     protected List<PlayingCard> dropDeck = new ArrayList<>();
     protected List<PlayingCard> deck = new ArrayList<>();
@@ -239,6 +245,10 @@ public abstract class   Player {
         health += heal;
     }
 
+    public void drawMap(SpriteBatch batch, Rectangle cell){
+        batch.draw(texture,cell.getX(),cell.getY(),cell.getWidth(),cell.getHeight());
+    }
+
 }
 
 
@@ -246,6 +256,13 @@ class CharacterKnight extends Player {
     public CharacterKnight() {
         deck.add(new Defence());
         deck.add(new Attack());
+        deck.add(new Defence());
+        deck.add(new Attack());
+        deck.add(new CookieOfReinforce());
+        deck.add(new CookieOfPower());
+        deck.add(new CookiesOfMadness());
+        deck.add(new FeintCard());
+        deck.add(new Evade());
 
 
 
