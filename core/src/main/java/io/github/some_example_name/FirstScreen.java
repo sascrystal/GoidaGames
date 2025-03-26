@@ -107,8 +107,10 @@ public class FirstScreen implements Screen {
                 // Переход на экран игры
                 backgroundMusic.stop();
                 dispose();
-                Player gay = new CharacterKnight();
-                ((Main) Gdx.app.getApplicationListener()).setScreen(new MapScreen(gay));
+                Player player = new CharacterKnight();
+                MapScreen act1  =new MapScreen(player);
+                Run.setAct1(act1);
+                ((Main) Gdx.app.getApplicationListener()).setScreen(Run.act1);
             } else if (continueButtonBounds.contains(screenX, screenY)) {
                 System.out.println("Continue button pressed!");
                 backgroundMusic.stop();

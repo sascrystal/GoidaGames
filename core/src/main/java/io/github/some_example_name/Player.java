@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -249,20 +250,34 @@ public abstract class   Player {
         batch.draw(texture,cell.getX(),cell.getY(),cell.getWidth(),cell.getHeight());
     }
 
+    public void draftDeckClear(){
+        draftDeck.clear();
+    }
+
+
+    public void dropDeckClear(){
+        dropDeck.clear();
+    }
+
+    public void handClear(){
+        Arrays.fill(hand, null);
+    }
+
 }
 
 
 class CharacterKnight extends Player {
     public CharacterKnight() {
-        deck.add(new Defence());
+
         deck.add(new Attack());
-        deck.add(new Defence());
         deck.add(new Attack());
-        deck.add(new CookieOfReinforce());
-        deck.add(new CookieOfPower());
-        deck.add(new CookiesOfMadness());
-        deck.add(new FeintCard());
-        deck.add(new Evade());
+        deck.add(new Attack());
+        deck.add(new Attack());
+        deck.add(new Attack());
+        deck.add(new Attack());
+        deck.add(new Attack());
+        deck.add(new Attack());
+
 
 
 
