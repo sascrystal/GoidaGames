@@ -106,6 +106,7 @@ public class MapScreen implements Screen {
     @Override
     public void pause() {
 
+
     }
 
     @Override
@@ -190,6 +191,10 @@ public class MapScreen implements Screen {
         if(map[playerX][playerY].isPlayerIn){
             map[playerX][playerY].action(player);
         }
+    }
+
+    public void updatePlayer(Player player){
+        this.player = player;
     }
 
 

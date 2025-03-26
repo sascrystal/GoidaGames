@@ -214,6 +214,9 @@ public class GameScreen implements Screen {
         }
 
         handleInput();
+        if(isPlayerWin()){
+            playerWin();
+        }
         batch.end();
     }
 
@@ -425,13 +428,6 @@ public class GameScreen implements Screen {
         player.playCard(enemies[i], draggedCardIndex);
         isCardInfoVisible = false; // Показываем информацию о карте
         preRenderCards();
-        if (isPlayerWin()) {
-            backgroundMusic.stop();
-            this.dispose();
-            ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
-        }
-
-
     }
 
     private void useCard(){
@@ -440,11 +436,6 @@ public class GameScreen implements Screen {
         player.playCard(enemies[0], draggedCardIndex);
         isCardInfoVisible = false; // Показываем информацию о карте
         preRenderCards();
-        if (isPlayerWin()) {
-            backgroundMusic.stop();
-            this.dispose();
-            ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
-        }
     }
 
     private void returnCard(){
@@ -472,12 +463,22 @@ public class GameScreen implements Screen {
     private boolean isPlayerWin(){
         boolean isPlayerWin = true;
         for(int i = 0; i<3;i++){
-            if(enemies[0]!= null && enemies[0].isAlive()){
+            if(enemies[i]!= null && enemies[i].isAlive()){
                 isPlayerWin = false;
                 break;
             }
         }
         return isPlayerWin;
+
+    }
+    private void playerWin(){
+        player.dropDeckClear();
+        player.draftDeckClear();
+        player.handClear();
+        Run.act1.updatePlayer(player);
+        backgroundMusic.stop();
+        this.dispose();
+        ((Main) Gdx.app.getApplicationListener()).setScreen(Run.act1);
 
     }
 }
