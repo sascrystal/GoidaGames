@@ -27,21 +27,28 @@ public class MapScreen implements Screen {
     @Override
     public void show() {
         batch = new SpriteBatch();
-        viewport = new StretchViewport(2400, 1080);
-        viewport.getCamera().position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
-        viewport.getCamera().update();
-        viewport.apply();
+        viewportConfiguration();
+        showButtons();
+        playerX = 0;
+        playerY = 0;
+
+        //test
         map[0][0] = new EmptyCell(0, viewport.getScreenY());
         Enemy[] enemies = new Enemy[3];
         enemies[0] = new EnemyGambler();
         Stage stage = new Stage(enemies);
         map[0][1] = new FightCell(map[0][0].getBounds().getX() + map[0][0].texture.getWidth(), 0, stage);
         map[0][0].setPlayerIn(true);
-        playerX = 0;
-        playerY = 0;
 
-        showButtons();
     }
+
+    private void viewportConfiguration(){
+        viewport = new StretchViewport(2400, 1080);
+        viewport.getCamera().position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+        viewport.getCamera().update();
+        viewport.apply();
+    }
+
     private void showButtons(){
         upButtonTexture = new Texture(Gdx.files.internal("buttons/upButton.png"));
         downButtonTexture = new Texture(Gdx.files.internal("buttons/downButton.png"));
