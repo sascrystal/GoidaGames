@@ -29,7 +29,7 @@ public class GameScreen implements Screen {
     private float draggedCardX, draggedCardY;
     private boolean isDragging;
     private int draggedCardIndex;
-    public static StretchViewport viewport = new StretchViewport(2400, 1080);;
+    public static StretchViewport viewport = new StretchViewport(2400, 1080);
 
 
 
@@ -55,7 +55,7 @@ public class GameScreen implements Screen {
 
 
     // Добавляем противника и игрока
-    private Enemy[] enemies = new Enemy[3];
+    private final Enemy[] enemies;
     private final Player player;
     private boolean playerTurn;
     private BitmapFont font;
@@ -75,7 +75,7 @@ public class GameScreen implements Screen {
 
     private Vector2 touchPos;
 
-    private CellMap[][] map;
+    private final CellMap[][] map;
 
     // Невидимое поле для карт
     private Rectangle invisibleCardArea;
@@ -396,7 +396,6 @@ public class GameScreen implements Screen {
     private void preRenderCards() {
         float cardHeight = 300;
         float cardWidth = (float)(cardHeight * 0.6); // Ширина карты
-        float worldWidth = viewport.getWorldWidth();
         float startX = 500; // Центрирование по X
         float startY = 20; // Фиксированная позиция Y
 

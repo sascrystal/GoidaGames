@@ -60,10 +60,6 @@ public abstract class Enemy {
         return health > 0; // Проверка, жив ли противник
     }
 
-    public int getHealth() {
-        return health; // Возврат здоровья
-    }
-
     public Rectangle getBounds() {
         return bounds; // Возврат границ
     }
@@ -73,9 +69,6 @@ public abstract class Enemy {
             texture.dispose(); // Освобождение текстуры
         }
     }
-    public  void enemyReactionOfCard( Player y, int index){}//реакция мобов на использование карт
-
-
 
     public void identifyIndexMoveList(){ // определение действия моба
         indexMoveList = (int)(Math.random()*moveList.length);
@@ -99,10 +92,10 @@ public abstract class Enemy {
 
 
     public boolean buffExist(Buff x){
-        boolean check = false;
         if (buffs.isEmpty()){
-            return check;
+            return false;
         }
+        boolean check = false;
         for (int i = 0;i<buffs.size(); i++){
             if(x.getName().equals(buffs.get(i).getName())){
                 check = true;
@@ -137,7 +130,6 @@ public abstract class Enemy {
     }
 
     public float modifierBuff(ModifierBuff x){
-        float modifier = 1;
         if(buffs.isEmpty()){
             return  1;
         }
@@ -158,6 +150,7 @@ public abstract class Enemy {
                 buffs.get(i).decreaseStack();
                 if(buffs.get(i).stack == 0){
                     buffs.remove(i);
+                    i--;
                 }
             }
         }
@@ -226,9 +219,9 @@ class EnemyHamster extends Enemy {
         int FRAMES = 3;
         // Установка границ
         bounds = new Rectangle(
-            (float) (float) (GameScreen.viewport.getWorldWidth() / 2.4),
-            (float) (GameScreen.viewport.getWorldHeight() / 3),
-            (float) ((texture.getWidth() / FRAMES) / 2.2),
+            (float) (GameScreen.viewport.getWorldWidth() / 2.4),
+            GameScreen.viewport.getWorldHeight() / 3,
+            (float) (((double) texture.getWidth() / FRAMES) / 2.2),
             (float) (texture.getHeight() / 2.2));
 
 
@@ -256,8 +249,8 @@ class EnemyGambler extends Enemy{
         Texture texture = new Texture(Gdx.files.internal("enemies/Gambler.png"));
         int FRAMES = 3;
         bounds = new Rectangle((float)(GameScreen.viewport.getWorldWidth()/2.4),
-            (float)(GameScreen.viewport.getWorldHeight()/3),
-            (float)((texture.getWidth()/FRAMES)/2.2),
+            GameScreen.viewport.getWorldHeight()/3,
+            (float)(((double) texture.getWidth() /FRAMES)/2.2),
             (float)(texture.getHeight()/2.2));
 
         health = 70; // Установка здоровья

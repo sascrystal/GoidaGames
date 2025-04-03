@@ -11,11 +11,10 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 
 public class MapScreen implements Screen {
-    private Player player;
+    private final Player player;
     private SpriteBatch batch;
     private StretchViewport viewport;
-    private Vector2 touchPosition;
-    private CellMap[][] map;
+    private final CellMap[][] map;
     private Rectangle upButtonRectangle,downButtonRectangle,leftButtonRectangle,rightButtonRectangle;
     private Texture upButtonTexture,downButtonTexture,leftButtonTexture, rightButtonTexture;
 
@@ -48,7 +47,7 @@ public class MapScreen implements Screen {
 
         rightButtonRectangle = new Rectangle(viewport.getWorldWidth()-200,0,200,200);
         downButtonRectangle = new Rectangle(rightButtonRectangle.getX()-200,0,200,200);
-        leftButtonRectangle = new Rectangle(downButtonRectangle.getX()-200, 0, 200, 200);;
+        leftButtonRectangle = new Rectangle(downButtonRectangle.getX()-200, 0, 200, 200);
         upButtonRectangle = new Rectangle(rightButtonRectangle.getX()-200,200, 200,200);
     }
 
@@ -67,10 +66,10 @@ public class MapScreen implements Screen {
 
     }
     private  void mapDraw(){
-        for (int i = 0; i< map.length;i++){
-            for(int j = 0; j<map[i].length;j++){
-                if(map[i][j] != null){
-                    map[i][j].draw(batch);
+        for (CellMap[] cellMaps : map) {
+            for (CellMap cellMap : cellMaps) {
+                if (cellMap != null) {
+                    cellMap.draw(batch);
                 }
             }
         }
@@ -117,7 +116,7 @@ public class MapScreen implements Screen {
     }
     private void buttonsInput(){
         if(Gdx.input.isTouched()){
-            touchPosition = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+            Vector2 touchPosition = new Vector2(Gdx.input.getX(), Gdx.input.getY());
             viewport.unproject(touchPosition);
 
             if(rightButtonRectangle.contains(touchPosition.x, touchPosition.y)){
