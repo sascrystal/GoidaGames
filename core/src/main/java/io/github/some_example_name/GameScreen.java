@@ -75,12 +75,15 @@ public class GameScreen implements Screen {
 
     private Vector2 touchPos;
 
+    private CellMap[][] map;
+
     // Невидимое поле для карт
     private Rectangle invisibleCardArea;
 
-    public GameScreen(Enemy[] enemies, Player player){
+    public GameScreen(Enemy[] enemies, MapScreen map){
         this.enemies = enemies;
-        this.player = player;
+        this.map = map.getMap();
+        this.player = map.getPlayer();
         player.beginFight();
         player.beginTurn();
     }
@@ -475,10 +478,11 @@ public class GameScreen implements Screen {
         player.dropDeckClear();
         player.draftDeckClear();
         player.handClear();
-        Run.act1.updatePlayer(player);
         backgroundMusic.stop();
         this.dispose();
-        ((Main) Gdx.app.getApplicationListener()).setScreen(Run.act1);
+        ((Main) Gdx.app.getApplicationListener()).setScreen(new MapScreen(player, map));
+
+
 
     }
 }

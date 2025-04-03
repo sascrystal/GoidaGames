@@ -17,6 +17,8 @@ public abstract class   Player {
 
     protected List<Buff> buffs = new ArrayList<>();
 
+    protected int cellX, cellY;
+
 
     protected int health, maxHealth         ;
     protected int draftCount;
@@ -263,6 +265,21 @@ public abstract class   Player {
         Arrays.fill(hand, null);
     }
 
+    public int getCellX() {
+        return cellX;
+    }
+
+    public int getCellY() {
+        return cellY;
+    }
+
+    public void setCellX(int cellX) {
+        this.cellX = cellX;
+    }
+
+    public void setCellY(int cellY) {
+        this.cellY = cellY;
+    }
 }
 
 
@@ -277,6 +294,9 @@ class CharacterKnight extends Player {
         deck.add(new Attack());
         deck.add(new Attack());
         deck.add(new Attack());
+
+        cellX = 0;
+        cellY = 0;
 
 
 

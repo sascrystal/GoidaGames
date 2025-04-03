@@ -10,9 +10,9 @@ import com.badlogic.gdx.math.Rectangle;
 abstract class CellMap {
     protected Rectangle bounds;
     protected Texture texture ;
-    protected boolean isPlayerIn = false;
+    protected boolean isPlayerIn = false, isAvailable = true;
 
-    abstract public  void  action(Player player);
+    abstract public  void  action(MapScreen map);
     public void draw(SpriteBatch batch){
         batch.draw(texture,bounds.getX(),bounds.getY());
     }
@@ -33,6 +33,10 @@ abstract class CellMap {
     public boolean isPlayerIn() {
         return isPlayerIn;
     }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
 }
 
 class  EmptyCell extends CellMap {
@@ -48,7 +52,7 @@ class  EmptyCell extends CellMap {
     }
 
 
-    public void action(Player player) {}
+    public void action(MapScreen map) {}
 }
 
 class VoidCell extends EmptyCell {
@@ -71,8 +75,9 @@ class FightCell extends CellMap{
     }
 
     @Override
-    public void action(Player player) {
-        stage.stageAction(player);
+    public void action(MapScreen map) {
+        isAvailable = false;
+        stage.stageAction(map);
 
     }
 }

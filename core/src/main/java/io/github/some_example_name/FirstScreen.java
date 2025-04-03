@@ -1,5 +1,7 @@
 package io.github.some_example_name;
 
+import static io.github.some_example_name.GameScreen.viewport;
+
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -107,10 +109,22 @@ public class FirstScreen implements Screen {
                 // Переход на экран игры
                 backgroundMusic.stop();
                 dispose();
+
+                //test
+
                 Player player = new CharacterKnight();
-                MapScreen act1  =new MapScreen(player);
-                Run.setAct1(act1);
-                ((Main) Gdx.app.getApplicationListener()).setScreen(Run.act1);
+                CellMap[][] map =  new CellMap[3][3];
+                map[0][0] = new EmptyCell(0, viewport.getScreenY());
+                Enemy[] enemies = new Enemy[3];
+                enemies[0] = new EnemyGambler();
+                Stage stage = new Stage(enemies);
+                map[0][1] = new FightCell(map[0][0].getBounds().getX() + map[0][0].texture.getWidth(), 0, stage);
+                map[0][0].setPlayerIn(true);
+
+                //test
+
+                MapScreen act1  = new MapScreen(player, map);
+                ((Main) Gdx.app.getApplicationListener()).setScreen(act1);
             } else if (continueButtonBounds.contains(screenX, screenY)) {
                 System.out.println("Continue button pressed!");
                 backgroundMusic.stop();
