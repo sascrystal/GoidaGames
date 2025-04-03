@@ -113,13 +113,9 @@ public class FirstScreen implements Screen {
                 //test
 
                 Player player = new CharacterKnight();
-                CellMap[][] map =  new CellMap[3][3];
-                map[0][0] = new EmptyCell(0, viewport.getScreenY());
-                Enemy[] enemies = new Enemy[3];
-                enemies[0] = new EnemyGambler();
-                Stage stage = new Stage(enemies);
-                map[0][1] = new FightCell(map[0][0].getBounds().getX() + map[0][0].texture.getWidth(), 0, stage);
-                map[0][0].setPlayerIn(true);
+                CellMap[][] map =  CellMap.generateAct1(player);
+
+
 
                 //test
 

@@ -133,10 +133,6 @@ class Reinforce extends Buff{
 }
 
 class CookiesOfMadnessBuff extends Buff{
-
-
-
-
     public CookiesOfMadnessBuff(){
         name ="Печеньковое безумие";
         description = "Дает за каждый стак в начале хода дает дополнительную карту печенек";
