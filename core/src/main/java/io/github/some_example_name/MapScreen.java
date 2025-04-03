@@ -11,35 +11,25 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 
 public class MapScreen implements Screen {
-    private Player player;
+    private final Player player;
     private SpriteBatch batch;
     private StretchViewport viewport;
-    private Vector2 touchPosition;
-    private int playerX, playerY;
-    private CellMap[][] map = new CellMap[3][3];
+    private final CellMap[][] map;
     private Rectangle upButtonRectangle,downButtonRectangle,leftButtonRectangle,rightButtonRectangle;
     private Texture upButtonTexture,downButtonTexture,leftButtonTexture, rightButtonTexture;
 
-    public MapScreen(Player player) {
+    public MapScreen(Player player, CellMap[][] map) {
         this.player = player;
+        this.map = map;
+
     }
+
 
     @Override
     public void show() {
         batch = new SpriteBatch();
         viewportConfiguration();
         showButtons();
-        playerX = 0;
-        playerY = 0;
-
-        //test
-        map[0][0] = new EmptyCell(0, viewport.getScreenY());
-        Enemy[] enemies = new Enemy[3];
-        enemies[0] = new EnemyGambler();
-        Stage stage = new Stage(enemies);
-        map[0][1] = new FightCell(map[0][0].getBounds().getX() + map[0][0].texture.getWidth(), 0, stage);
-        map[0][0].setPlayerIn(true);
-
     }
 
     private void viewportConfiguration(){
@@ -57,7 +47,7 @@ public class MapScreen implements Screen {
 
         rightButtonRectangle = new Rectangle(viewport.getWorldWidth()-200,0,200,200);
         downButtonRectangle = new Rectangle(rightButtonRectangle.getX()-200,0,200,200);
-        leftButtonRectangle = new Rectangle(downButtonRectangle.getX()-200, 0, 200, 200);;
+        leftButtonRectangle = new Rectangle(downButtonRectangle.getX()-200, 0, 200, 200);
         upButtonRectangle = new Rectangle(rightButtonRectangle.getX()-200,200, 200,200);
     }
 
@@ -76,17 +66,17 @@ public class MapScreen implements Screen {
 
     }
     private  void mapDraw(){
-        for (int i = 0; i< map.length;i++){
-            for(int j = 0; j<map[i].length;j++){
-                if(map[i][j] != null){
-                    map[i][j].draw(batch);
+        for (CellMap[] cellMaps : map) {
+            for (CellMap cellMap : cellMaps) {
+                if (cellMap != null) {
+                    cellMap.draw(batch);
                 }
             }
         }
     }
 
     private void playerDraw(){
-        player.drawMap(batch,map[playerX][playerY].getBounds());
+        player.drawMap(batch,map[player.getCellX()][player.getCellY()].getBounds());
     }
 
     private void  buttonsDraw(){
@@ -126,7 +116,7 @@ public class MapScreen implements Screen {
     }
     private void buttonsInput(){
         if(Gdx.input.isTouched()){
-            touchPosition = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+            Vector2 touchPosition = new Vector2(Gdx.input.getX(), Gdx.input.getY());
             viewport.unproject(touchPosition);
 
             if(rightButtonRectangle.contains(touchPosition.x, touchPosition.y)){
@@ -149,31 +139,31 @@ public class MapScreen implements Screen {
     private void  movePlayer(String direction){
         switch (direction){
             case "up":
-                if(moveIsPossible(playerX+1,playerY)){
-                    map[playerX][playerY].setPlayerIn(false);
-                    playerX+=1;
-                    map[playerX][playerY].setPlayerIn(true);
+                if(moveIsPossible(player.getCellX()+1,player.getCellY())){
+                    map[player.getCellX()][player.getCellY()].setPlayerIn(false);
+                    player.setCellX(player.getCellX()+1);
+                    map[player.getCellX()][player.getCellY()].setPlayerIn(true);
                 }
                 break;
             case "down":
-                if(moveIsPossible(playerX-1,playerY)) {
-                    map[playerX][playerY].setPlayerIn(false);
-                    playerX -= 1;
-                    map[playerX][playerY].setPlayerIn(true);
+                if(moveIsPossible(player.getCellX()-1,player.getCellY())) {
+                    map[player.getCellX()][player.getCellY()].setPlayerIn(false);
+                    player.setCellX(player.getCellX()-1);
+                    map[player.getCellX()][player.getCellY()].setPlayerIn(true);
                 }
                 break;
             case "right":
-                if(moveIsPossible(playerX,playerY+1)) {
-                    map[playerX][playerY].setPlayerIn(false);
-                    playerY += 1;
-                    map[playerX][playerY].setPlayerIn(true);
+                if(moveIsPossible(player.getCellX(),player.getCellY()+1)) {
+                    map[player.getCellX()][player.getCellY()].setPlayerIn(false);
+                    player.setCellY(player.getCellY()+1);
+                    map[player.getCellX()][player.getCellY()].setPlayerIn(true);
                 }
                 break;
             case "left":
-                if(moveIsPossible(playerX,playerY-1)) {
-                    map[playerX][playerY].setPlayerIn(false);
-                    playerY -= 1;
-                    map[playerX][playerY].setPlayerIn(true);
+                if(moveIsPossible(player.getCellX(),player.getCellY()-1)) {
+                    map[player.getCellX()][player.getCellY()].setPlayerIn(false);
+                    player.setCellY(player.getCellY()-1);
+                    map[player.getCellX()][player.getCellY()].setPlayerIn(true);
                 }
         }
     }
@@ -188,17 +178,17 @@ public class MapScreen implements Screen {
     }
 
     private void cellAction(){
-        if(map[playerX][playerY].isPlayerIn){
-            map[playerX][playerY].action(player);
+        if(map[player.getCellX()][player.getCellY()].isPlayerIn() && map[player.getCellX()][player.getCellY()].isAvailable()){
+            map[player.getCellX()][player.getCellY()].action(this);
         }
     }
 
-    public void updatePlayer(Player player){
-        this.player = player;
+
+    public Player getPlayer() {
+        return player;
     }
 
-
-
-
-
+    public CellMap[][] getMap() {
+        return map;
+    }
 }
