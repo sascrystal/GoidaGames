@@ -17,6 +17,7 @@ public class MapScreen implements Screen {
     private final CellMap[][] map;
     private Rectangle upButtonRectangle,downButtonRectangle,leftButtonRectangle,rightButtonRectangle;
     private Texture upButtonTexture,downButtonTexture,leftButtonTexture, rightButtonTexture;
+    private  float elapsedTime = 0;
 
     private boolean wasTouched = false;
 
@@ -57,8 +58,9 @@ public class MapScreen implements Screen {
     public void render(float delta) {
         batch.setProjectionMatrix(viewport.getCamera().combined);
         ScreenUtils.clear(0, 0, 0, 1);
+        elapsedTime += delta;
         batch.begin();
-        mapDraw();
+        mapDraw(elapsedTime);
         playerDraw();
         buttonsDraw();
         batch.end();
@@ -67,11 +69,11 @@ public class MapScreen implements Screen {
 
 
     }
-    private  void mapDraw(){
+    private  void mapDraw(float elapsedTime){
         for (CellMap[] cellMaps : map) {
             for (CellMap cellMap : cellMaps) {
                 if (cellMap != null) {
-                    cellMap.draw(batch);
+                    cellMap.draw(batch,elapsedTime);
                 }
             }
         }
