@@ -157,12 +157,6 @@ class FightCell extends CellMap{
             Animation.PlayMode.LOOP);
     }
 
-    public FightCell(float x, float y, Stage stage) {
-        texture = new Texture(Gdx.files.internal("cell/emptyCell.png"));
-        bounds = new Rectangle(x,y,150,150);
-        this.stage = stage;
-    }
-
     public FightCell(Stage stage, CellMap cell) {
         this.stage = stage;
         texture = new Texture(Gdx.files.internal("cell/emptyCell.png"));
@@ -199,6 +193,7 @@ class ExitCell extends CellMap{
 
     @Override
     public void action(MapScreen map) {
+
 
     }
 }

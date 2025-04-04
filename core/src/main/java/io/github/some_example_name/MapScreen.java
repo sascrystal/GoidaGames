@@ -69,6 +69,7 @@ public class MapScreen implements Screen {
 
 
     }
+
     private  void mapDraw(float elapsedTime){
         for (CellMap[] cellMaps : map) {
             for (CellMap cellMap : cellMaps) {
