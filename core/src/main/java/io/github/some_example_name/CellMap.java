@@ -38,23 +38,101 @@ public abstract class CellMap {
     }
 
     public static CellMap[][] generateAct1(Player player){
-        int wight =(int) (Math.random()*10) + 9;
+        int wight = generateWight();
         int height = 7;
         CellMap[][] map = new CellMap[height][wight];
-        int center = height/2;
-        map[center][0] = new EmptyCell(0, (viewport.getWorldHeight()/2)-75);
-        for(int i = 1; i<wight; i++){
-            map[center][i] = new EmptyCell(map[center][i-1].bounds.getX()+150,(viewport.getWorldHeight()/2)-75);
-        }
+
+        generateMainLine(map);
+        setPlayer(map,player);
+        generateMiniBossesAct1(map);
+        generateTailOfAct1(map);
+        generateSideBranches(map);
+
+        return  map;
+    }
+
+    private static int generateWight(){
+        int min = 10;
+        int max = 16;
+        return (int) (Math.random()*(max-min+1)) + min;
+    }
+
+    private static void setPlayer(CellMap[][] map, Player player){
+        int center = map.length/2;
         player.setCellX(0);
         player.setCellY(center);
         map[center][0].setPlayerIn(true);
-        map[center][wight-1] = new ExitCell(1,map[center][wight-1].getBounds());
+    }
+
+    private static void generateMainLine(CellMap[][] map){
+        int center = map.length/2;
+        int cellWight = 150;
+        map[center][0] = new EmptyCell(0, (viewport.getWorldHeight()/2)- (float) cellWight /2);
+        for(int i = 1; i<map[center].length; i++){
+            map[center][i] = new EmptyCell(map[center][i-1].bounds.getX()+cellWight,
+                (viewport.getWorldHeight()/2)-(float) cellWight /2);
+        }
+    }
+
+    private static void generateMiniBossesAct1(CellMap[][] map){
+        int center = map.length/2;
         int MiniBoss1 = (int) (Math.random()*2) + 3;
-        map[center][MiniBoss1] = new FightCell(FightCell.STAGES[0],map[center][MiniBoss1]);
+        map[center][MiniBoss1] = new FightCell(Stage.generateFightAct1(),map[center][MiniBoss1]);
         int MiniBoss2 = (int) (Math.random()*2) + MiniBoss1+3;
-        map[center][MiniBoss2] = new FightCell(FightCell.STAGES[0],map[center][MiniBoss2]);
-        return  map;
+        map[center][MiniBoss2] = new FightCell(Stage.generateFightAct1(),map[center][MiniBoss2]);
+    }
+
+    private static void generateTailOfAct1(CellMap[][] map){
+        int center = map.length/2;
+        int wight = map[center].length;
+
+        map[center][wight-1] = new ExitCell(1,map[center][wight-1].getBounds());
+        map[center][wight-2] = new FightCell(Stage.generateFightAct1(), map[center][wight-2]);
+        //заменить потом на Stage.generateFightBossesAct1()
+    }
+
+    private static void generateSideBranches(CellMap[][] map){
+        int center = map.length/2;
+        for(int i = 0; !(map[center][i] instanceof ExitCell); i++){
+            if(map[center][i] instanceof FightCell){
+                continue;
+            }
+            generateUpBranch(map, i);
+            generateDownBranch(map,i);
+        }
+    }
+
+    private static void generateUpBranch(CellMap[][] map, int index){
+        int center = map.length/2;
+        int min = 0;
+        int max = 4;
+        int random = (int)(Math.random()*max-min) +min;
+        for(int i = 1; i<=random; i++){
+            map[center-i][index] = new EmptyCell(map[center-i+1][index].getBounds().getX(),
+                map[center-i+1][index].getBounds().getY()+map[center-i+1][index].getBounds().getHeight());
+            fillCell(map,center-i,index);
+        }
+    }
+
+    private static void generateDownBranch(CellMap[][] map, int index){
+        int center = map.length/2;
+        int min = 0;
+        int max = 4;
+        int random = (int)(Math.random()*max-min) +min;
+        for(int i = 1; i<=random; i++){
+            map[center+i][index] = new EmptyCell(map[center+i-1][index].getBounds().getX(),
+                map[center+i-1][index].getBounds().getY()-map[center+i-1][index].getBounds().getHeight());
+            fillCell(map,center+i,index);
+        }
+    }
+
+    private static void fillCell(CellMap[][] map, int i, int j){
+        int min = 0;
+        int max = 3;
+        int randomFill = (int)(Math.random()*max-min)+ min;
+        if(randomFill == 2){
+            map[i][j] = new FightCell(Stage.generateFightAct1(),map[i][j]);
+        }
     }
 }
 
@@ -70,16 +148,9 @@ class  EmptyCell extends CellMap {
 
 class FightCell extends CellMap{
     private final Stage stage;
-    public static final Stage[] STAGES;
     private static final Animation<TextureRegion> ANIMATION_MARK;
 
     static {
-        STAGES = new Stage[1];
-        Enemy[] enemies = new Enemy[3];
-        enemies[0] = new EnemyGambler();
-        STAGES[0] = new Stage(enemies);
-        //Выше делать stage которые будут в игре
-
         TextureAtlas frames = new TextureAtlas(Gdx.files.internal("cell/mark.atlas"));
         ANIMATION_MARK = new Animation<>(0.1f,
             frames.findRegions("Mark"),
@@ -106,11 +177,12 @@ class FightCell extends CellMap{
 
     @Override
     public void draw(SpriteBatch batch,float elapsedTime) {
+        int cellWight = 150;
         super.draw(batch,elapsedTime);
         if(isAvailable){
             TextureRegion currentFrame = ANIMATION_MARK.getKeyFrame(elapsedTime, true);
             batch.draw(currentFrame,
-                bounds.getX()+75-32,
+                bounds.getX()+ (float) cellWight /2 -32,
                 bounds.getY());
         }
     }

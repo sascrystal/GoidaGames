@@ -26,13 +26,6 @@ public abstract class Enemy {
     public float stateTime;// Время для анимации
     public int indexMoveList;
 
-
-
-
-
-
-
-
     protected Sound takingDamageSoundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/takingDamageGamblerSoundEffect.wav"));
 
     public void draw(SpriteBatch batch, BitmapFont font, float elapsedTime,Player player) {

@@ -143,14 +143,14 @@ public class MapScreen implements Screen {
 
     private void  movePlayer(String direction){
         switch (direction){
-            case "up":
+            case "down":
                 if(moveIsPossible(player.getCellY()+1,player.getCellX())){
                     map[player.getCellY()][player.getCellX()].setPlayerIn(false);
                     player.setCellY(player.getCellY()+1);
                     map[player.getCellY()][player.getCellX()].setPlayerIn(true);
                 }
                 break;
-            case "down":
+            case "up":
                 if(moveIsPossible(player.getCellY()-1,player.getCellX())) {
                     map[player.getCellY()][player.getCellX()].setPlayerIn(false);
                     player.setCellY(player.getCellY()-1);
