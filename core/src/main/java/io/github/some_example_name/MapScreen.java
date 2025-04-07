@@ -27,7 +27,6 @@ public class MapScreen implements Screen {
 
     }
 
-
     @Override
     public void show() {
         batch = new SpriteBatch();

@@ -5,7 +5,9 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class QuestionMarkScreen implements Screen {
     private Texture textField;
-    private Texture[] dialogBox;
+    private Texture dialogBox;
+
+    private DialogEvent dialogEvent;
 
     @Override
     public void show() {
