@@ -131,7 +131,9 @@ public abstract class CellMap {
         int max = 3;
         int randomFill = (int)(Math.random()*max-min)+ min;
         if(randomFill == 2){
-            map[i][j] = new FightCell(Stage.generateFightAct1(),map[i][j]);
+            //map[i][j] = new FightCell(Stage.generateFightAct1(),map[i][j]);
+        } else if(randomFill == 1){
+            map[i][j] = new EventCell(new ShrineEvent(),map[i][j]);
         }
     }
 }
@@ -163,10 +165,10 @@ class FightCell extends CellMap{
         this.bounds = cell.bounds;
     }
 
-    @Override
-    public void action(MapScreen map) {
-        isAvailable = false;
-        stage.stageAction(map);
+      @Override
+        public void action(MapScreen map) {
+            isAvailable = false;
+            stage.stageAction(map);
     }
 
     @Override
@@ -196,6 +198,28 @@ class ExitCell extends CellMap{
 
 
     }
+}
+class EventCell extends  CellMap{
+    private final DialogEvent dialogEvent;
+    private static final Animation<TextureRegion> ANIMATION_MARK;
+    static {
+        TextureAtlas frames = new TextureAtlas(Gdx.files.internal("cell/mark.atlas"));
+        ANIMATION_MARK = new Animation<>(0.1f,
+            frames.findRegions("Mark"),
+            Animation.PlayMode.LOOP);
+    }
+    public EventCell(DialogEvent dialogEvent,CellMap cell) {
+        this.dialogEvent = dialogEvent;
+        texture = new Texture(Gdx.files.internal("cell/emptyCell.png"));
+        this.bounds = cell.bounds;
+    }
+
+    @Override
+    public void action(MapScreen map) {
+        isAvailable = false;
+        dialogEvent.begin(map);
+    }
+
 }
 
 

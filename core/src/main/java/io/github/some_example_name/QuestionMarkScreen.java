@@ -1,27 +1,113 @@
 package io.github.some_example_name;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public class QuestionMarkScreen implements Screen {
     private Texture textField;
     private Texture dialogBox;
-
+    private Rectangle[] dialogBoxBounds;
     private DialogEvent dialogEvent;
+    private StretchViewport viewport;
+    private SpriteBatch batch;
+    private BitmapFont font;
+    private CellMap[][] map;
+    private Player player;
+    private Vector2 touchPosition;
+
+    public QuestionMarkScreen(MapScreen map,DialogEvent dialogEvent) {
+        this.player = map.getPlayer();
+        this.map = map.getMap();
+        this.dialogEvent = dialogEvent;
+    }
 
     @Override
     public void show() {
+        batch = new SpriteBatch();
+        viewportConfiguration();
+        showDialogBoxBounds();
+        showFont();
+        dialogBox = new Texture("cell/emptyCell.png");
+        textField = new Texture("cell/emptyCell.png");
+    }
 
+    private void viewportConfiguration(){
+        viewport = new StretchViewport(2400, 1080);
+        viewport.getCamera().position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+        viewport.getCamera().update();
+        viewport.apply();
+    }
+
+    private void showDialogBoxBounds(){
+        dialogBoxBounds = new Rectangle[3];
+        float initialX = 0;
+        float initialY = 50;
+        float height = viewport.getWorldHeight()/3;
+        float wight = viewport.getWorldWidth()/2-15;
+        for (int i = 0; i<3;i++){
+            float indexY = initialY+height*i;
+            dialogBoxBounds[i] = new Rectangle(initialX,indexY,wight,height);
+        }
+    }
+
+    private void showFont(){
+        font = new BitmapFont(Gdx.files.internal("fonts/font.fnt"), Gdx.files.internal("fonts/font.png"), false);
+        font.getData().setScale(2.0f);
     }
 
     @Override
     public void render(float delta) {
+        batch.begin();
+        drawTextField();
+        drawDialogBox();
+        batch.end();
+        input();
+    }
+
+    private void drawTextField() {
+        float x = viewport.getWorldWidth()/2;
+        float y = 0;
+        float wight = viewport.getWorldWidth()/2 ;
+        float height = viewport.getWorldHeight();
+        batch.draw(textField, x, y, wight, height);
+        font.draw(batch,dialogEvent.getEventDescription(),x+15,y+height);
+    }
+
+    private void drawDialogBox(){
+        for(int i = 0; i<3; i++){
+            if(dialogEvent.getDialogOptions()[i] != null){
+                batch.draw(dialogBox,dialogBoxBounds[i].getX(),dialogBoxBounds[i].getY(),
+                    dialogBoxBounds[i].getWidth(), dialogBoxBounds[i].getHeight());
+                font.draw(batch, dialogEvent.getDialogOptions()[i],
+                    dialogBoxBounds[i].getX(),dialogBoxBounds[i].getY());
+            }
+        }
+    }
+
+    private void input(){
+        if(Gdx.input.isTouched()){
+            Vector2 touchPosition = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+            viewport.unproject(touchPosition);
+            for(int i = 0; i<3;i++){
+                if(dialogBoxBounds[i].contains(touchPosition) && dialogEvent.getDialogOptions()[i] != null){
+                    dialogEvent.action(player,map,i);
+                    dispose();
+                }
+            }
+
+        }
 
     }
 
     @Override
     public void resize(int width, int height) {
-
+        viewport.update(width,height);
     }
 
     @Override
@@ -41,6 +127,9 @@ public class QuestionMarkScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        textField.dispose();
+        dialogBox.dispose();
+        font.dispose();
+        batch.dispose();
     }
 }

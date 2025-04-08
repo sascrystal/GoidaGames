@@ -24,9 +24,19 @@ public abstract class DialogEvent {
         }
     }
 
-    protected abstract void actionFirst(Player player,CellMap[][] map);
-    protected abstract void actionSecond(Player player,CellMap[][] map);
-    protected abstract void actionThird(Player player,CellMap[][] map);
+    public void begin( MapScreen map){
+        ((Main) Gdx.app.getApplicationListener()).setScreen(new QuestionMarkScreen(map,this));
+    }
+
+    public  void actionFirst(Player player,CellMap[][] map){
+        returnToMap(player, map);
+    }
+    public  void actionSecond(Player player,CellMap[][] map){
+        returnToMap(player, map);
+    }
+    public  void actionThird(Player player,CellMap[][] map){
+        returnToMap(player, map);
+    }
 
     protected void returnToMap(Player player,CellMap[][] map){
         ((Main) Gdx.app.getApplicationListener()).setScreen(new MapScreen(player, map));
@@ -44,25 +54,21 @@ public abstract class DialogEvent {
 class ShrineEvent extends DialogEvent{
     public ShrineEvent() {
         eventDescription = "Вы встречаете святилище, в центре которого находится вода";
+        dialogOptions = new String[3];
         dialogOptions[0] = "Выпить воду";
         dialogOptions[1] = "Уйти из этого места";
         dialogOptions[2] = "Поискать запасы";
     }
 
     @Override
-    protected void actionFirst(Player player,CellMap[][] map) {
+    public void actionFirst(Player player,CellMap[][] map) {
         int heal = 15;
         player.healing(heal);
         returnToMap(player,map);
     }
 
     @Override
-    protected void actionSecond(Player player, CellMap[][] map) {
-        returnToMap(player,map);
-    }
-
-    @Override
-    protected void actionThird(Player player, CellMap[][] map) {
+    public void actionThird(Player player, CellMap[][] map) {
         PlayingCard givingCard = new PhantomPain();
         player.giveTheCard(givingCard);
         returnToMap(player,map);
