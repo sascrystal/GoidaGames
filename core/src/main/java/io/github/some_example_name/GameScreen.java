@@ -480,10 +480,8 @@ public class GameScreen implements Screen {
         backgroundMusic.stop();
         this.dispose();
         ((Main) Gdx.app.getApplicationListener()).setScreen(new MapScreen(player, map));
-
-
-
     }
+
 }
 //СОСАТЬ АМЕРИКА
 

@@ -17,13 +17,15 @@ public class MapScreen implements Screen {
     private final CellMap[][] map;
     private Rectangle upButtonRectangle,downButtonRectangle,leftButtonRectangle,rightButtonRectangle;
     private Texture upButtonTexture,downButtonTexture,leftButtonTexture, rightButtonTexture;
+    private  float elapsedTime = 0;
+
+    private boolean wasTouched = false;
 
     public MapScreen(Player player, CellMap[][] map) {
         this.player = player;
         this.map = map;
 
     }
-
 
     @Override
     public void show() {
@@ -55,8 +57,9 @@ public class MapScreen implements Screen {
     public void render(float delta) {
         batch.setProjectionMatrix(viewport.getCamera().combined);
         ScreenUtils.clear(0, 0, 0, 1);
+        elapsedTime += delta;
         batch.begin();
-        mapDraw();
+        mapDraw(elapsedTime);
         playerDraw();
         buttonsDraw();
         batch.end();
@@ -65,18 +68,19 @@ public class MapScreen implements Screen {
 
 
     }
-    private  void mapDraw(){
+
+    private  void mapDraw(float elapsedTime){
         for (CellMap[] cellMaps : map) {
             for (CellMap cellMap : cellMaps) {
                 if (cellMap != null) {
-                    cellMap.draw(batch);
+                    cellMap.draw(batch,elapsedTime);
                 }
             }
         }
     }
 
     private void playerDraw(){
-        player.drawMap(batch,map[player.getCellX()][player.getCellY()].getBounds());
+        player.drawMap(batch,map[player.getCellY()][player.getCellX()].getBounds());
     }
 
     private void  buttonsDraw(){
@@ -115,7 +119,7 @@ public class MapScreen implements Screen {
 
     }
     private void buttonsInput(){
-        if(Gdx.input.isTouched()){
+        if(Gdx.input.isTouched()&& !wasTouched){
             Vector2 touchPosition = new Vector2(Gdx.input.getX(), Gdx.input.getY());
             viewport.unproject(touchPosition);
 
@@ -134,36 +138,37 @@ public class MapScreen implements Screen {
                 movePlayer("down");
             }
         }
+        wasTouched = Gdx.input.isTouched();
     }
 
     private void  movePlayer(String direction){
         switch (direction){
-            case "up":
-                if(moveIsPossible(player.getCellX()+1,player.getCellY())){
-                    map[player.getCellX()][player.getCellY()].setPlayerIn(false);
-                    player.setCellX(player.getCellX()+1);
-                    map[player.getCellX()][player.getCellY()].setPlayerIn(true);
+            case "down":
+                if(moveIsPossible(player.getCellY()+1,player.getCellX())){
+                    map[player.getCellY()][player.getCellX()].setPlayerIn(false);
+                    player.setCellY(player.getCellY()+1);
+                    map[player.getCellY()][player.getCellX()].setPlayerIn(true);
                 }
                 break;
-            case "down":
-                if(moveIsPossible(player.getCellX()-1,player.getCellY())) {
-                    map[player.getCellX()][player.getCellY()].setPlayerIn(false);
-                    player.setCellX(player.getCellX()-1);
-                    map[player.getCellX()][player.getCellY()].setPlayerIn(true);
+            case "up":
+                if(moveIsPossible(player.getCellY()-1,player.getCellX())) {
+                    map[player.getCellY()][player.getCellX()].setPlayerIn(false);
+                    player.setCellY(player.getCellY()-1);
+                    map[player.getCellY()][player.getCellX()].setPlayerIn(true);
                 }
                 break;
             case "right":
-                if(moveIsPossible(player.getCellX(),player.getCellY()+1)) {
-                    map[player.getCellX()][player.getCellY()].setPlayerIn(false);
-                    player.setCellY(player.getCellY()+1);
-                    map[player.getCellX()][player.getCellY()].setPlayerIn(true);
+                if(moveIsPossible(player.getCellY(),player.getCellX()+1)) {
+                    map[player.getCellY()][player.getCellX()].setPlayerIn(false);
+                    player.setCellX(player.getCellX()+1);
+                    map[player.getCellY()][player.getCellX()].setPlayerIn(true);
                 }
                 break;
             case "left":
-                if(moveIsPossible(player.getCellX(),player.getCellY()-1)) {
-                    map[player.getCellX()][player.getCellY()].setPlayerIn(false);
-                    player.setCellY(player.getCellY()-1);
-                    map[player.getCellX()][player.getCellY()].setPlayerIn(true);
+                if(moveIsPossible(player.getCellY(),player.getCellX()-1)) {
+                    map[player.getCellY()][player.getCellX()].setPlayerIn(false);
+                    player.setCellX(player.getCellX()-1);
+                    map[player.getCellY()][player.getCellX()].setPlayerIn(true);
                 }
         }
     }
@@ -178,8 +183,8 @@ public class MapScreen implements Screen {
     }
 
     private void cellAction(){
-        if(map[player.getCellX()][player.getCellY()].isPlayerIn() && map[player.getCellX()][player.getCellY()].isAvailable()){
-            map[player.getCellX()][player.getCellY()].action(this);
+        if(map[player.getCellY()][player.getCellX()].isPlayerIn() && map[player.getCellY()][player.getCellX()].isAvailable()){
+            map[player.getCellY()][player.getCellX()].action(this);
         }
     }
 

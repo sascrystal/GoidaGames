@@ -295,8 +295,6 @@ class CharacterKnight extends Player {
         deck.add(new Attack());
         deck.add(new Attack());
 
-        cellX = 0;
-        cellY = 0;
 
 
 
