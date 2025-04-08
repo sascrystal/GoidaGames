@@ -13,13 +13,12 @@ public class QuestionMarkScreen implements Screen {
     private Texture textField;
     private Texture dialogBox;
     private Rectangle[] dialogBoxBounds;
-    private DialogEvent dialogEvent;
+    private final DialogEvent dialogEvent;
     private StretchViewport viewport;
     private SpriteBatch batch;
     private BitmapFont font;
-    private CellMap[][] map;
-    private Player player;
-    private Vector2 touchPosition;
+    private final CellMap[][] map;
+    private final Player player;
 
     public QuestionMarkScreen(MapScreen map,DialogEvent dialogEvent) {
         this.player = map.getPlayer();

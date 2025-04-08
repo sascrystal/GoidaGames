@@ -131,7 +131,7 @@ public abstract class CellMap {
         int max = 3;
         int randomFill = (int)(Math.random()*max-min)+ min;
         if(randomFill == 2){
-            //map[i][j] = new FightCell(Stage.generateFightAct1(),map[i][j]);
+            map[i][j] = new FightCell(Stage.generateFightAct1(),map[i][j]);
         } else if(randomFill == 1){
             map[i][j] = new EventCell(new ShrineEvent(),map[i][j]);
         }
@@ -185,7 +185,7 @@ class FightCell extends CellMap{
 }
 
 class ExitCell extends CellMap{
-    private final int act;
+    private int act;
 
     public ExitCell(int act,Rectangle bounds) {
         this.act = act;
@@ -195,6 +195,7 @@ class ExitCell extends CellMap{
 
     @Override
     public void action(MapScreen map) {
+
 
 
     }
