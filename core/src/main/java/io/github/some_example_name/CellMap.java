@@ -204,15 +204,27 @@ class EventCell extends  CellMap{
     private final DialogEvent dialogEvent;
     private static final Animation<TextureRegion> ANIMATION_MARK;
     static {
-        TextureAtlas frames = new TextureAtlas(Gdx.files.internal("cell/mark.atlas"));
+        TextureAtlas frames = new TextureAtlas(Gdx.files.internal("cell/questionMark.atlas"));
         ANIMATION_MARK = new Animation<>(0.1f,
-            frames.findRegions("Mark"),
+            frames.findRegions("questionMark"),
             Animation.PlayMode.LOOP);
     }
     public EventCell(DialogEvent dialogEvent,CellMap cell) {
         this.dialogEvent = dialogEvent;
         texture = new Texture(Gdx.files.internal("cell/emptyCell.png"));
         this.bounds = cell.bounds;
+    }
+
+    @Override
+    public void draw(SpriteBatch batch,float elapsedTime) {
+        int cellWight = 150;
+        super.draw(batch,elapsedTime);
+        if(isAvailable){
+            TextureRegion currentFrame = ANIMATION_MARK.getKeyFrame(elapsedTime, true);
+            batch.draw(currentFrame,
+                bounds.getX()+ (float) cellWight /2 -32,
+                bounds.getY());
+        }
     }
 
     @Override
