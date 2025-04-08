@@ -216,6 +216,7 @@ public abstract class   Player {
                 buffs.get(i).decreaseStack();
                 if(buffs.get(i).stack == 0){
                     buffs.remove(i);
+                    i--;
                 }
             }
         }
