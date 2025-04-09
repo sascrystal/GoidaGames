@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public class QuestionMarkScreen implements Screen {
@@ -62,6 +63,8 @@ public class QuestionMarkScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        batch.setProjectionMatrix(viewport.getCamera().combined);
+        ScreenUtils.clear(0, 0, 0, 1);
         batch.begin();
         drawTextField();
         drawDialogBox();
