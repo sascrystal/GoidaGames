@@ -2,6 +2,7 @@ package io.github.some_example_name;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
@@ -12,6 +13,7 @@ public class TakeCardFragmentScreen implements Screen {
     private Rectangle buttonSkipBox;
     private StretchViewport viewport;
     private MapScreen map;
+    private SpriteBatch batch;
 
     public TakeCardFragmentScreen(PlayingCard[] givingCards, MapScreen map) {
         this.givingCards = givingCards;
@@ -20,6 +22,7 @@ public class TakeCardFragmentScreen implements Screen {
 
     @Override
     public void show() {
+        batch = new SpriteBatch();
         viewportConfiguration();
         buttonSkipBoxShow();
         givingCardsShow();
@@ -44,7 +47,7 @@ public class TakeCardFragmentScreen implements Screen {
         givingCardsBoxes[0] = new Rectangle(1200, 400, wightCard, heightCard);
         givingCardsBoxes[1] = new Rectangle(givingCardsBoxes[0].getX() +givingCardsBoxes[0].getWidth() +15,
             400, wightCard,heightCard);
-        givingCardsBoxes[2] = new Rectangle(givingCardsBoxes[0].getX() -wightCard*2 +15,
+        givingCardsBoxes[2] = new Rectangle(givingCardsBoxes[0].getX() -wightCard +15,
             400, wightCard,heightCard);
     }
 
@@ -52,7 +55,28 @@ public class TakeCardFragmentScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        batch.setProjectionMatrix(viewport.getCamera().combined);
+        batch.begin();
+        drawGivingCards();
+        drawButtonSkip();       
 
+
+    }
+
+    private void drawGivingCards(){
+        for(int i = 0; i<3; i++){
+            if(givingCards[i] != null){
+                batch.draw(givingCards[i].getTexture(),
+                    givingCardsBoxes[i].getX(),givingCardsBoxes[i].getY(),
+                    givingCardsBoxes[i].getWidth(),givingCardsBoxes[i].getHeight());
+            }
+        }
+    }
+
+    private void drawButtonSkip(){
+        batch.draw(buttonSkip,
+            buttonSkipBox.getX(),buttonSkipBox.getY(),
+            buttonSkipBox.getWidth(),buttonSkipBox.getHeight());
     }
 
     @Override
