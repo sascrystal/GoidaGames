@@ -47,7 +47,7 @@ public class QuestionMarkScreen implements Screen {
         dialogBoxBounds = new Rectangle[3];
         float initialX = 0;
         float initialY = 50;
-        float height = viewport.getWorldHeight()/3;
+        float height = (float) (viewport.getWorldHeight()/4.5);
         float wight = viewport.getWorldWidth()/2-15;
         for (int i = 0; i<3;i++){
             float indexY = initialY+height*i;
@@ -70,12 +70,29 @@ public class QuestionMarkScreen implements Screen {
     }
 
     private void drawTextField() {
-        float x = viewport.getWorldWidth()/2;
+        float x = viewport.getWorldWidth() / 2;
         float y = 0;
-        float wight = viewport.getWorldWidth()/2 ;
+        float width = viewport.getWorldWidth() / 2;
         float height = viewport.getWorldHeight();
-        batch.draw(textField, x, y, wight, height);
-        font.draw(batch,dialogEvent.getEventDescription(),x+15,y+height);
+
+        // Отрисовка фона текстового поля
+        batch.draw(textField, x, y, width, height);
+
+        // Получение текста для отображения
+        String text = dialogEvent.getEventDescription();
+        if (text == null || text.isEmpty()) {
+            return; // Если текст пустой, ничего не рисуем
+        }
+
+        // Настройки шрифта
+        font.getData().setScale(1.82f); // Убедитесь, что масштаб шрифта установлен правильно
+
+        // Максимальная ширина текста (с учетом отступов)
+        float maxWidth = width - 30; // Отступы слева и справа
+        float startY = y + height - font.getLineHeight() - 60; // Начинаем отрисовку снизу вверх
+
+        // Используем метод draw с автоматическим переносом строк
+        font.draw(batch, text, x + 15, startY, maxWidth, 1, true);
     }
 
     private void drawDialogBox(){
@@ -84,7 +101,7 @@ public class QuestionMarkScreen implements Screen {
                 batch.draw(dialogBox,dialogBoxBounds[i].getX(),dialogBoxBounds[i].getY(),
                     dialogBoxBounds[i].getWidth(), dialogBoxBounds[i].getHeight());
                 font.draw(batch, dialogEvent.getDialogOptions()[i],
-                    dialogBoxBounds[i].getX(),dialogBoxBounds[i].getY());
+                    dialogBoxBounds[i].getX() + 110,dialogBoxBounds[i].getY() + 140);
             }
         }
     }
