@@ -111,8 +111,8 @@ class PhantomPain extends CardAttack{
 class Attack extends CardAttack {
     public Attack() {
 
-        name = "Атака";
-        description = "Тип: атака. Наносит 6 урона";
+        name = "Удар чайником";
+        description = "Тип: атака. Наносит 6 урона. Крепкий чай бодрит не только вас!";
 
         damage = 6;
         cost = 1;
@@ -125,6 +125,30 @@ class Attack extends CardAttack {
     public void cardAction(Enemy x, Player y, int index) {
         totalDamage = totalDamageCalculation(y);
         super.cardAction(x, y, index);
+    }
+}
+
+class SugarSplash extends CardAttack {
+    public SugarSplash() {
+        name = "Сахарный взрыв";
+        description = "Тип: атака. Наносит 5 урона и добавляет 1 слабость. Слишком сладко!";
+        damage = 5;
+        cost = 0;
+    }
+
+    @Override
+    public void cardAction(Enemy x, Player y, int index) {
+        super.cardAction(x, y, index);
+        x.giveBuff(new Weakness(1));
+    }
+}
+
+class TeapotToss extends CardAttack {
+    public TeapotToss() {
+        name = "Облить кипятком";
+        description = "Тип: атака. Наносит 9 урона. Горячо!";
+        damage = 9;
+        cost = 2;
     }
 }
 
@@ -275,8 +299,8 @@ class Defence extends DefenceCard {
             frames.findRegions("Eletric A-Sheet"),
             Animation.PlayMode.NORMAL);
 
-        name = "Защита";
-        description = "Тип: способность. Дает 6 брони";
+        name = "Ромашковый чай";
+        description = "Тип: способность. Дает 6 брони. Успокаивает...";
         shield = 6;
         cost = 1;
         texture = new Texture(Gdx.files.internal("cards/cardDefence.png"));
@@ -290,12 +314,43 @@ class Defence extends DefenceCard {
         super.cardAction(x,y,index);
     }
 }
+
+class CupDefense extends DefenceCard {
+    public CupDefense() {
+        name = "Бабушкин сервиз";
+        description = "Тип: способность. Дает 8 защиты. Хороший фарфор - хорошая защита!";
+        shield = 8;
+        cost = 1;
+    }
+
+    @Override
+    public  void cardAction(Enemy x, Player y,int index){
+        totalShield = shield+y.buffStack(new Reinforce());
+        super.cardAction(x,y,index);
+    }
+}
+
+class Inheritance extends DefenceCard {
+    public Inheritance() {
+        name = "Наследство";
+        description = "Тип: способность. Дает 5 защиты и 1 укрепление. Махорка перемешанная с чаем " +
+            "- по дедушкиному рецепту";
+        shield = 5;
+        cost = 1;
+    }
+
+    @Override
+    public void cardAction(Enemy x, Player y, int index) {
+        super.cardAction(x, y, index);
+        y.giveBuff(new Reinforce()); //????
+    }
+}
 class CookieOfPower extends NonTargetCard{
     int power;
     int damageSelf;
     public CookieOfPower() {
         name = "Печенька силы";
-        description = "Тип: способность. Дает 1 силу, наносит 2 урон ВАМ P.S что нас не убивает, делает нас сильнее";
+        description = "Тип: способность. Дает 1 силу, наносит 2 урон ВАМ. Что нас не убивает, делает нас сильнее";
         power = 1;
         damageSelf = 2;
         cost = 0;

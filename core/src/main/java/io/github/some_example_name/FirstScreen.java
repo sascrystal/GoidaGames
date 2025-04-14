@@ -1,63 +1,53 @@
 package io.github.some_example_name;
 
-import static io.github.some_example_name.GameScreen.viewport;
-
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public class FirstScreen implements Screen {
     private SpriteBatch batch;
+    private StretchViewport viewport;
     private final Texture BG_image;
     private Texture startButtonTexture;
     private Texture continueButtonTexture;
     private Rectangle startButtonBounds;
     private Rectangle continueButtonBounds;
     private BitmapFont font;
-    private float backgroundX1; // Первая позиция фона
-    private float backgroundX2; // Вторая позиция фона
+    private float backgroundX1;
+    private float backgroundX2;
     private Music backgroundMusic, backgroundNoiseMenu;
 
-    private float screenWidth;
-    private float screenHeight;
-
-    // Конструктор
     public FirstScreen() {
         BG_image = new Texture(Gdx.files.internal("menu/BG_1.png"));
         backgroundX1 = 0;
-        backgroundX2 = BG_image.getWidth(); // Начальная позиция второго фона
+        backgroundX2 = BG_image.getWidth();
     }
 
     @Override
     public void show() {
         batch = new SpriteBatch();
-        startButtonTexture = new Texture(Gdx.files.internal("menu/NG.png")); // Замените на ваш путь
-        continueButtonTexture = new Texture(Gdx.files.internal("menu/CT.png")); // Замените на ваш путь
+        viewport = new StretchViewport(1920, 1080);
+        viewport.getCamera().position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+        viewport.getCamera().update();
+        viewport.apply();
 
-        // Установка начальных размеров экрана
-        screenWidth = Gdx.graphics.getWidth();
-        screenHeight = Gdx.graphics.getHeight();
+        startButtonTexture = new Texture(Gdx.files.internal("menu/NG.png"));
+        continueButtonTexture = new Texture(Gdx.files.internal("menu/CT.png"));
 
-        // Установите размеры и позиции кнопок с учетом масштабирования
+        // Инициализация границ кнопок
         float buttonWidth = startButtonTexture.getWidth();
         float buttonHeight = startButtonTexture.getHeight();
+        startButtonBounds = new Rectangle(800, 250, buttonWidth - 35, buttonHeight - 35);
+        continueButtonBounds = new Rectangle(800, 1, buttonWidth - 35, buttonHeight - 35);
 
-        // Используем коэффициенты масштабирования
-        float scaleX = screenWidth / 1920f; // Предполагаемое разрешение 1920x1080
-        float scaleY = screenHeight / 1080f;
-
-        startButtonBounds = new Rectangle(800 * scaleX, 250 * scaleY, (buttonWidth - 35) * scaleX, (buttonHeight - 35) * scaleY);
-        continueButtonBounds = new Rectangle(800 * scaleX, 1 * scaleY, (buttonWidth - 35) * scaleX, (buttonHeight - 35) * scaleY);
-
-        font = new BitmapFont(); // Инициализация шрифта
-        GlyphLayout layout = new GlyphLayout();
-
+        font = new BitmapFont();
 
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/mainMenuMusic.mp3"));
         backgroundMusic.setLooping(true);
@@ -75,12 +65,10 @@ public class FirstScreen implements Screen {
         ScreenUtils.clear(0, 0, 0, 1);
 
         // Обновление позиций фона
-        // Скорость прокрутки
         float speed = 1f;
         backgroundX1 -= speed;
         backgroundX2 -= speed;
 
-        // Проверка, нужно ли сбросить позицию
         if (backgroundX1 <= -BG_image.getWidth()) {
             backgroundX1 = BG_image.getWidth();
         }
@@ -88,80 +76,57 @@ public class FirstScreen implements Screen {
             backgroundX2 = BG_image.getWidth();
         }
 
-        // Отрисовка фона
+        batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
-        batch.draw(BG_image, backgroundX1, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); // Рисуем первый фон
-        batch.draw(BG_image, backgroundX2, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); // Рисуем второй фон
-
-        // Отрисовка кнопок с учетом масштабирования
+        batch.draw(BG_image, backgroundX1, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        batch.draw(BG_image, backgroundX2, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
         batch.draw(startButtonTexture, startButtonBounds.x, startButtonBounds.y, startButtonBounds.width - 30, startButtonBounds.height - 30);
         batch.draw(continueButtonTexture, continueButtonBounds.x, continueButtonBounds.y, continueButtonBounds.width - 30, continueButtonBounds.height - 30);
-
         batch.end();
 
-        // Обработка нажатия на кнопки
-        if (Gdx.input.isTouched()) {
-            int screenX = Gdx.input.getX();
-            int screenY = Gdx.graphics.getHeight() - Gdx.input.getY(); // Коррекция координат
+        input();
+    }
 
-            if (startButtonBounds.contains(screenX, screenY)) {
+    private void input() {
+        if (Gdx.input.isTouched()) {
+            Vector2 touchPosition = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+            viewport.unproject(touchPosition);
+
+            if (startButtonBounds.contains(touchPosition.x, touchPosition.y)) {
                 System.out.println("Start button pressed!");
-                // Переход на экран игры
                 backgroundMusic.stop();
                 dispose();
-
-                //test
-
                 Player player = new CharacterKnight();
-                CellMap[][] map =  CellMap.generateAct1(player);
-
-
-
-                //test
-
-                MapScreen act1  = new MapScreen(player, map);
+                CellMap[][] map = CellMap.generateAct1(player);
+                MapScreen act1 = new MapScreen(player, map);
                 ((Main) Gdx.app.getApplicationListener()).setScreen(act1);
-            } else if (continueButtonBounds.contains(screenX, screenY)) {
+            } else if (continueButtonBounds.contains(touchPosition.x, touchPosition.y)) {
                 System.out.println("Continue button pressed!");
                 backgroundMusic.stop();
                 dispose();
-                Player gay = new CharacterKnight();
+                Player player = new CharacterKnight();
                 // Логика продолжения игры (если требуется)
-                backgroundMusic.stop();
-                dispose();
+                DialogueScreen dialogueScreen = new DialogueScreen();
+                ((Main) Gdx.app.getApplicationListener()).setScreen(dialogueScreen);
             }
         }
     }
 
     @Override
     public void resize(int width, int height) {
-        // Обновляем размеры экрана и пересчитываем позиции кнопок
-        screenWidth = width;
-        screenHeight = height;
-
-        float scaleX = screenWidth / 1920f; // Предполагаемое разрешение 1920x1080
-        float scaleY = screenHeight / 1080f;
-
-        startButtonBounds.setPosition(800 * scaleX, 300 * scaleY);
-        continueButtonBounds.setPosition(800 * scaleX, 70 * scaleY);
-        startButtonBounds.setSize(startButtonTexture.getWidth() * scaleX, startButtonTexture.getHeight() * scaleY);
-        continueButtonBounds.setSize(continueButtonTexture.getWidth() * scaleX, continueButtonTexture.getHeight() * scaleY);
+        viewport.update(width, height);
     }
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
-
     }
 
     @Override
@@ -171,16 +136,13 @@ public class FirstScreen implements Screen {
         startButtonTexture.dispose();
         continueButtonTexture.dispose();
         font.dispose();
-
-        // Освобождение ресурсов фоновой музыки
         if (backgroundMusic != null) {
-            backgroundMusic.stop(); // Останавливаем музыку
-            backgroundMusic.dispose(); // Освобождаем ресурсы
+            backgroundMusic.stop();
+            backgroundMusic.dispose();
         }
-
         if (backgroundNoiseMenu != null) {
-            backgroundNoiseMenu.stop(); // Останавливаем музыку
-            backgroundNoiseMenu.dispose(); // Освобождаем ресурсы
+            backgroundNoiseMenu.stop();
+            backgroundNoiseMenu.dispose();
         }
     }
 }
