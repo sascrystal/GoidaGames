@@ -16,10 +16,11 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class DialogueScreen implements Screen {
-    private final SpriteBatch batch;
-    private final Stage stage;
-    private final BitmapFont font;
-    private final Texture whitePixel;
+    private SpriteBatch batch;
+    private Stage stage;
+    private BitmapFont font;
+    private Texture whitePixel;
+    private GlyphLayout layout;
 
     private String fullText;
     private String currentText;
@@ -32,50 +33,67 @@ public class DialogueScreen implements Screen {
     private int currentPageStart;
     private int currentPageEnd;
 
-    // Настройки диалогового окна
-    private final Color backgroundColor = new Color(0f, 0f, 0f, 0.7f);
-    private float padding = 20f;
-    private float textBoxHeight = 200f; // Высота окна
-    private float textBoxY = 50f; // Позиция по Y снизу экрана
+    // Конфигурация
+    private static final Color BACKGROUND_COLOR = new Color(0f, 0f, 0f, 0.7f);
+    private static final float PADDING = 20f;
+    private static final float TEXT_BOX_HEIGHT = 200f;
+    private static final float TEXT_BOX_Y = 50f;
+    private static final float FONT_SCALE = 1.6f;
 
-
-
-    // Тестовый длинный текст
-    private static final String TEST_TEXT =
-        "DDDD EGGS LLSLLSLSLLSLSL Это тестовый диалог для демонстрации работы системы. " +
-            "Здесь будет достаточно много текста, чтобы он не поместился на один экран. " +
-            "Мы должны реализовать механизм, который позволит разбивать текст на части " +
-            "и отображать их последовательно при каждом нажатии. " +
-            "Также текст должен появляться постепенно, символ за символом, " +
-            "создавая эффект печати. Если игрок торопится, он может пропустить анимацию " +
-            "и сразу увидеть весь текст текущей части. " +
-            "Продолжаем наш длинный текст. Вот еще несколько предложений, чтобы " +
-            "убедиться, что все работает правильно. " +
-            "Последнее предложение тестового диалога.";
+    private static final String TEST_TEXT = "DDDD EGGS LLSLLSLSLLSLSL Это тестовый диалог для демонстрации работы системы. " +
+        "Здесь будет достаточно много текста, чтобы он не поместился на один экран. " +
+        "Мы должны реализовать механизм, который позволит разбивать текст на части " +
+        "и отображать их последовательно при каждом нажатии. " +
+        "Также текст должен появляться постепенно, символ за символом, " +
+        "создавая эффект печати. Если игрок торопится, он может пропустить анимацию " +
+        "и сразу увидеть весь текст текущей части. " +
+        "Продолжаем наш длинный текст. Вот еще несколько предложений, чтобы " +
+        "убедиться, что все работает правильно. " +
+        "Последнее предложение тестового диалога.";
 
     public DialogueScreen() {
+        // Конструктор пустой, инициализация перенесена в show()
+    }
+
+    @Override
+    public void show() {
+        initializeResources();
+        setupInput();
+        setupDialogue(TEST_TEXT);
+    }
+
+    private void initializeResources() {
         batch = new SpriteBatch();
         stage = new Stage(new ScreenViewport());
-        font = new BitmapFont(Gdx.files.internal("fonts/font.fnt"),
-            Gdx.files.internal("fonts/font.png"), false);
-        font.getData().setScale(1.6f); // Увеличим шрифт для лучшей читаемости на мобильных
+        layout = new GlyphLayout();
 
-        // Создаём белую текстуру один раз при создании экрана
+        font = new BitmapFont(
+            Gdx.files.internal("fonts/font.fnt"),
+            Gdx.files.internal("fonts/font.png"),
+            false
+        );
+        font.getData().setScale(FONT_SCALE);
+
+        whitePixel = createWhitePixelTexture();
+    }
+
+    private Texture createWhitePixelTexture() {
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.WHITE);
         pixmap.fill();
-        whitePixel = new Texture(pixmap);
+        Texture texture = new Texture(pixmap);
         pixmap.dispose();
+        return texture;
+    }
 
-        setupDialogue(TEST_TEXT);
-
-        // Обработка нажатий
+    private void setupInput() {
         stage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 handleTap();
             }
         });
+        Gdx.input.setInputProcessor(stage);
     }
 
     private void setupDialogue(String text) {
@@ -87,38 +105,29 @@ public class DialogueScreen implements Screen {
         hasMoreText = true;
         currentPageStart = 0;
         currentPageEnd = 0;
-
-        // Находим, где закончится текущая страница текста
         findNextPageBreak();
     }
 
     private void findNextPageBreak() {
-        GlyphLayout layout = new GlyphLayout();
-        float maxWidth = Gdx.graphics.getWidth() - 2 * padding;
-        float maxHeight = textBoxHeight - 2 * padding;
+        if (fullText == null) return;
+
+        float maxWidth = Gdx.graphics.getWidth() - 2 * PADDING;
+        float maxHeight = TEXT_BOX_HEIGHT - 2 * PADDING;
 
         int start = currentPageStart;
         int end = fullText.length();
-        int lastSpace = -1; // Позиция последнего пробела
+        int lastSpace = -1;
 
-        // Сначала пробуем найти разрыв по словам
         for (int i = start; i <= fullText.length(); i++) {
             if (i < fullText.length() && Character.isWhitespace(fullText.charAt(i))) {
                 lastSpace = i;
             }
-
+//
             String testText = fullText.substring(start, i);
             layout.setText(font, testText, Color.WHITE, maxWidth, Align.left, true);
 
-            // Если текст превышает допустимую высоту
             if (layout.height > maxHeight) {
-                if (lastSpace > start) {
-                    // Если нашли пробел - разрываем по нему
-                    end = lastSpace;
-                } else {
-                    // Если пробелов нет - разрываем посимвольно
-                    end = i - 1;
-                }
+                end = (lastSpace > start) ? lastSpace : i - 1;
                 break;
             }
         }
@@ -127,56 +136,42 @@ public class DialogueScreen implements Screen {
         currentPageEnd = end;
     }
 
-
-
     private void handleTap() {
-        // Если текст еще анимируется, показать его весь
         if (isAnimating) {
-            currentText = fullText.substring(currentPageStart, currentPageEnd);
-            textProgress = currentText.length();
-            isAnimating = false;
+            completeCurrentAnimation();
             return;
         }
 
-        // Если есть еще текст, перейти к следующей части
         if (hasMoreText) {
-            currentPageStart = currentPageEnd;
-            findNextPageBreak();
-            currentText = "";
-            textProgress = 0;
-            isAnimating = true;
+            advanceToNextPage();
         } else {
-            // Диалог закончен, можно закрыть экран
-            // Здесь можно добавить закрытие экрана или переход к следующему действию
+            // TODO: Добавить логику завершения диалога
         }
     }
 
-    @Override
-    public void show() {
-        Gdx.input.setInputProcessor(stage);
+    private void completeCurrentAnimation() {
+        currentText = fullText.substring(currentPageStart, currentPageEnd);
+        textProgress = currentText.length();
+        isAnimating = false;
+    }
+
+    private void advanceToNextPage() {
+        currentPageStart = currentPageEnd;
+        findNextPageBreak();
+        currentText = "";
+        textProgress = 0;
+        isAnimating = true;
     }
 
     @Override
     public void render(float delta) {
-        // Обновление анимации текста
+        update(delta);
+        draw();
+    }
+
+    private void update(float delta) {
         updateTextAnimation(delta);
-
-        // Очистка экрана
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        batch.begin();
-
-        // Рисуем фон диалога
-        drawDialogueBackground();
-
-        // Рисуем текущий текст
-        drawDialogueText();
-
-        batch.end();
-
         stage.act(delta);
-        stage.draw();
     }
 
     private void updateTextAnimation(float delta) {
@@ -196,50 +191,47 @@ public class DialogueScreen implements Screen {
         }
     }
 
-    private void drawDialogueBackground() {
-        float x = 0;
-        float y = textBoxY; // Используем настроенную позицию
-        float width = Gdx.graphics.getWidth();
-        float height = textBoxHeight; // Используем настроенную высоту
+    private void draw() {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        batch.setColor(backgroundColor);
-        batch.draw(whitePixel, x, y, width, height);
+        batch.begin();
+        drawDialogueBackground();
+        drawDialogueText();
+        batch.end();
+
+        stage.draw();
+    }
+
+    private void drawDialogueBackground() {
+        batch.setColor(BACKGROUND_COLOR);
+        batch.draw(whitePixel, 0, TEXT_BOX_Y, Gdx.graphics.getWidth(), TEXT_BOX_HEIGHT);
         batch.setColor(Color.WHITE);
     }
 
-
     private void drawDialogueText() {
-        float x = padding;
-        float y = textBoxY + textBoxHeight - padding;
-        float width = Gdx.graphics.getWidth() - 2 * padding;
+        if (currentText == null || font == null) return;
 
-        // Временно уменьшаем размер шрифта для проверки
+        float x = PADDING;
+        float y = TEXT_BOX_Y + TEXT_BOX_HEIGHT - PADDING;
+        float width = Gdx.graphics.getWidth() - 2 * PADDING;
+
         float originalScale = font.getData().scaleX;
-        font.getData().setScale(1.6f);
+        layout.setText(font, currentText, Color.WHITE, width, Align.left, true);
 
-        GlyphLayout layout = new GlyphLayout(font, currentText, Color.WHITE, width, Align.left, true);
-
-        // Если текст не помещается даже с уменьшенным шрифтом
-        while (layout.height > textBoxHeight - 2*padding && font.getData().scaleX > 0.5f) {
+        while (layout.height > TEXT_BOX_HEIGHT - 2 * PADDING && font.getData().scaleX > 0.5f) {
             font.getData().setScale(font.getData().scaleX * 0.9f);
             layout.setText(font, currentText, Color.WHITE, width, Align.left, true);
         }
 
-        // Восстанавливаем оригинальный размер шрифта
+        font.draw(batch, layout, x, y);
         font.getData().setScale(originalScale);
-
-        // Рисуем текст
-        font.draw(batch, layout, x, y + layout.height); // Корректируем позицию по Y
     }
-
 
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
-        // При изменении размера экрана пересчитываем разбиение текста
-        if (fullText != null) {
-            findNextPageBreak();
-        }
+        findNextPageBreak();
     }
 
     @Override
@@ -249,13 +241,16 @@ public class DialogueScreen implements Screen {
     public void resume() {}
 
     @Override
-    public void hide() {}
+    public void hide() {
+        Gdx.input.setInputProcessor(null);
+    }
 
     @Override
     public void dispose() {
-        batch.dispose();
-        stage.dispose();
-        font.dispose();
-        whitePixel.dispose(); // Освобождаем текстуру
+        if (batch != null) batch.dispose();
+        if (stage != null) stage.dispose();
+        if (font != null) font.dispose();
+        if (whitePixel != null) whitePixel.dispose();
+        if (layout != null) layout.reset();
     }
 }
