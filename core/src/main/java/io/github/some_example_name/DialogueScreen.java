@@ -122,7 +122,7 @@ public class DialogueScreen implements Screen {
             if (i < fullText.length() && Character.isWhitespace(fullText.charAt(i))) {
                 lastSpace = i;
             }
-
+//
             String testText = fullText.substring(start, i);
             layout.setText(font, testText, Color.WHITE, maxWidth, Align.left, true);
 
