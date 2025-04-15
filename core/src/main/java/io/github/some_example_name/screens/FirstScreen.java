@@ -80,7 +80,7 @@ public class FirstScreen implements Screen {
                 backgroundMusic.stop();
                 dispose();
                 Player player = new CharacterKnight();
-                DialogueScreen dialogueScreen = new DialogueScreen();
+                DialogueScreen dialogueScreen = new DialogueScreen("intro");
                 ((Main) Gdx.app.getApplicationListener()).setScreen(dialogueScreen);
             }
         });
