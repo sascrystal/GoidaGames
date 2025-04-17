@@ -29,7 +29,6 @@ public class DialogueScreen implements Screen {
     private BitmapFont font;
     private Texture whitePixel;
     private GlyphLayout layout;
-
     private Array<String> dialoguePages;
     private Array<String> backgroundPaths; // Список путей к фонам
     private Array<String> musicPaths; // Список путей к музыке
@@ -55,14 +54,17 @@ public class DialogueScreen implements Screen {
     private static final float TEXT_BOX_HEIGHT = 200f;
     private static final float TEXT_BOX_Y = 50f;
     private static final float FONT_SCALE = 1.6f;
+    private Screen nextScreen;
 
     private final String dialogueId;
 
-    public DialogueScreen(String dialogueId) {
+    public DialogueScreen(String dialogueId, Screen nextScreen) {
         this.dialogueId = dialogueId;
         this.backgroundPaths = new Array<>();
         this.musicPaths = new Array<>(); // Инициализация массива для музыки
+        this.nextScreen = nextScreen;
     }
+
 
     @Override
     public void show() {
@@ -209,13 +211,20 @@ public class DialogueScreen implements Screen {
             completeCurrentAnimation();
             return;
         }
-
-        if (hasMoreText) {
-            advanceToNextPage();
-        } else {
-            // TODO Смена экрана
-
+        advanceToNextPage();
+        if (!hasMoreText) {
+            setNextScreen();
         }
+
+
+
+    }
+
+    private void setNextScreen(){
+        nextScreen.show();
+        dispose();
+        ((Main)Gdx.app.getApplicationListener()).setScreen(nextScreen);
+
     }
 
     private void completeCurrentAnimation() {
