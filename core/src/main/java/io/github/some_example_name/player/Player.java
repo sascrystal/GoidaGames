@@ -292,6 +292,13 @@ public abstract class   Player {
     public void setCellY(int cellY) {
         this.cellY = cellY;
     }
+    public float getPercentageOfHealthPoints(){
+        return (float) health /maxHealth;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
 }
 
 

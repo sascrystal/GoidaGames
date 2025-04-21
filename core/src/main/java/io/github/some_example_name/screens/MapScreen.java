@@ -3,6 +3,7 @@ package io.github.some_example_name.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -20,8 +21,9 @@ public class MapScreen implements Screen {
     private final CellMap[][] map;
     private Rectangle upButtonRectangle,downButtonRectangle,leftButtonRectangle,rightButtonRectangle;
     private Texture upButtonTexture,downButtonTexture,leftButtonTexture, rightButtonTexture;
+    private Texture heathBarTexture, healthLineTexture;
+    private BitmapFont font;
     private  float elapsedTime = 0;
-
     private boolean wasTouched = false;
 
     public MapScreen(Player player, CellMap[][] map) {
@@ -35,8 +37,9 @@ public class MapScreen implements Screen {
         batch = new SpriteBatch();
         viewportConfiguration();
         showButtons();
+        showHeathPointBar();
+        showFont();
     }
-
     private void viewportConfiguration(){
         viewport = new StretchViewport(2400, 1080);
         viewport.getCamera().position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
@@ -56,8 +59,23 @@ public class MapScreen implements Screen {
         upButtonRectangle = new Rectangle(rightButtonRectangle.getX()-200,200, 200,200);
     }
 
+    private void showHeathPointBar(){
+        heathBarTexture = new Texture(Gdx.files.internal("HUD/health_bar_map.png"));
+        healthLineTexture = new Texture(Gdx.files.internal("HUD/health_lane_map.png"));
+    }
+    private void showFont(){
+        font = new BitmapFont(Gdx.files.internal("fonts/font.fnt"), Gdx.files.internal("fonts/font.png"), false);
+        font.getData().setScale(1f);
+    }
+
     @Override
     public void render(float delta) {
+        draw(delta);
+        logic();
+        input();
+    }
+
+    private void draw(float delta){
         batch.setProjectionMatrix(viewport.getCamera().combined);
         ScreenUtils.clear(0, 0, 0, 1);
         elapsedTime += delta;
@@ -65,13 +83,9 @@ public class MapScreen implements Screen {
         mapDraw(elapsedTime);
         playerDraw();
         buttonsDraw();
+        healthBarDraw();
         batch.end();
-        cellAction();
-        buttonsInput();
-
-
     }
-
     private  void mapDraw(float elapsedTime){
         for (CellMap[] cellMaps : map) {
             for (CellMap cellMap : cellMaps) {
@@ -81,7 +95,6 @@ public class MapScreen implements Screen {
             }
         }
     }
-
     private void playerDraw(){
         player.drawMap(batch,map[player.getCellY()][player.getCellX()].getBounds());
     }
@@ -91,35 +104,38 @@ public class MapScreen implements Screen {
         batch.draw(downButtonTexture, downButtonRectangle.getX(),downButtonRectangle.getY());
         batch.draw(leftButtonTexture, leftButtonRectangle.getX(),leftButtonRectangle.getY());
         batch.draw(rightButtonTexture,rightButtonRectangle.getX(),rightButtonRectangle.getY());
+    }
+    private void healthBarDraw(){
+        float width = 800;
+        float height =width/((float) heathBarTexture.getWidth() /heathBarTexture.getHeight());
 
+        batch.draw(heathBarTexture,viewport.getWorldWidth()-width-100,
+            viewport.getWorldHeight()- height, width,height);
+
+        float widthLine = width*((float) healthLineTexture.getWidth() /heathBarTexture.getWidth());
+        float heightLine = widthLine/((float) healthLineTexture.getWidth() /healthLineTexture.getHeight());
+        float widthLineWithPercentage = widthLine*player.getPercentageOfHealthPoints(); // TODO: упросить эту парашу (как? сделать нормальный спрайт блять)
+
+        batch.draw(healthLineTexture,
+            viewport.getWorldWidth()-widthLineWithPercentage-116,
+            viewport.getWorldHeight()-heightLine-15,
+            widthLineWithPercentage,heightLine);
+        font.draw(batch,
+            player.getHealth()+"/"+player.getMaxHealth(),
+            viewport.getWorldWidth()-widthLine/2-120,
+            viewport.getWorldHeight()- heightLine/2 -5);
     }
 
-    @Override
-    public void resize(int width, int height) {
-        viewport.update(width,height);
-
+    private void logic(){
+        cellAction();
     }
-
-    @Override
-    public void pause() {
-
-
+    private void cellAction(){
+        if(map[player.getCellY()][player.getCellX()].isPlayerIn() && map[player.getCellY()][player.getCellX()].isAvailable()){
+            map[player.getCellY()][player.getCellX()].action(this);
+        }
     }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
-    public void dispose() {
-
-
+    private void input(){
+        buttonsInput();
     }
     private void buttonsInput(){
         if(Gdx.input.isTouched()&& !wasTouched){
@@ -175,7 +191,6 @@ public class MapScreen implements Screen {
                 }
         }
     }
-
     private boolean moveIsPossible (int x, int y){
         if(x>=map.length || x<0){
             return false;
@@ -185,12 +200,26 @@ public class MapScreen implements Screen {
         return null != map[x][y];
     }
 
-    private void cellAction(){
-        if(map[player.getCellY()][player.getCellX()].isPlayerIn() && map[player.getCellY()][player.getCellX()].isAvailable()){
-            map[player.getCellY()][player.getCellX()].action(this);
-        }
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width,height);
     }
 
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
+    }
+
+    @Override
+    public void hide() {
+    }
+
+    @Override
+    public void dispose() {
+    }
 
     public Player getPlayer() {
         return player;
