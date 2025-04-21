@@ -23,8 +23,8 @@ public class MapScreen implements Screen {
     private Texture upButtonTexture,downButtonTexture,leftButtonTexture, rightButtonTexture;
     private Texture heathBarTexture, healthLineTexture;
     private BitmapFont font;
-    private  float elapsedTime = 0;
-    private boolean wasTouched = false;
+    private  float elapsedTime;
+    private boolean wasTouched;
 
     public MapScreen(Player player, CellMap[][] map) {
         this.player = player;
@@ -35,6 +35,8 @@ public class MapScreen implements Screen {
     @Override
     public void show() {
         batch = new SpriteBatch();
+        elapsedTime = 0;
+        wasTouched = false;
         viewportConfiguration();
         showButtons();
         showHeathPointBar();
