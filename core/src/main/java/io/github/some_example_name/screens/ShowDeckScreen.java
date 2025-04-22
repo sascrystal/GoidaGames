@@ -24,7 +24,7 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
     private Rectangle buttonBackRectangle;
     private StretchViewport viewport;
     private SpriteBatch batch;
-    private BitmapFont font;
+    private BitmapFont font; //TODO: сделать описаний карт + ману
     private float maxX, minX;
 
 
