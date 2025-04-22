@@ -73,13 +73,13 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
     @Override
     public void render(float delta) {
         updateCamera();
-        draw(delta);
+        draw();
     }
     private void updateCamera(){
         viewport.getCamera().update();
         batch.setProjectionMatrix(viewport.getCamera().combined);
     }
-    private void draw(float delta){
+    private void draw(){
         ScreenUtils.clear(0, 0, 0, 1);
         batch.begin();
         deckDraw();
