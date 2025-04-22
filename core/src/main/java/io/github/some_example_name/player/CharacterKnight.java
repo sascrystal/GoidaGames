@@ -14,6 +14,22 @@ public class CharacterKnight extends Player {
         deck.add(new Attack());
         deck.add(new Attack());
         deck.add(new Attack());
+        deck.add(new Attack());
+        deck.add(new Attack());
+        deck.add(new Attack());
+        deck.add(new Attack());
+        deck.add(new Attack());
+        deck.add(new Attack());
+        deck.add(new Attack());
+        deck.add(new Attack());
+        deck.add(new Attack());
+        deck.add(new Attack());
+        deck.add(new Attack());
+        deck.add(new Attack());
+        deck.add(new Attack());
+        deck.add(new Attack());
+        deck.add(new Attack());
+        deck.add(new Attack());
 
 
         maxHealth = 60;
