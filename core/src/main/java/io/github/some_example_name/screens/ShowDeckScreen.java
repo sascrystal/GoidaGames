@@ -8,18 +8,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 import java.util.List;
 
 import io.github.some_example_name.Main;
 import io.github.some_example_name.cards.PlayingCard;
-import io.github.some_example_name.player.Player;
 
 public class ShowDeckScreen implements Screen {
-    private List<PlayingCard> deck;
-    private Screen nextScreen;
+    private final List<PlayingCard> deck;
+    private final Screen nextScreen;
     private Texture buttonBackTexture;
     private Rectangle buttonBackRectangle;
     private StretchViewport viewport;
@@ -42,7 +40,6 @@ public class ShowDeckScreen implements Screen {
 
     }
     private void viewportConfiguration(){
-        int indent = 20;
         viewport = new StretchViewport(2080, deck.get(0).getTexture().getHeight());
         viewport.getCamera().position.set(viewport.getWorldWidth()/2,viewport.getWorldHeight()/2, 0);
         viewport.getCamera().update();
@@ -80,9 +77,9 @@ public class ShowDeckScreen implements Screen {
         float beginPositionRowX = 0;
         float beginPositionRowY = 0;
         float width = viewport.getWorldHeight()*((float) deck.get(0).getTexture().getHeight() /deck.get(0).getTexture().getWidth());
-        float height;
         for (int i = 0; i<deck.size(); i++){
-            batch.draw(deck.get(i).getTexture(), beginPositionRowX +(indent+width)*i,beginPositionRowY,width,viewport.getWorldHeight());
+            deck.get(i).draw(batch,beginPositionRowX +(indent+width)*i,beginPositionRowY,
+                width,viewport.getWorldHeight());
         }
     }
     private void input(){

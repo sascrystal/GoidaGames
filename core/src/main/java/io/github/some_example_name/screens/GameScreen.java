@@ -220,7 +220,7 @@ public class GameScreen implements Screen {
         batch.draw(endTurnButtonTexture, endTurnButtonBounds.x, endTurnButtonBounds.y);
 
         if(!animationCardQueue.isEmpty()){
-            animationCardQueue.get(0).draw(cardAnimationTime, batch, enemies[animationCardQueueIndex.get(0)]);
+            animationCardQueue.get(0).drawAnimation(cardAnimationTime, batch, enemies[animationCardQueueIndex.get(0)]);
         }
 
         handleInput();
