@@ -52,6 +52,12 @@ public abstract class   Player {
         return manaPool;
     }
 
+
+
+    public List<PlayingCard> getDeck() {
+        return deck;
+    }
+
     public PlayingCard[] getHand() {
         return hand;
     }

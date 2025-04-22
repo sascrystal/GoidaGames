@@ -25,6 +25,7 @@ public class QuestionMarkScreen implements Screen {
     private final CellMap[][] map;
     private final Player player;
 
+
     public QuestionMarkScreen(MapScreen map, DialogEvent dialogEvent) {
         this.player = map.getPlayer();
         this.map = map.getMap();
@@ -96,7 +97,7 @@ public class QuestionMarkScreen implements Screen {
 
         // Максимальная ширина текста (с учетом отступов)
         float maxWidth = width - 30; // Отступы слева и справа
-        float startY = y + height - font.getLineHeight() - 60; // Начинаем отрисовку снизу вверх
+        float startY = y + height - font.getLineHeight() - 60; // Начинаем рисовку снизу вверх
 
         // Используем метод draw с автоматическим переносом строк
         font.draw(batch, text, x + 15, startY, maxWidth, 1, true);

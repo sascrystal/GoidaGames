@@ -244,7 +244,7 @@ public class GameScreen implements Screen {
 
 
             // Проверка нажатия на кнопку завершения хода
-            // Сбрасываем флаг, если не нажатие на кнопку
+            // сбрасываем флаг, если не нажатие на кнопку
             endTurnButtonPressed = endTurnButtonBounds.contains(touchX, touchY) && playerTurn; // Устанавливаем флаг нажатия
 
 
@@ -348,7 +348,7 @@ public class GameScreen implements Screen {
         player.beginTurn(); // Обновляем карты в руке игрока
 
         // Обновляем видимость карт
-        // Делаем все карты видимыми (или можете настроить по вашему усмотрению)
+        // делаем все карты видимыми (или можете настроить по вашему усмотрению)
         Arrays.fill(isCardVisible, true);
     }
 
