@@ -6,10 +6,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
+import io.github.some_example_name.Main;
 import io.github.some_example_name.cell_map_classes.cell_maps.CellMap;
 import io.github.some_example_name.player.Player;
 
@@ -22,6 +24,8 @@ public class MapScreen implements Screen {
     private Rectangle upButtonRectangle,downButtonRectangle,leftButtonRectangle,rightButtonRectangle;
     private Texture upButtonTexture,downButtonTexture,leftButtonTexture, rightButtonTexture;
     private Texture heathBarTexture, healthLineTexture;
+    private Rectangle deckButtonDemonstrationRectangle;
+    private Texture deckButtonDemonstrationTexture;
     private BitmapFont font;
     private  float elapsedTime;
     private boolean wasTouched;
@@ -40,6 +44,7 @@ public class MapScreen implements Screen {
         viewportConfiguration();
         showButtons();
         showHeathPointBar();
+        showDeckDemonstrationButton();
         showFont();
     }
     private void viewportConfiguration(){
@@ -65,6 +70,11 @@ public class MapScreen implements Screen {
         heathBarTexture = new Texture(Gdx.files.internal("HUD/health_bar_map.png"));
         healthLineTexture = new Texture(Gdx.files.internal("HUD/health_lane_map.png"));
     }
+    private void showDeckDemonstrationButton(){
+        deckButtonDemonstrationRectangle = new Rectangle(viewport.getWorldWidth()-200, viewport.getWorldHeight() -600,
+            100, 100);
+        deckButtonDemonstrationTexture = new Texture(Gdx.files.internal("cards/cardDefence.png"));
+    }
     private void showFont(){
         font = new BitmapFont(Gdx.files.internal("fonts/font.fnt"), Gdx.files.internal("fonts/font.png"), false);
         font.getData().setScale(1f);
@@ -83,6 +93,7 @@ public class MapScreen implements Screen {
         elapsedTime += delta;
         batch.begin();
         mapDraw(elapsedTime);
+        deckButtonDemonstrationDraw();
         playerDraw();
         buttonsDraw();
         healthBarDraw();
@@ -96,6 +107,11 @@ public class MapScreen implements Screen {
                 }
             }
         }
+    }
+    private void deckButtonDemonstrationDraw(){
+        batch.draw(deckButtonDemonstrationTexture,
+            deckButtonDemonstrationRectangle.x,deckButtonDemonstrationRectangle.y,
+            deckButtonDemonstrationRectangle.getWidth(),deckButtonDemonstrationRectangle.getHeight());
     }
     private void playerDraw(){
         player.drawMap(batch,map[player.getCellY()][player.getCellX()].getBounds());
@@ -116,7 +132,7 @@ public class MapScreen implements Screen {
 
         float widthLine = width*((float) healthLineTexture.getWidth() /heathBarTexture.getWidth());
         float heightLine = widthLine/((float) healthLineTexture.getWidth() /healthLineTexture.getHeight());
-        float widthLineWithPercentage = widthLine*player.getPercentageOfHealthPoints(); // TODO: упросить эту парашу (как? сделать нормальный спрайт блять)
+        float widthLineWithPercentage = widthLine*player.getPercentageOfHealthPoints(); // TODO: изменить эту парашу (как? сделать нормальный спрайт)
 
         batch.draw(healthLineTexture,
             viewport.getWorldWidth()-widthLineWithPercentage-116,
@@ -137,13 +153,18 @@ public class MapScreen implements Screen {
         }
     }
     private void input(){
-        buttonsInput();
-    }
-    private void buttonsInput(){
-        if(Gdx.input.isTouched()&& !wasTouched){
+        if(Gdx.input.isTouched()){
             Vector2 touchPosition = new Vector2(Gdx.input.getX(), Gdx.input.getY());
             viewport.unproject(touchPosition);
+            moveButtonsInput(touchPosition);
 
+            deckButtonDemonstrationInput(touchPosition);
+        }
+
+
+    }
+    private void moveButtonsInput(Vector2 touchPosition){
+        if(!wasTouched){
             if(rightButtonRectangle.contains(touchPosition.x, touchPosition.y)){
                 movePlayer("right");
             }
@@ -160,6 +181,13 @@ public class MapScreen implements Screen {
             }
         }
         wasTouched = Gdx.input.isTouched();
+    }
+    private void deckButtonDemonstrationInput(Vector2 touchPosition){
+        if(deckButtonDemonstrationRectangle.contains(touchPosition)){
+            ((Main) Gdx.app.getApplicationListener()).setScreen(new ShowDeckScreen(player.getDeck(),
+                this));
+        }
+
     }
 
     private void  movePlayer(String direction){

@@ -220,7 +220,7 @@ public class GameScreen implements Screen {
         batch.draw(endTurnButtonTexture, endTurnButtonBounds.x, endTurnButtonBounds.y);
 
         if(!animationCardQueue.isEmpty()){
-            animationCardQueue.get(0).draw(cardAnimationTime, batch, enemies[animationCardQueueIndex.get(0)]);
+            animationCardQueue.get(0).drawAnimation(cardAnimationTime, batch, enemies[animationCardQueueIndex.get(0)]);
         }
 
         handleInput();
@@ -244,7 +244,7 @@ public class GameScreen implements Screen {
 
 
             // Проверка нажатия на кнопку завершения хода
-            // Сбрасываем флаг, если не нажатие на кнопку
+            // сбрасываем флаг, если не нажатие на кнопку
             endTurnButtonPressed = endTurnButtonBounds.contains(touchX, touchY) && playerTurn; // Устанавливаем флаг нажатия
 
 
@@ -348,7 +348,7 @@ public class GameScreen implements Screen {
         player.beginTurn(); // Обновляем карты в руке игрока
 
         // Обновляем видимость карт
-        // Делаем все карты видимыми (или можете настроить по вашему усмотрению)
+        // делаем все карты видимыми (или можете настроить по вашему усмотрению)
         Arrays.fill(isCardVisible, true);
     }
 

@@ -5,6 +5,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -30,16 +31,18 @@ public abstract class PlayingCard {
 
     }
 
-    public void draw(float time, Batch batch,Enemy enemy){
+    public void drawAnimation(float time, Batch batch,Enemy enemy){
         TextureRegion currentFrame = effect.getKeyFrame(time, false);
         batch.draw(currentFrame, enemy.getBounds().x,enemy.getBounds().y,
             enemy.getBounds().width, enemy.getBounds().height);
     }
 
-
-    //cardAnimation - метод, который делает анимацию для карт. Он должен быть абстрактны.
-    //Но пока он для всех одинаков.
-
+    public void draw(SpriteBatch batch, float x, float y, float width, float height){
+        batch.draw(texture, x,y,width,height);
+    }
+    public void  draw(SpriteBatch batch, float x, float y){
+        batch.draw(texture, x,y);
+    }
 
     public String getName() {
         return name;
