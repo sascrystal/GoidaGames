@@ -158,6 +158,9 @@ public class MapScreen implements Screen {
 
                 deckButtonDemonstrationInput(touchPosition);
             }
+            else {
+                wasTouched = false;
+            }
 
 
         }
@@ -177,8 +180,9 @@ public class MapScreen implements Screen {
                 if (downButtonRectangle.contains(touchPosition.x, touchPosition.y)){
                     movePlayer("down");
                 }
+                wasTouched = Gdx.input.isTouched();
             }
-            wasTouched = Gdx.input.isTouched();
+
         }
         private void deckButtonDemonstrationInput(Vector2 touchPosition){
             if(deckButtonDemonstrationRectangle.contains(touchPosition)){
