@@ -87,6 +87,8 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
         batch.end();
     }
     private void buttonBackDraw(){
+        buttonBackRectangle.x = viewport.getCamera().position.x+ viewport.getWorldWidth()/2 - 100;
+        buttonBackRectangle.y = viewport.getCamera().position.y+ viewport.getWorldHeight()/2 - 50;
         batch.draw(buttonBackTexture,buttonBackRectangle.x,buttonBackRectangle.y,
             buttonBackRectangle.width,buttonBackRectangle.height);
     }
@@ -100,11 +102,7 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
                 width,viewport.getWorldHeight());
         }
     }
-    private void  buttonBackInput(Vector2 touchPosition){
-        if(buttonBackRectangle.contains(touchPosition)){
-            ((Main) Gdx.app.getApplicationListener()).setScreen(nextScreen);
-        }
-    }
+
 
     @Override
     public void resize(int width, int height) {
@@ -134,12 +132,15 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
 
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
-        Vector2 touchPosition = new Vector2(x,y);
+        Vector2 touchPosition = new Vector2(x, y);
         viewport.unproject(touchPosition);
+        buttonBackInput(touchPosition);
+        return true;
+    }
+    private void  buttonBackInput(Vector2 touchPosition){
         if(buttonBackRectangle.contains(touchPosition)){
             ((Main) Gdx.app.getApplicationListener()).setScreen(nextScreen);
         }
-        return true;
     }
 
     @Override
