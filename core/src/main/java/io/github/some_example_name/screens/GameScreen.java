@@ -220,16 +220,9 @@ public class GameScreen implements Screen {
         float cardInfoX = viewport.getWorldWidth() - cardInfoTexture.getWidth() - 10;
         float cardInfoY = viewport.getWorldHeight() - cardInfoTexture.getHeight() - 10;
 
-
-        // Отрисовка текстуры информации о карте
         batch.draw(cardInfoTexture, cardInfoX, cardInfoY);
-
-
-        // Отрисовка названия карты
         font.draw(batch, cardName, cardInfoX + ((float) cardInfoTexture.getWidth() / 2) - 250, cardInfoY + cardInfoTexture.getHeight() - 10); // Отображаем название карты
 
-
-        // Отрисовка описания карты с переносом текста
         float descriptionX = cardInfoX + 10; // Отступ для описания
         float descriptionY = cardInfoY + cardInfoTexture.getHeight() - 110; // Позиция для описания
         float maxWidth = cardInfoTexture.getWidth() - 20; // Максимальная ширина для текста (отступы)
