@@ -153,16 +153,9 @@ public class GameScreen implements Screen {
 
         elapsedTime += delta;
 
-        if (!animationCardQueue.isEmpty()) {
-            cardAnimationTime += delta;
 
-            // Проверка завершения анимации
-            if (animationCardQueue.get(0).getEffect().isAnimationFinished(cardAnimationTime)) {
-                animationCardQueue.remove(0);
-                animationCardQueueIndex.remove(0);
-                cardAnimationTime = 0F;
-            }
-        }
+        cardAnimationDraw(delta);
+
 
         backgroundMusic.setLooping(true);
         backgroundMusic.setVolume(0.3f);
@@ -218,15 +211,33 @@ public class GameScreen implements Screen {
         // Отрисовка кнопки завершения хода
         batch.draw(endTurnButtonTexture, endTurnButtonBounds.x, endTurnButtonBounds.y);
 
-        if(!animationCardQueue.isEmpty()){
-            animationCardQueue.get(0).drawAnimation(cardAnimationTime, batch, enemies[animationCardQueueIndex.get(0)]);
-        }
+
 
         handleInput();
         if(isPlayerWin()){
             playerWin();
         }
+        if (!animationCardQueue.isEmpty()) {
+            animationCardQueue.get(0).drawAnimation(cardAnimationTime, batch, enemies[animationCardQueueIndex.get(0)]);
+
+        }
+
         batch.end();
+    }
+    private void cardAnimationDraw(float delta){
+        if (!animationCardQueue.isEmpty()) {
+            cardAnimationTime += delta;
+            // Проверка завершения анимации
+            if (animationCardQueue.get(0).getEffect().isAnimationFinished(cardAnimationTime)) {
+                animationCardQueue.remove(0);
+                animationCardQueueIndex.remove(0);
+                cardAnimationTime = 0F;
+            }
+            
+
+        }
+
+
     }
 
 
