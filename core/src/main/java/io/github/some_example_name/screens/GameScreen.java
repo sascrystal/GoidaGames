@@ -150,81 +150,14 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
-
         elapsedTime += delta;
-
-
-        cardAnimationDraw(delta);
-
-
-        backgroundMusic.setLooping(true);
-        backgroundMusic.setVolume(0.3f);
-        backgroundMusic.play();
-
-        ScreenUtils.clear(0, 0, 0, 1);
-        batch.begin();
-        batch.draw(BGImage, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
-        batch.draw(interfaceImage, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
-
-        // Отображение значений здоровья и щита
-        font.draw(batch, String.valueOf(player.getHealth()), 20, (float)(viewport.getWorldHeight() / 1.5));
-        font.draw(batch, String.valueOf(player.getShield()), 120, (float)(viewport.getWorldHeight() / 1.5));
-        font.draw(batch, String.valueOf(player.getManaPool()), 220, (float)(viewport.getWorldHeight() / 2.25));
-
-        // Отрисовка противника
-        for (int i = 0; i<3; i++){
-            if(enemies[i] != null && enemies[i].isAlive()){
-                enemies[i].draw(batch, font, elapsedTime,player);
-            }
-        }
-
-        renderingCards();
-
-        if (isDragging && draggedCard != null) {
-            batch.draw(draggedCard, draggedCardX, draggedCardY, cardBounds[0].width, cardBounds[0].height);
-        }
-
-        //информация о карте
-        if (isCardInfoVisible) {
-            float cardInfoX = viewport.getWorldWidth() - cardInfoTexture.getWidth() - 10;
-            float cardInfoY = viewport.getWorldHeight() - cardInfoTexture.getHeight() - 10;
-
-
-            // Отрисовка текстуры информации о карте
-            batch.draw(cardInfoTexture, cardInfoX, cardInfoY);
-
-
-            // Отрисовка названия карты
-            font.draw(batch, cardName, cardInfoX + ((float) cardInfoTexture.getWidth() / 2) - 250, cardInfoY + cardInfoTexture.getHeight() - 10); // Отображаем название карты
-
-
-            // Отрисовка описания карты с переносом текста
-            float descriptionX = cardInfoX + 10; // Отступ для описания
-            float descriptionY = cardInfoY + cardInfoTexture.getHeight() - 110; // Позиция для описания
-            float maxWidth = cardInfoTexture.getWidth() - 20; // Максимальная ширина для текста (отступы)
-
-
-            // Используем метод draw с учетом ширины
-            font.draw(batch, cardDescription, descriptionX, descriptionY, maxWidth, 1, true); // true для переноса строк
-        }
-
-        // Отрисовка кнопки завершения хода
-        batch.draw(endTurnButtonTexture, endTurnButtonBounds.x, endTurnButtonBounds.y);
-
-
-
+        cardAnimationUpdate(delta);
+        music();
+        draw();
         handleInput();
-        if(isPlayerWin()){
-            playerWin();
-        }
-        if (!animationCardQueue.isEmpty()) {
-            animationCardQueue.get(0).drawAnimation(cardAnimationTime, batch, enemies[animationCardQueueIndex.get(0)]);
 
-        }
-
-        batch.end();
     }
-    private void cardAnimationDraw(float delta){
+    private void cardAnimationUpdate(float delta){
         if (!animationCardQueue.isEmpty()) {
             cardAnimationTime += delta;
             // Проверка завершения анимации
@@ -233,12 +166,79 @@ public class GameScreen implements Screen {
                 animationCardQueueIndex.remove(0);
                 cardAnimationTime = 0F;
             }
-            
-
         }
-
+    }
+    private void music(){
+        backgroundMusic.setLooping(true);
+        backgroundMusic.setVolume(0.3f);
+        backgroundMusic.play();
+    }
+    private void draw(){
+        ScreenUtils.clear(0, 0, 0, 1);
+        batch.begin();
+        interfaceDraw();
+        playerStatsDraw();
+        enemiesDraw();
+        renderingCards();
+        draggedCardDraw();
+        if (isCardInfoVisible) {
+            cardInfoDraw();
+        }
+        if(isPlayerWin()){
+            playerWin();
+        }
+        if (!animationCardQueue.isEmpty()) {
+            cardAnimationDraw();
+        }
+        batch.end();
 
     }
+    private void interfaceDraw(){
+        batch.draw(BGImage, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        batch.draw(interfaceImage, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        batch.draw(endTurnButtonTexture, endTurnButtonBounds.x, endTurnButtonBounds.y);
+    }
+    private void playerStatsDraw(){
+        font.draw(batch, String.valueOf(player.getHealth()), 20, (float)(viewport.getWorldHeight() / 1.5));
+        font.draw(batch, String.valueOf(player.getShield()), 120, (float)(viewport.getWorldHeight() / 1.5));
+        font.draw(batch, String.valueOf(player.getManaPool()), 220, (float)(viewport.getWorldHeight() / 2.25));
+    }
+    private void enemiesDraw(){
+        for (int i = 0; i<3; i++){
+            if(enemies[i] != null && enemies[i].isAlive()){
+                enemies[i].draw(batch, font, elapsedTime,player);
+            }
+        }
+    }
+    private void draggedCardDraw(){
+        if (isDragging && draggedCard != null) {
+            batch.draw(draggedCard, draggedCardX, draggedCardY, cardBounds[0].width, cardBounds[0].height);
+        }
+    }
+    private void cardInfoDraw(){
+        float cardInfoX = viewport.getWorldWidth() - cardInfoTexture.getWidth() - 10;
+        float cardInfoY = viewport.getWorldHeight() - cardInfoTexture.getHeight() - 10;
+
+
+        // Отрисовка текстуры информации о карте
+        batch.draw(cardInfoTexture, cardInfoX, cardInfoY);
+
+
+        // Отрисовка названия карты
+        font.draw(batch, cardName, cardInfoX + ((float) cardInfoTexture.getWidth() / 2) - 250, cardInfoY + cardInfoTexture.getHeight() - 10); // Отображаем название карты
+
+
+        // Отрисовка описания карты с переносом текста
+        float descriptionX = cardInfoX + 10; // Отступ для описания
+        float descriptionY = cardInfoY + cardInfoTexture.getHeight() - 110; // Позиция для описания
+        float maxWidth = cardInfoTexture.getWidth() - 20; // Максимальная ширина для текста (отступы)
+
+        font.draw(batch, cardDescription, descriptionX, descriptionY, maxWidth, 1, true); // true для переноса строк
+    }
+    private void cardAnimationDraw(){
+        animationCardQueue.get(0).drawAnimation(cardAnimationTime, batch, enemies[animationCardQueueIndex.get(0)]);
+    }
+
 
 
 
@@ -247,46 +247,11 @@ public class GameScreen implements Screen {
         if (Gdx.input.isTouched()) {
             touchPos = new Vector2(Gdx.input.getX(), Gdx.input.getY());
             viewport.unproject(touchPos);
-
-
-            float touchX = touchPos.x;
-            float touchY = touchPos.y;
-
-
-            // Проверка нажатия на кнопку завершения хода
-            // сбрасываем флаг, если не нажатие на кнопку
-            endTurnButtonPressed = endTurnButtonBounds.contains(touchX, touchY) && playerTurn; // Устанавливаем флаг нажатия
-
-
+            endTurnButtonPressed = endTurnButtonBounds.contains(touchPos) && playerTurn; // Устанавливаем флаг нажатия
             if (!isDragging) {
-
-
-                for (int i = 0; i < cardBounds.length; i++) {
-                    if (player.getHand()[i]!= null && isCardVisible[i] && cardBounds[i].contains(touchX, touchY)) {
-                        isDragging = true;
-                        draggedCard = new TextureRegion(player.getHand()[i].getTexture());
-                        draggedCardX = touchX - cardBounds[i].width / 2;
-                        draggedCardY = touchY - cardBounds[i].height / 2;
-
-
-                        // Сохраняем информацию о карте
-                        cardName = player.getHand()[i].getName();
-                        cardDescription = player.getHand()[i].getDescription();
-                        isCardInfoVisible = true; // Показываем информацию о карте
-
-
-                        // Сделаем карту невидимой сразу, как только она берется
-                        soundEffectCardTaking.play(0.7f);
-                        isCardVisible[i] = false;
-                        draggedCardIndex = i;
-                        break;
-                    }
-                }
+                touchCards();
             } else {
-                isCardInfoVisible = true; // Скрываем информацию о карте
-                // Обновляем позицию перетаскиваемой карты
-                draggedCardX = touchX -  (float) draggedCard.getRegionWidth() / 2;
-                draggedCardY = touchY -  (float) draggedCard.getRegionHeight() / 2;
+                moveCard();
             }
         } else {
             if (isDragging) {
@@ -335,6 +300,39 @@ public class GameScreen implements Screen {
                 endTurnButtonPressed = false; // Сбрасываем флаг
             }
         }
+    }
+
+    private void touchCards(){
+        for (int i = 0; i < cardBounds.length; i++) {
+            if (player.getHand()[i]!= null && isCardVisible[i] && cardBounds[i].contains(touchPos)) {
+                takeCard(i);
+                break;
+            }
+        }
+    }
+    private void takeCard(int index){
+        isDragging = true;
+        draggedCard = new TextureRegion(player.getHand()[index].getTexture());
+        draggedCardX = touchPos.x - cardBounds[index].width / 2;
+        draggedCardY = touchPos.y - cardBounds[index].height / 2;
+
+
+        // Сохраняем информацию о карте
+        cardName = player.getHand()[index].getName();
+        cardDescription = player.getHand()[index].getDescription();
+        isCardInfoVisible = true; // Показываем информацию о карте
+
+
+        // Сделаем карту невидимой сразу, как только она берется
+        soundEffectCardTaking.play(0.7f);
+        isCardVisible[index] = false;
+        draggedCardIndex = index;
+    }
+    private void moveCard(){
+        isCardInfoVisible = true; // Скрываем информацию о карте
+        // Обновляем позицию перетаскиваемой карты
+        draggedCardX =  touchPos.x-  (float) draggedCard.getRegionWidth() / 2;
+        draggedCardY = touchPos.y -  (float) draggedCard.getRegionHeight() / 2;
     }
 
     private void endTurn() {
