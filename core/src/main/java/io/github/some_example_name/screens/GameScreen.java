@@ -154,6 +154,7 @@ public class GameScreen implements Screen {
         cardAnimationUpdate(delta);
         music();
         draw();
+        logic();
         handleInput();
 
     }
@@ -238,6 +239,9 @@ public class GameScreen implements Screen {
     private void cardAnimationDraw(){
         animationCardQueue.get(0).drawAnimation(cardAnimationTime, batch, enemies[animationCardQueueIndex.get(0)]);
     }
+    private void logic(){
+
+    }
 
 
 
@@ -255,50 +259,46 @@ public class GameScreen implements Screen {
             }
         } else {
             if (isDragging) {
-
-
-
-
-                // Проверяем, находится ли карта в невидимом поле
-                if (invisibleCardArea.contains(draggedCardX, draggedCardY)) {
-                    soundEffectPlaceCard.play(0.7f);
-                    // Возвращаем карту на исходную позицию
-                    returnCard();
-                } else {
-                    boolean returnCard = true;
-                    if (manaPoolCheck()){
-                        if(player.getHand()[draggedCardIndex] instanceof NonTargetCard &&
-                            !invisibleCardArea.contains(cardBounds[draggedCardIndex])){
-                            useCard();
-                            returnCard = false;
-                        }else {
-                            for(int i = 0; i<3; i++) {
-                                if (manaPoolCheck() && enemies[i] != null &&
-                                    enemies[i].getBounds().contains(touchPos.x, Gdx.graphics.getHeight() - touchPos.y)) {
-                                    useCard(i);
-                                    returnCard = false;
-                                    break;
-                                }
-                            }
-                        }
-
-                    }
-                    if (returnCard){
-                        soundEffectNotEnoughMana.play(0.7f);
-                        returnCard();
-                    }
-                }
+                placeCard();
             }
             isDragging = false; // Завершаем перетаскивание
             draggedCard = null; // Освобождаем ссылку на перетаскиваемую карту
-
-
-            // Если кнопка завершения хода была нажата, выполняем завершение хода
             if (endTurnButtonPressed) {
                 soundEffectEndTurn.play(0.8f);
                 endTurn(); // Завершение хода
                 endTurnButtonPressed = false; // Сбрасываем флаг
             }
+        }
+    }
+    private void placeCard(){
+        if (invisibleCardArea.contains(draggedCardX, draggedCardY)) {
+            soundEffectPlaceCard.play(0.7f);
+            returnCard();
+        } else {
+            tryUseCard();
+        }
+    }
+    private void tryUseCard(){
+        boolean returnCard = true;
+        if (manaPoolCheck()){
+            if(player.getHand()[draggedCardIndex] instanceof NonTargetCard &&
+                !invisibleCardArea.contains(cardBounds[draggedCardIndex])){
+                useCard();
+                returnCard = false;
+            }else {
+                for(int i = 0; i<3; i++) {
+                    if (enemies[i] != null && enemies[i].getBounds().contains(touchPos)) {
+                        useCard(i);
+                        returnCard = false;
+                        break;
+                    }
+                }
+            }
+
+        }
+        if (returnCard){
+            soundEffectNotEnoughMana.play(0.7f);
+            returnCard();
         }
     }
 
