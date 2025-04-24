@@ -8,7 +8,31 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 
+import java.util.ArrayList;
+
+
+
+
+import io.github.some_example_name.cards.non_target_cards.buff_cards.CookieOfDobor;
+import io.github.some_example_name.cards.non_target_cards.buff_cards.CookieOfMana;
+import io.github.some_example_name.cards.non_target_cards.buff_cards.CookieOfPower;
+import io.github.some_example_name.cards.non_target_cards.buff_cards.CookieOfReinforce;
+import io.github.some_example_name.cards.non_target_cards.buff_cards.CookiesOfMadness;
+import io.github.some_example_name.cards.non_target_cards.defence_cards.CupDefense;
+import io.github.some_example_name.cards.non_target_cards.defence_cards.Evade;
+import io.github.some_example_name.cards.non_target_cards.defence_cards.GlassShield;
+import io.github.some_example_name.cards.non_target_cards.defence_cards.Inheritance;
+import io.github.some_example_name.cards.target_cards.Overload;
+import io.github.some_example_name.cards.target_cards.attack_cards.Attack;
+import io.github.some_example_name.cards.target_cards.attack_cards.AttackVoid;
+import io.github.some_example_name.cards.target_cards.attack_cards.ComboAttack;
+import io.github.some_example_name.cards.target_cards.attack_cards.FeintCard;
+import io.github.some_example_name.cards.target_cards.attack_cards.LetsGoGambling;
+import io.github.some_example_name.cards.target_cards.attack_cards.PhantomPain;
+import io.github.some_example_name.cards.target_cards.attack_cards.SugarSplash;
+import io.github.some_example_name.cards.target_cards.attack_cards.TeapotToss;
 import io.github.some_example_name.enemy_classes.enemies.Enemy;
 import io.github.some_example_name.player.Player;
 
@@ -29,6 +53,61 @@ public abstract class PlayingCard {
         y.useManaForCard(this);
         soundEffect.play(0.7f);
 
+    }
+    public static PlayingCard generateCard(){
+        ArrayList<PlayingCard> CARDS = new ArrayList<>();
+        CARDS.add(new Overload());
+        CARDS.add(new AttackVoid());
+        CARDS.add(new Attack());
+        CARDS.add(new ComboAttack());
+        CARDS.add(new FeintCard());
+        CARDS.add(new LetsGoGambling());
+        CARDS.add(new PhantomPain());
+        CARDS.add(new SugarSplash());
+        CARDS.add(new TeapotToss());
+        CARDS.add(new CupDefense());
+        CARDS.add(new CupDefense());
+        CARDS.add(new Evade());
+        CARDS.add(new GlassShield());
+        CARDS.add(new Inheritance());
+        CARDS.add(new CookieOfDobor());
+        CARDS.add(new CookieOfMana());
+        CARDS.add(new CookieOfPower());
+        CARDS.add(new CookieOfReinforce());
+        CARDS.add(new CookiesOfMadness());
+
+
+        return CARDS.get(MathUtils.random(CARDS.size()-1));
+    }
+    //Пояснение - перегрузка более оптимизирована для большого количества карт.
+    public static PlayingCard[] generateCard(int count){
+        ArrayList<PlayingCard> CARDS = new ArrayList<>();
+        CARDS.add(new Overload());
+        CARDS.add(new AttackVoid());
+        CARDS.add(new Attack());
+        CARDS.add(new ComboAttack());
+        CARDS.add(new FeintCard());
+        CARDS.add(new LetsGoGambling());
+        CARDS.add(new PhantomPain());
+        CARDS.add(new SugarSplash());
+        CARDS.add(new TeapotToss());
+        CARDS.add(new CupDefense());
+        CARDS.add(new CupDefense());
+        CARDS.add(new Evade());
+        CARDS.add(new GlassShield());
+        CARDS.add(new Inheritance());
+        CARDS.add(new CookieOfDobor());
+        CARDS.add(new CookieOfMana());
+        CARDS.add(new CookieOfPower());
+        CARDS.add(new CookieOfReinforce());
+        CARDS.add(new CookiesOfMadness());
+        PlayingCard[] randomCards = new PlayingCard[count];
+        for(int i = 0; i<randomCards.length; i++){
+            int random = MathUtils.random(CARDS.size()-1);
+            randomCards[i] = CARDS.get(random);
+            CARDS.remove(random);
+        }
+        return  randomCards;
     }
 
     public void drawAnimation(float time, Batch batch,Enemy enemy){

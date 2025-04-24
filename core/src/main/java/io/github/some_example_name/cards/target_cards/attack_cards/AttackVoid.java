@@ -3,9 +3,9 @@ package io.github.some_example_name.cards.target_cards.attack_cards;
 import io.github.some_example_name.enemy_classes.enemies.Enemy;
 import io.github.some_example_name.player.Player;
 
-public class attackVoid extends CardAttack {
+public class AttackVoid extends CardAttack {
 
-    public attackVoid() {
+    public AttackVoid() {
         name = "Войд";
         description = "Тип: атака. Наносит 8x2 урона и восстанавливает нанесенный урон";
         cost = 2;

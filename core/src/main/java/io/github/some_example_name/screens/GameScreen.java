@@ -99,51 +99,50 @@ public class GameScreen implements Screen {
     public void show() {
         // Инициализация StretchViewport
         batch = new SpriteBatch();
-
+        showInterface();
+        showCards();
+        showEnemies();
+        showFont();
+        showEndButton();
+        musicShow();
+        playerTurn = true; // Начинаем с хода игрока
+        cardAnimationTime = 0F;
+    }
+    private void showEndButton(){
+        endTurnButtonTexture = new Texture(Gdx.files.internal("HUD/endhod_new.png"));
+        endTurnButtonBounds = new Rectangle(
+            (float) (viewport.getWorldWidth() / 1.173),
+            (float) (viewport.getWorldHeight() / 2.8),
+            (float) (endTurnButtonTexture.getWidth()/0.7),
+            (float)(endTurnButtonTexture.getHeight()/0.7));
+    }
+    private void showInterface(){
         BGImage = new Texture(Gdx.files.internal("menu/BG_2.png"));
         attackImage = new Texture(Gdx.files.internal("HUD/attak.png"));
         interfaceImage = new Texture(Gdx.files.internal("HUD/interface.png"));
-
+    }
+    private  void showCards(){
         cardBounds = new Rectangle[HAND_META];
         isCardVisible = new boolean[HAND_META];
         initialCardPositionsX = new float[HAND_META];
         initialCardPositionsY = new float[HAND_META];
-
+        invisibleCardArea = new Rectangle(0, 0, viewport.getWorldWidth(), 250); // Задаем ширину и высоту
+        cardInfoTexture = new Texture(Gdx.files.internal("HUD/card_info.png")); // Загружаем текстуру
+        isCardInfoVisible = false;
+        cardAnimationTime = 0F;
+        preRenderCards();
+    }
+    private void showFont(){
+        font = new BitmapFont(Gdx.files.internal("fonts/font.fnt"), Gdx.files.internal("fonts/font.png"), false);
+        font.getData().setScale(2.0f);
+    }
+    private void  showEnemies(){
         if(enemies[1]!= null){
             enemies[1].getBounds().setX(enemies[0].getBounds().getX()+ enemies[0].getBounds().getWidth() + 200);
         }
         if(enemies[2] != null){
             enemies[2].getBounds().setX(enemies[0].getBounds().getX()- enemies[1].getBounds().getWidth() - 200);
         }
-
-        preRenderCards();
-
-        // Создаем невидимое поле для карт
-        invisibleCardArea = new Rectangle(0, 0, viewport.getWorldWidth(), 250); // Задаем ширину и высоту
-
-        cardInfoTexture = new Texture(Gdx.files.internal("HUD/card_info.png")); // Загружаем текстуру
-        isCardInfoVisible = false; // Изначально информация о карте скрыта
-
-        // Инициализация шрифта
-        font = new BitmapFont(Gdx.files.internal("fonts/font.fnt"), Gdx.files.internal("fonts/font.png"), false);
-        font.getData().setScale(2.0f);
-
-        // Инициализация кнопки завершения хода
-        endTurnButtonTexture = new Texture(Gdx.files.internal("HUD/endhod_new.png"));
-        // Пример обновления кнопки завершения хода
-        endTurnButtonBounds = new Rectangle(
-            (float) (viewport.getWorldWidth() / 1.173),
-            (float) (viewport.getWorldHeight() / 2.8),
-            (float) (endTurnButtonTexture.getWidth()/0.7),
-            (float)(endTurnButtonTexture.getHeight()/0.7));
-
-        batch = new SpriteBatch();
-
-        musicShow();
-
-        playerTurn = true; // Начинаем с хода игрока
-
-        cardAnimationTime = 0F;
     }
 
 
@@ -154,16 +153,9 @@ public class GameScreen implements Screen {
 
         elapsedTime += delta;
 
-        if (!animationCardQueue.isEmpty()) {
-            cardAnimationTime += delta;
 
-            // Проверка завершения анимации
-            if (animationCardQueue.get(0).getEffect().isAnimationFinished(cardAnimationTime)) {
-                animationCardQueue.remove(0);
-                animationCardQueueIndex.remove(0);
-                cardAnimationTime = 0F;
-            }
-        }
+        cardAnimationDraw(delta);
+
 
         backgroundMusic.setLooping(true);
         backgroundMusic.setVolume(0.3f);
@@ -219,15 +211,33 @@ public class GameScreen implements Screen {
         // Отрисовка кнопки завершения хода
         batch.draw(endTurnButtonTexture, endTurnButtonBounds.x, endTurnButtonBounds.y);
 
-        if(!animationCardQueue.isEmpty()){
-            animationCardQueue.get(0).drawAnimation(cardAnimationTime, batch, enemies[animationCardQueueIndex.get(0)]);
-        }
+
 
         handleInput();
         if(isPlayerWin()){
             playerWin();
         }
+        if (!animationCardQueue.isEmpty()) {
+            animationCardQueue.get(0).drawAnimation(cardAnimationTime, batch, enemies[animationCardQueueIndex.get(0)]);
+
+        }
+
         batch.end();
+    }
+    private void cardAnimationDraw(float delta){
+        if (!animationCardQueue.isEmpty()) {
+            cardAnimationTime += delta;
+            // Проверка завершения анимации
+            if (animationCardQueue.get(0).getEffect().isAnimationFinished(cardAnimationTime)) {
+                animationCardQueue.remove(0);
+                animationCardQueueIndex.remove(0);
+                cardAnimationTime = 0F;
+            }
+            
+
+        }
+
+
     }
 
 
