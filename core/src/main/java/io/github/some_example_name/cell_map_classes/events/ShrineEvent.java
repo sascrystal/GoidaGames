@@ -24,7 +24,7 @@ public class ShrineEvent extends DialogEvent {
     @Override
     public void actionThird(Player player, CellMap[][] map) {
         PlayingCard givingCard = new PhantomPain();
-        player.giveTheCard(givingCard);
+        player.addCardInDeck(givingCard);
         returnToMap(player, map);
     }
 }

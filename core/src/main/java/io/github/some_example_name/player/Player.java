@@ -129,6 +129,9 @@ public abstract class   Player {
     public void addDropDeck(PlayingCard x){
         dropDeck.add(x);
     }
+    public void addCardInDeck(PlayingCard card){
+        deck.add(card);
+    }
 
     public void shiftHand(int index){
         if (index ==hand.length-1){
@@ -250,6 +253,7 @@ public abstract class   Player {
                 }
             }
     }
+
 
     public void giveShield(int plusShield){
         shield+=plusShield  ;

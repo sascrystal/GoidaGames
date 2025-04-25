@@ -18,7 +18,7 @@ public abstract class MoveEnemy {
 
 
     public abstract void enemyAction(Enemy x, Player y);
-    abstract  String showNumericalValue(Enemy x, Player y);
+    public abstract  String showNumericalValue(Enemy x, Player y);
 
 
     public void draw(Batch batch, BitmapFont font, float elapsedTime, Enemy enemy,Player player){

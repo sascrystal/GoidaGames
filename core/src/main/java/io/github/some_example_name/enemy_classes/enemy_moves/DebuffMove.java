@@ -17,7 +17,7 @@ public class DebuffMove extends MoveEnemy {
     }
 
     @Override
-    String showNumericalValue(Enemy x, Player y) {
+    public String showNumericalValue(Enemy x, Player y) {
         return "";
     }
 }
