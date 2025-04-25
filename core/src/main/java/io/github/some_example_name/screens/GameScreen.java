@@ -213,7 +213,6 @@ public class GameScreen implements Screen {
         }
         if(needChooseCard){
             choosingCardDraw();
-            Gdx.app.log("E","GOIDA");
         }
 
         batch.end();
