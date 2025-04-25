@@ -32,8 +32,8 @@ public class Stage {
         enemies[0] = new EnemyHamster();
         STAGES[1] = new Stage(enemies);
         enemies = new Enemy[3];
+        enemies[0] = new SkeletonHalberd();
         enemies[1] = new SkeletonHalberd();
-        enemies[2] = new SkeletonHalberd();
         STAGES[2] = new Stage(enemies);
 
 

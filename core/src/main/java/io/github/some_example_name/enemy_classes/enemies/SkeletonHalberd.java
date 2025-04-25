@@ -25,8 +25,8 @@ public class SkeletonHalberd extends  Enemy{
         Texture texture = new Texture(Gdx.files.internal("enemies/skeleton.png"));
         bounds = new Rectangle((float) (GameScreen.viewport.getWorldWidth() / 2.4),
             GameScreen.viewport.getWorldHeight() / 3,
-            (float) (((double) texture.getWidth() / FRAMES) / 2.2),
-            (float) (texture.getHeight() / 2.2));
+            (float) (((double) texture.getWidth() / FRAMES)*10),
+            (float) (texture.getHeight())*7);
 
         health = 30; // Установка здоровья
         moveList = new MoveEnemy[3];// Установка массива возможностей моба
