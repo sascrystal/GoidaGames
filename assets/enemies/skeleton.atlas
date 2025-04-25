@@ -1,0 +1,36 @@
+skeleton.png
+size:256,64
+repeat:none
+Skeleton Idle
+index:4
+bounds:2,2,24,32
+Skeleton Idle
+index:11
+bounds:54,2,24,32
+Skeleton Idle
+index:10
+bounds:54,2,24,32
+Skeleton Idle
+index:6
+bounds:80,2,24,32
+Skeleton Idle
+index:3
+bounds:106,2,24,32
+Skeleton Idle
+index:8
+bounds:132,2,24,32
+Skeleton Idle
+index:5
+bounds:158,2,24,32
+Skeleton Idle
+index:2
+bounds:184,2,24,32
+Skeleton Idle
+index:7
+bounds:210,2,24,32
+Skeleton Idle
+index:9
+bounds:28,2,24,32
+Skeleton Idle
+index:1
+bounds:54,2,24,32

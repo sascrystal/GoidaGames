@@ -6,6 +6,7 @@ import io.github.some_example_name.Main;
 import io.github.some_example_name.enemy_classes.enemies.Enemy;
 import io.github.some_example_name.enemy_classes.enemies.EnemyGambler;
 import io.github.some_example_name.enemy_classes.enemies.EnemyHamster;
+import io.github.some_example_name.enemy_classes.enemies.SkeletonHalberd;
 import io.github.some_example_name.screens.GameScreen;
 import io.github.some_example_name.screens.MapScreen;
 
@@ -21,7 +22,7 @@ public class Stage {
     }
 
     public static Stage generateFightAct1(){
-        Stage[] STAGES = new Stage[2];
+        Stage[] STAGES = new Stage[3];
 
         Enemy[] enemies = new Enemy[3];
         enemies[0] = new EnemyGambler();
@@ -30,6 +31,11 @@ public class Stage {
         enemies = new Enemy[3];
         enemies[0] = new EnemyHamster();
         STAGES[1] = new Stage(enemies);
+        enemies = new Enemy[3];
+        enemies[1] = new SkeletonHalberd();
+        enemies[2] = new SkeletonHalberd();
+        STAGES[2] = new Stage(enemies);
+
 
         //выше делаем стейджи
 
