@@ -18,21 +18,32 @@ import io.github.some_example_name.buffs.Buff;
 import io.github.some_example_name.player.Player;
 
 public abstract class Enemy {
-    public Texture texture; // Текстура противника
+    protected Texture texture; // Текстура противника
     protected static final Texture heart = new Texture(Gdx.files.internal("HUD/heart.png"));
     protected Rectangle bounds; // Границы для проверки коллизий
     protected Animation<TextureRegion> animation; // Анимация для противника
-    public int health; // Здоровье противника
+    protected int health; // Здоровье противника
 
     protected List<Buff> buffs = new ArrayList<>();
 
-    public MoveEnemy[] moveList;
-    public float stateTime;// Время для анимации
-    public int indexMoveList;
+    protected MoveEnemy[] moveList;
+    protected float stateTime;// Время для анимации
+    protected int indexMoveList;
+
+
+
+
 
     protected Sound takingDamageSoundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/takingDamageGamblerSoundEffect.wav"));
+    public MoveEnemy[] getMoveList() {
+        return moveList;
+    }
+    public int getIndexMoveList(){
+        return indexMoveList;
+    }
 
-    public void draw(SpriteBatch batch, BitmapFont font, float elapsedTime, Player player) {
+
+        public void draw(SpriteBatch batch, BitmapFont font, float elapsedTime, Player player) {
         TextureRegion currentFrame = animation.getKeyFrame(elapsedTime, true);
         batch.draw(currentFrame,
             bounds.x,
@@ -49,9 +60,6 @@ public abstract class Enemy {
 
     }
 
-    public int getIndexMoveList() {
-        return indexMoveList;
-    }
 
     public boolean isAlive() {
         return health > 0; // Проверка, жив ли противник
@@ -84,7 +92,7 @@ public abstract class Enemy {
         identifyIndexMoveList();
         buffActionTrigger("EndTurn");
         decreaseBuff();
-        moveList[getIndexMoveList()].enemyAction(this,y);// Противник наносит урон игроку
+        moveList[indexMoveList].enemyAction(this,y);// Противник наносит урон игроку
     }
 
 

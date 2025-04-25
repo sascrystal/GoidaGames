@@ -24,7 +24,7 @@ public class LetsGoGambling extends CardAttack {
                 super.cardAction(x, y, index);
                 break;
             case 1:
-                x.moveList[x.indexMoveList].enemyAction(x, y);
+                x.getMoveList()[x.getIndexMoveList()].enemyAction(x, y);
                 soundEffect.play(0.7f);
                 y.useManaForCard(this);
                 break;
