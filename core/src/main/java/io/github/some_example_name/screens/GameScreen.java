@@ -28,6 +28,7 @@ import io.github.some_example_name.cards.PlayingCard;
 
 
 public class GameScreen implements Screen {
+    private Texture background;
     private boolean endTurnButtonPressed = false;
     private SpriteBatch batch;
     private Rectangle[] cardBounds;
@@ -37,6 +38,10 @@ public class GameScreen implements Screen {
     private boolean isDragging;
     private int draggedCardIndex;
     public static StretchViewport viewport = new StretchViewport(2400, 1080);
+    private PlayingCard[] choosingCards;
+    private  PlayingCard chooseCard;
+    private boolean needChooseCard;
+    private Rectangle[] choosingCardsRectangle;
 
 
 
@@ -99,6 +104,8 @@ public class GameScreen implements Screen {
     public void show() {
         // Инициализация StretchViewport
         batch = new SpriteBatch();
+        showBackGround();
+        showChooseCard();
         showInterface();
         showCards();
         showEnemies();
@@ -107,6 +114,20 @@ public class GameScreen implements Screen {
         musicShow();
         playerTurn = true; // Начинаем с хода игрока
         cardAnimationTime = 0F;
+    }
+    private void showBackGround(){
+        background = new Texture("backgrounds/background.jpg");
+    }
+    private void showChooseCard(){
+        choosingCards = new PlayingCard[3];
+        choosingCardsRectangle = new Rectangle[3];
+        needChooseCard = false;
+        float initialPositionX = 500;
+        float modifier = 2;
+        for (int  i = 0 ;i<choosingCardsRectangle.length;i++){
+            choosingCardsRectangle[i] = new Rectangle(initialPositionX+(i+1)*PlayingCard.WIDTH*modifier,400,
+                PlayingCard.WIDTH*modifier,PlayingCard.HEIGHT*modifier);
+        }
     }
     private void showEndButton(){
         endTurnButtonTexture = new Texture(Gdx.files.internal("HUD/endhod_new.png"));
@@ -154,8 +175,8 @@ public class GameScreen implements Screen {
         cardAnimationUpdate(delta);
         music();
         draw();
-        logic();
         handleInput();
+        logic();
 
     }
     private void cardAnimationUpdate(float delta){
@@ -177,25 +198,65 @@ public class GameScreen implements Screen {
     private void draw(){
         ScreenUtils.clear(0, 0, 0, 1);
         batch.begin();
+        backgroundDraw();
         interfaceDraw();
         playerStatsDraw();
         enemiesDraw();
         renderingCards();
         draggedCardDraw();
+
         if (isCardInfoVisible) {
             cardInfoDraw();
-        }
-        if(isPlayerWin()){
-            playerWin();
         }
         if (!animationCardQueue.isEmpty()) {
             cardAnimationDraw();
         }
+        if(needChooseCard){
+            choosingCardDraw();
+            Gdx.app.log("E","GOIDA");
+        }
+
         batch.end();
 
     }
+    private void backgroundDraw(){
+        batch.draw(background,0,0,viewport.getScreenWidth(),viewport.getScreenHeight());
+    }
+    private void logic(){
+        if(isPlayerWin()){
+            choosingCardLogic();
+        }
+    }
+    private void choosingCardLogic(){
+        if(choosingCards[0] == null){
+            generateCardsForWin();
+        }
+        if(chooseCard == null){
+            needChooseCard = true;
+            player.dropDeckClear();
+            player.draftDeckClear();
+            player.handClear();
+        }
+        if(chooseCard != null){
+            endFight();
+        }
+
+    }
+    private void generateCardsForWin(){
+        choosingCards = PlayingCard.generateCard(3);
+    }
+    private void choosingCardDraw(){
+        font.draw(batch,"Выберите карты",300,300);
+
+        for(int i = 0; i<choosingCards.length;i++){
+            if(choosingCards[i] != null){
+                choosingCards[i].draw(batch,choosingCardsRectangle[i].x, choosingCardsRectangle[i].y,
+                    choosingCardsRectangle[i].width,choosingCardsRectangle[i].height);
+            }
+        }
+
+    }
     private void interfaceDraw(){
-        batch.draw(BGImage, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
         batch.draw(interfaceImage, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
         batch.draw(endTurnButtonTexture, endTurnButtonBounds.x, endTurnButtonBounds.y);
     }
@@ -232,9 +293,6 @@ public class GameScreen implements Screen {
     private void cardAnimationDraw(){
         animationCardQueue.get(0).drawAnimation(cardAnimationTime, batch, enemies[animationCardQueueIndex.get(0)]);
     }
-    private void logic(){
-
-    }
 
 
 
@@ -244,9 +302,15 @@ public class GameScreen implements Screen {
         if (Gdx.input.isTouched()) {
             touchPos = new Vector2(Gdx.input.getX(), Gdx.input.getY());
             viewport.unproject(touchPos);
-            endTurnButtonPressed = endTurnButtonBounds.contains(touchPos) && playerTurn; // Устанавливаем флаг нажатия
+            if(!isPlayerWin()){
+                endTurnButtonPressed = endTurnButtonBounds.contains(touchPos) && playerTurn;
+            }
             if (!isDragging) {
+                if(needChooseCard){
+                    chooseCardsTouching();
+                }
                 touchCards();
+
             } else {
                 moveCard();
             }
@@ -260,6 +324,16 @@ public class GameScreen implements Screen {
                 soundEffectEndTurn.play(0.8f);
                 endTurn(); // Завершение хода
                 endTurnButtonPressed = false; // Сбрасываем флаг
+            }
+        }
+    }
+    private void chooseCardsTouching(){
+        for (int i = 0; i<choosingCards.length;i++){
+            if(choosingCards[i] != null && choosingCardsRectangle[i].contains(touchPos)){
+                chooseCard = choosingCards[i];
+                needChooseCard = false;
+                choosingCardsDispose();
+                break;
             }
         }
     }
@@ -400,6 +474,9 @@ public class GameScreen implements Screen {
         soundEffectPlaceCard.dispose();
         animationCardQueue.clear();
     }
+    private void choosingCardsDispose(){
+        Arrays.fill(choosingCards, null);
+    }
 
     private void preRenderCards() {
         float cardHeight = 300;
@@ -481,13 +558,14 @@ public class GameScreen implements Screen {
         return isPlayerWin;
 
     }
-    private void playerWin(){
-        player.dropDeckClear();
-        player.draftDeckClear();
-        player.handClear();
+    private void endFight(){
+
         backgroundMusic.stop();
-        this.dispose();
+        player.addCardInDeck(chooseCard);
+        dispose();
         ((Main) Gdx.app.getApplicationListener()).setScreen(new MapScreen(player, map));
+
+
     }
 
 }

@@ -38,6 +38,7 @@ import io.github.some_example_name.player.Player;
 
 
 public abstract class PlayingCard {
+    public static final float WIDTH, HEIGHT;
     protected  String name,description;
     protected int cost;
     protected boolean burnable = false, ethereal = false;
@@ -47,6 +48,10 @@ public abstract class PlayingCard {
     protected Animation<TextureRegion> effect = new Animation<>(1/15F,
         frames.findRegions("Gravity-Sheet"),
         Animation.PlayMode.NORMAL);
+    static {
+        WIDTH =( new Texture(Gdx.files.internal("cards/noDataCard.png"))).getWidth();
+        HEIGHT = (new Texture(Gdx.files.internal("cards/noDataCard.png")).getHeight());
+    }
 
 
     public  void cardAction(Enemy x, Player y, int index){
@@ -58,7 +63,6 @@ public abstract class PlayingCard {
         ArrayList<PlayingCard> CARDS = new ArrayList<>();
         CARDS.add(new Overload());
         CARDS.add(new AttackVoid());
-        CARDS.add(new Attack());
         CARDS.add(new ComboAttack());
         CARDS.add(new FeintCard());
         CARDS.add(new LetsGoGambling());
@@ -75,8 +79,6 @@ public abstract class PlayingCard {
         CARDS.add(new CookieOfPower());
         CARDS.add(new CookieOfReinforce());
         CARDS.add(new CookiesOfMadness());
-
-
         return CARDS.get(MathUtils.random(CARDS.size()-1));
     }
     //Пояснение - перегрузка более оптимизирована для большого количества карт.
@@ -84,7 +86,6 @@ public abstract class PlayingCard {
         ArrayList<PlayingCard> CARDS = new ArrayList<>();
         CARDS.add(new Overload());
         CARDS.add(new AttackVoid());
-        CARDS.add(new Attack());
         CARDS.add(new ComboAttack());
         CARDS.add(new FeintCard());
         CARDS.add(new LetsGoGambling());
