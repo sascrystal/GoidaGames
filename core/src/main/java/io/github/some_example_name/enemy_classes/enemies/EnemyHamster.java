@@ -32,7 +32,7 @@ public class EnemyHamster extends Enemy {
             (float) (texture.getHeight() / 2.2));
 
 
-        health = 70; // Установка здоровья
+        health = 17; // Установка здоровья
         moveList = new MoveEnemy[1];// Установка массива возможностей моба
         giveBuff(new HamsterBuff());
 

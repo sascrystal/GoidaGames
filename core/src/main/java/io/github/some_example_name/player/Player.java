@@ -27,7 +27,7 @@ public abstract class   Player {
     protected int cellX, cellY;
 
 
-    protected int health, maxHealth         ;
+    protected int health, maxHealth;
     protected int draftCount;
     protected int manaPool;
     protected int manaPoolMax;
@@ -51,7 +51,6 @@ public abstract class   Player {
     public int getManaPool() {
         return manaPool;
     }
-
 
 
     public List<PlayingCard> getDeck() {

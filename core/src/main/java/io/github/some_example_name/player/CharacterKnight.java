@@ -13,14 +13,11 @@ public class CharacterKnight extends Player {
         deck.add(new Attack());
         deck.add(new Attack());
         deck.add(new Attack());
-        deck.add(new Attack());
-        deck.add(new Attack());
-        deck.add(new Attack());
-        deck.add(new Attack());
-        deck.add(new Attack());
-        deck.add(new LetsGoGambling());
-        deck.add(new PhantomPain());
         deck.add(new Defence());
+        deck.add(new Defence());
+        deck.add(new Defence());
+        deck.add(new Defence());
+
 
 
         maxHealth = 60;
@@ -30,6 +27,4 @@ public class CharacterKnight extends Player {
         manaPoolMax = 3;
         draftCount = 4;
     }
-
-
 }

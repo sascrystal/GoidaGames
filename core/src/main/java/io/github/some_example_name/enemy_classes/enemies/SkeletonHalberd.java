@@ -15,7 +15,7 @@ import io.github.some_example_name.screens.GameScreen;
 public class SkeletonHalberd extends  Enemy{
     public SkeletonHalberd() {
         TextureAtlas frames = new TextureAtlas(Gdx.files.internal("enemies/skeleton.atlas"));
-        animation = new Animation<>(0.3f,
+        animation = new Animation<>(0.2f,
             frames.findRegions("Skeleton Idle"),
             Animation.PlayMode.LOOP);
         stateTime = 0f;

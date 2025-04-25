@@ -90,7 +90,7 @@ public abstract class CellMap {
 
         map[center][wight-1] = new ExitCell(1,map[center][wight-1].getBounds());
         map[center][wight-2] = new FightCell(Stage.generateFightAct1(), map[center][wight-2]);
-        //заменить потом на Stage.generateFightBossesAct1()
+        //TODO: заменить потом на Stage.generateFightBossesAct1()
     }
 
     private static void generateSideBranches(CellMap[][] map){
