@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import io.github.some_example_name.cell_map_classes.events.DialogEvent;
 import io.github.some_example_name.screens.MapScreen;
 
-public class EventCell extends CellMap {
+public class  EventCell extends CellMap {
     private final DialogEvent dialogEvent;
     private static final Animation<TextureRegion> ANIMATION_MARK;
 
