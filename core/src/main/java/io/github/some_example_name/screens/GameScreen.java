@@ -249,7 +249,7 @@ public class GameScreen implements Screen {
 
         for(int i = 0; i<choosingCards.length;i++){
             if(choosingCards[i] != null){
-                choosingCards[i].draw(batch,choosingCardsRectangle[i].x, choosingCardsRectangle[i].y,
+                choosingCards[i].draw(batch, choosingCardsRectangle[i].x, choosingCardsRectangle[i].y,
                     choosingCardsRectangle[i].width,choosingCardsRectangle[i].height);
             }
         }

@@ -2,6 +2,7 @@ package io.github.some_example_name.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,16 +19,14 @@ import io.github.some_example_name.Main;
 import io.github.some_example_name.cards.PlayingCard;
 
 public class ShowDeckScreen implements Screen , GestureDetector.GestureListener {
-    private final List<PlayingCard> deck;
+    private  List<PlayingCard> deck;
     private final Screen nextScreen;
     private Texture buttonBackTexture;
     private Rectangle buttonBackRectangle;
     private StretchViewport viewport;
     private SpriteBatch batch;
-    private BitmapFont font; //TODO: сделать описаний карт + ману
+    private BitmapFont fontMana, fontDescription; //TODO: сделать описаний карт + ману
     private float maxX, minX;
-
-
     public ShowDeckScreen(List<PlayingCard> deck, Screen nextScreen) {
         this.deck = deck;
         this.nextScreen = nextScreen;
@@ -38,9 +37,12 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
         viewportConfiguration();
         batchConfiguration();
         screenMinMaxCalculate();
+        showFont();
         gestureDetectorConfiguration();
         showButtonBack();
     }
+
+
     private void batchConfiguration(){
         batch = new SpriteBatch();
         batch.setProjectionMatrix(viewport.getCamera().combined);
@@ -48,6 +50,18 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
     private void gestureDetectorConfiguration(){
         GestureDetector gestureDetector = new GestureDetector(this);
         Gdx.input.setInputProcessor(gestureDetector);
+    }
+    private void showFont(){
+        Color green = new Color(0,255,0,0.6f);
+
+        fontMana = new BitmapFont(Gdx.files.internal("fonts/font.fnt"), Gdx.files.internal("fonts/font.png"), false);
+        fontMana.getData().setScale(0.9f);
+        fontMana.setColor(green);
+
+        fontDescription = new BitmapFont(Gdx.files.internal("fonts/font.fnt"), Gdx.files.internal("fonts/font.png"), false);
+        fontDescription.getData().setScale(1f,0.6f);
+
+
     }
     private void screenMinMaxCalculate(){
         minX = viewport.getWorldWidth() / 2;
@@ -96,7 +110,7 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
         int indent = 20;
         float beginPositionRowX = 0;
         float beginPositionRowY = 0;
-        float width = viewport.getWorldHeight()*((float) deck.get(0).getTexture().getHeight() /deck.get(0).getTexture().getWidth());
+        float width = viewport.getWorldHeight()*((float) deck.get(0).getTexture().getHeight() /deck.get(0).getTexture().getWidth()) + 100;
         for (int i = 0; i<deck.size(); i++){
             deck.get(i).draw(batch,beginPositionRowX +(indent+width)*i,beginPositionRowY,
                 width,viewport.getWorldHeight());
