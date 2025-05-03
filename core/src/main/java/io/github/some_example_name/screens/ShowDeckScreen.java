@@ -3,7 +3,6 @@ package io.github.some_example_name.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -24,10 +23,7 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
     private Rectangle buttonBackRectangle;
     private StretchViewport viewport;
     private SpriteBatch batch;
-    private BitmapFont font; //TODO: сделать описаний карт + ману
     private float maxX, minX;
-
-
     public ShowDeckScreen(List<PlayingCard> deck, Screen nextScreen) {
         this.deck = deck;
         this.nextScreen = nextScreen;
@@ -41,6 +37,8 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
         gestureDetectorConfiguration();
         showButtonBack();
     }
+
+
     private void batchConfiguration(){
         batch = new SpriteBatch();
         batch.setProjectionMatrix(viewport.getCamera().combined);
@@ -49,10 +47,10 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
         GestureDetector gestureDetector = new GestureDetector(this);
         Gdx.input.setInputProcessor(gestureDetector);
     }
+
     private void screenMinMaxCalculate(){
         minX = viewport.getWorldWidth() / 2;
-        float totalDeckWidth = deck.size() * (viewport.getWorldHeight() * ((float)deck.get(0).getTexture().getHeight() / deck.get(0).getTexture().getWidth()) + 20) - 20;
-        maxX = totalDeckWidth -viewport.getWorldWidth() / 2;
+        maxX = deck.size() * (viewport.getWorldHeight() * ((float)deck.get(0).getTexture().getHeight() / deck.get(0).getTexture().getWidth()) + 20) - 20;
     }
     private void viewportConfiguration(){
         viewport = new StretchViewport(2080, deck.get(0).getTexture().getHeight());
@@ -93,10 +91,10 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
             buttonBackRectangle.width,buttonBackRectangle.height);
     }
     private void deckDraw(){
-        int indent = 20;
+        int indent = 0;
         float beginPositionRowX = 0;
         float beginPositionRowY = 0;
-        float width = viewport.getWorldHeight()*((float) deck.get(0).getTexture().getHeight() /deck.get(0).getTexture().getWidth());
+        float width = viewport.getWorldHeight()*((float) deck.get(0).getTexture().getHeight() /deck.get(0).getTexture().getWidth()) + 100;
         for (int i = 0; i<deck.size(); i++){
             deck.get(i).draw(batch,beginPositionRowX +(indent+width)*i,beginPositionRowY,
                 width,viewport.getWorldHeight());
@@ -139,7 +137,10 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
     }
     private void  buttonBackInput(Vector2 touchPosition){
         if(buttonBackRectangle.contains(touchPosition)){
+            dispose();
+
             ((Main) Gdx.app.getApplicationListener()).setScreen(nextScreen);
+
         }
     }
 
