@@ -66,7 +66,7 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
     private void screenMinMaxCalculate(){
         minX = viewport.getWorldWidth() / 2;
         float totalDeckWidth = deck.size() * (viewport.getWorldHeight() * ((float)deck.get(0).getTexture().getHeight() / deck.get(0).getTexture().getWidth()) + 20) - 20;
-        maxX = totalDeckWidth -viewport.getWorldWidth() / 2;
+        maxX = totalDeckWidth;
     }
     private void viewportConfiguration(){
         viewport = new StretchViewport(2080, deck.get(0).getTexture().getHeight());
@@ -107,7 +107,7 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
             buttonBackRectangle.width,buttonBackRectangle.height);
     }
     private void deckDraw(){
-        int indent = 20;
+        int indent = 0;
         float beginPositionRowX = 0;
         float beginPositionRowY = 0;
         float width = viewport.getWorldHeight()*((float) deck.get(0).getTexture().getHeight() /deck.get(0).getTexture().getWidth()) + 100;
@@ -153,7 +153,10 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
     }
     private void  buttonBackInput(Vector2 touchPosition){
         if(buttonBackRectangle.contains(touchPosition)){
+            dispose();
+
             ((Main) Gdx.app.getApplicationListener()).setScreen(nextScreen);
+
         }
     }
 
