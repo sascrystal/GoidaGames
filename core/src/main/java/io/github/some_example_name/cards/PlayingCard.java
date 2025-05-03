@@ -2,14 +2,17 @@ package io.github.some_example_name.cards;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Align;
 
 import java.util.ArrayList;
 
@@ -58,6 +61,13 @@ public abstract class PlayingCard {
         FONT_DESCRIPTION = new BitmapFont(Gdx.files.internal("fonts/font.fnt"), Gdx.files.internal("fonts/font.png"), false);
         FONT_MANA = new BitmapFont(Gdx.files.internal("fonts/font.fnt"), Gdx.files.internal("fonts/font.png"), false);
 
+        FONT_NAME.getData().setScale(1.1f, 0.3f);
+        FONT_DESCRIPTION.getData().setScale(0.89f, 0.4f);
+        FONT_MANA.getData().setScale(0.78f);
+
+        FONT_NAME.setColor(0, 0, 0, 0.85f);
+        FONT_DESCRIPTION.setColor(0, 0, 0, 0.85f);
+        FONT_MANA.setColor(0, 0, 0, 0.85f);
     }
 
 
@@ -128,14 +138,34 @@ public abstract class PlayingCard {
         batch.draw(texture, x,y,width,height);
 
         FONT_MANA.draw(batch,String.valueOf(getCost()),x+width*0.12f,y+height*0.95f);
-        FONT_NAME.draw(batch, name,x + width*0.18f,y+height*0.53f);
-        FONT_DESCRIPTION.draw(batch, description, x+width*0.20f, y+height*0.4f);
+        FONT_NAME.draw(batch, name,x + width*0.18f,y+height*0.515f);
+        //FONT_DESCRIPTION.draw(batch, description, x+width*0.20f, y+height*0.4f);
+        drawWrappedDescription(batch, x, y, width, height);
     }
     public void  draw(SpriteBatch batch, float x, float y){
         batch.draw(texture, x,y);
         FONT_MANA.draw(batch,String.valueOf(getCost()),x+WIDTH*0.12f,y+HEIGHT*0.95f);
         FONT_NAME.draw(batch, name,x + WIDTH*0.18f,y+HEIGHT*0.53f);
-        FONT_DESCRIPTION.draw(batch, description, x+WIDTH*0.20f, y+HEIGHT*0.4f);
+        //FONT_DESCRIPTION.draw(batch, description, x+WIDTH*0.20f, y+HEIGHT*0.4f);
+        //drawWrappedDescription(batch, x, y, width, height);
+    }
+
+    private void drawWrappedDescription(SpriteBatch batch, float x, float y, float width, float height) {
+        GlyphLayout layout = new GlyphLayout();
+        float descWidth = width * 0.7f; // Ширина области для описания
+        float padding = width * 0.16f; // Отступ слева
+
+        // Устанавливаем текст с переносом
+        layout.setText(FONT_DESCRIPTION, description,
+            FONT_DESCRIPTION.getColor(),
+            descWidth,
+            Align.left,
+            true);
+
+        // Рисуем текст описания
+        FONT_DESCRIPTION.draw(batch, layout,
+            x + padding,
+            y + height * 0.235f + layout.height);
     }
 
     public String getName() {
