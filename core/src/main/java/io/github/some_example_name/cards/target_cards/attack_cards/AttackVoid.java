@@ -10,6 +10,7 @@ public class AttackVoid extends CardAttack {
         description = "Тип: атака. Наносит 8x2 урона и восстанавливает нанесенный урон";
         cost = 2;
         damage = 8;
+
     }
 
     @Override
