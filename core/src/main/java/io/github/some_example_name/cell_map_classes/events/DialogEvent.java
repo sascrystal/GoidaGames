@@ -17,6 +17,13 @@ public abstract class DialogEvent {
     protected String[] dialogOptions;
     protected String eventDescription;
     protected Texture background;
+    private static final DialogEvent[] EVENTS;
+    static{
+        EVENTS = new DialogEvent[3];
+        EVENTS[0] = new GolikovEvent();
+        EVENTS[1] = new ShrineEvent();
+        EVENTS[2] = new DanceEvent();
+    }
 
     public Texture getBackground() {
         return background;
@@ -65,11 +72,23 @@ public abstract class DialogEvent {
         return dialogOptions;
     }
     public static DialogEvent generateEventAct1(){
-        ArrayList<DialogEvent> EVENTS = new ArrayList<>();
-        EVENTS.add(new GolikovEvent());
-        EVENTS.add(new ShrineEvent());
-        EVENTS.add(new DanceEvent());
-        return EVENTS.get(MathUtils.random(EVENTS.size()-1));
+        int random = MathUtils.random(EVENTS.length -1 );
+        DialogEvent randomEvent =  EVENTS[random];
+        returnCardFromPool(random);
+        return randomEvent;
+    }
+    private static void returnCardFromPool(int index){
+        switch (index){
+            case 0:
+                EVENTS[index] = new GolikovEvent();
+                break;
+            case 1:
+                EVENTS[index] = new ShrineEvent();
+                break;
+            case 2:
+                EVENTS[index] = new DanceEvent();
+                break;
+        }
     }
 
 }

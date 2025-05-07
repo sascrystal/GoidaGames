@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
+import java.util.Random;
+
 import io.github.some_example_name.cell_map_classes.events.DialogEvent;
 import io.github.some_example_name.screens.MapScreen;
 
@@ -40,23 +42,26 @@ public abstract class CellMap {
     }
 
     public static CellMap[][] generateAct1(Player player){
-        int wight = generateWight();
+        Random random = new Random();
+
+        random.nextInt();
+        int wight = generateWight(random);
         int height = 7;
         CellMap[][] map = new CellMap[height][wight];
 
         generateMainLine(map);
         setPlayer(map,player);
-        generateMiniBossesAct1(map);
+        generateMiniBossesAct1(map,random);
         generateTailOfAct1(map);
-        generateSideBranches(map);
+        generateSideBranches(map,random);
 
         return  map;
     }
 
-    private static int generateWight(){
+    private static int generateWight(Random random){
         int min = 10;
         int max = 16;
-        return (int) (Math.random()*(max-min+1)) + min;
+        return  random.nextInt(max-min)+min;
     }
 
     private static void setPlayer(CellMap[][] map, Player player){
@@ -76,7 +81,7 @@ public abstract class CellMap {
         }
     }
 
-    private static void generateMiniBossesAct1(CellMap[][] map){
+    private static void generateMiniBossesAct1(CellMap[][] map,Random random){ //TODO: разобраться почему тут math.random()*2 и сделать Stage.generateFightMiniBossesAct1()
         int center = map.length/2;
         int MiniBoss1 = (int) (Math.random()*2) + 3;
         map[center][MiniBoss1] = new FightCell(Stage.generateFightAct1(),map[center][MiniBoss1]);
@@ -93,45 +98,45 @@ public abstract class CellMap {
         //TODO: заменить потом на Stage.generateFightBossesAct1()
     }
 
-    private static void generateSideBranches(CellMap[][] map){
+    private static void generateSideBranches(CellMap[][] map, Random random){
         int center = map.length/2;
         for(int i = 0; !(map[center][i] instanceof ExitCell); i++){
             if(map[center][i] instanceof FightCell){
                 continue;
             }
-            generateUpBranch(map, i);
-            generateDownBranch(map,i);
+            generateUpBranch(map, i,random);
+            generateDownBranch(map,i,random);
         }
     }
 
-    private static void generateUpBranch(CellMap[][] map, int index){
+    private static void generateUpBranch(CellMap[][] map, int index,Random random){
         int center = map.length/2;
         int min = 0;
         int max = 4;
-        int random = (int)(Math.random()*max-min) +min;
-        for(int i = 1; i<=random; i++){
+        int rand = random.nextInt(max) + min;
+        for(int i = 1; i<=rand; i++){
             map[center-i][index] = new EmptyCell(map[center-i+1][index].getBounds().getX(),
                 map[center-i+1][index].getBounds().getY()+map[center-i+1][index].getBounds().getHeight());
-            fillCell(map,center-i,index);
+            fillCell(map,center-i,index,random);
         }
     }
 
-    private static void generateDownBranch(CellMap[][] map, int index){
+    private static void generateDownBranch(CellMap[][] map, int index,Random random){
         int center = map.length/2;
         int min = 0;
         int max = 4;
-        int random = (int)(Math.random()*max-min) +min;
-        for(int i = 1; i<=random; i++){
+        int rand = random.nextInt(max) + min;
+        for(int i = 1; i<=rand; i++){
             map[center+i][index] = new EmptyCell(map[center+i-1][index].getBounds().getX(),
                 map[center+i-1][index].getBounds().getY()-map[center+i-1][index].getBounds().getHeight());
-            fillCell(map,center+i,index);
+            fillCell(map,center+i,index,random);
         }
     }
 
-    private static void fillCell(CellMap[][] map, int i, int j){
+    private static void fillCell(CellMap[][] map, int i, int j,Random random){
         int min = 0;
-        int max = 3;
-        int randomFill = (int)(Math.random()*max-min)+ min;
+        int max = 4;
+        int randomFill =random.nextInt(max) + min;;
         if(randomFill == 2){
             map[i][j] = new FightCell(Stage.generateFightAct1(),map[i][j]);
         } else if(randomFill == 1){

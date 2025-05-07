@@ -16,13 +16,9 @@ public class Stage {
     public Stage(Enemy[] enemies) {
         this.enemies = enemies;
     }
-
-    public void stageAction(MapScreen map){
-        ((Main) Gdx.app.getApplicationListener()).setScreen(new GameScreen(enemies,map));
-    }
-
-    public static Stage generateFightAct1(){
-        Stage[] STAGES = new Stage[3];
+    private static final Stage[] STAGES;
+    static {
+        STAGES = new Stage[3];
 
         Enemy[] enemies = new Enemy[3];
         enemies[0] = new EnemyGambler();
@@ -35,12 +31,37 @@ public class Stage {
         enemies[0] = new SkeletonHalberd();
         enemies[1] = new SkeletonHalberd();
         STAGES[2] = new Stage(enemies);
+    }
 
+    public void stageAction(MapScreen map){
+        ((Main) Gdx.app.getApplicationListener()).setScreen(new GameScreen(enemies,map));
+    }
 
-        //выше делаем стейджи
-
+    public static Stage generateFightAct1(){
         int random = (int) (Math.random()* STAGES.length);
-        return  STAGES[random];
+        Stage randomStage = STAGES[random];
+        returnStageInPool(random);
+        return  randomStage;
+    }
+    private static void returnStageInPool(int index){
+        Enemy[] enemies = new Enemy[3];
+        switch (index){
+            case 0:
+                enemies[0] = new EnemyGambler();
+                STAGES[0] = new Stage(enemies);
+                break;
+            case 1:
+                enemies = new Enemy[3];
+                enemies[0] = new EnemyHamster();
+                STAGES[1] = new Stage(enemies);
+                break;
+            case 2:
+                enemies[0] = new SkeletonHalberd();
+                enemies[1] = new SkeletonHalberd();
+                STAGES[2] = new Stage(enemies);
+                break;
+        }
+
     }
 
 
