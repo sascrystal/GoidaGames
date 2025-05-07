@@ -2,6 +2,7 @@ package io.github.some_example_name.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -19,10 +20,11 @@ import io.github.some_example_name.cards.PlayingCard;
 public class ShowDeckScreen implements Screen , GestureDetector.GestureListener {
     private final List<PlayingCard> deck;
     private final Screen nextScreen;
-    private Texture buttonBackTexture;
+    private Texture buttonBackTexture, background;
     private Rectangle buttonBackRectangle;
     private StretchViewport viewport;
     private SpriteBatch batch;
+
     private float maxX, minX;
     public ShowDeckScreen(List<PlayingCard> deck, Screen nextScreen) {
         this.deck = deck;
@@ -36,6 +38,10 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
         screenMinMaxCalculate();
         gestureDetectorConfiguration();
         showButtonBack();
+        showBackground();
+    }
+    private void showBackground(){
+        background = new Texture(Gdx.files.internal("backgrounds/background_map.jpg"));
     }
 
 
@@ -47,6 +53,7 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
         GestureDetector gestureDetector = new GestureDetector(this);
         Gdx.input.setInputProcessor(gestureDetector);
     }
+
 
     private void screenMinMaxCalculate(){
         minX = viewport.getWorldWidth() / 2;
@@ -80,9 +87,13 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
     private void draw(){
         ScreenUtils.clear(0, 0, 0, 1);
         batch.begin();
+        backgroundDraw();
         deckDraw();
         buttonBackDraw();
         batch.end();
+    }
+    private void backgroundDraw(){
+        batch.draw(background,0,0,viewport.getWorldWidth(),viewport.getScreenHeight());
     }
     private void buttonBackDraw(){
         buttonBackRectangle.x = viewport.getCamera().position.x+ viewport.getWorldWidth()/2 - 100;
@@ -126,6 +137,7 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
     @Override
     public void dispose() {
 
+
     }
 
     @Override
@@ -137,7 +149,7 @@ public class ShowDeckScreen implements Screen , GestureDetector.GestureListener 
     }
     private void  buttonBackInput(Vector2 touchPosition){
         if(buttonBackRectangle.contains(touchPosition)){
-            dispose();
+
 
             ((Main) Gdx.app.getApplicationListener()).setScreen(nextScreen);
 

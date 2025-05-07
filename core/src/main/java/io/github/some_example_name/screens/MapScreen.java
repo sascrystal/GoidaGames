@@ -2,6 +2,7 @@ package io.github.some_example_name.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,6 +13,8 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 import io.github.some_example_name.Main;
 import io.github.some_example_name.cell_map_classes.cell_maps.CellMap;
+import io.github.some_example_name.cell_map_classes.cell_maps.EventCell;
+import io.github.some_example_name.cell_map_classes.cell_maps.FightCell;
 import io.github.some_example_name.player.Player;
 
 
@@ -23,7 +26,9 @@ public class MapScreen implements Screen {
         private Rectangle upButtonRectangle,downButtonRectangle,leftButtonRectangle,rightButtonRectangle;
         private Texture upButtonTexture,downButtonTexture,leftButtonTexture, rightButtonTexture;
         private Texture heathBarTexture, healthLineTexture;
+        private Texture background;
         private Rectangle deckButtonDemonstrationRectangle;
+        private Music backgroundMusic;
         private Texture deckButtonDemonstrationTexture;
         private BitmapFont font;
         private  float elapsedTime;
@@ -45,6 +50,15 @@ public class MapScreen implements Screen {
             showHeathPointBar();
             showDeckDemonstrationButton();
             showFont();
+            showBackground();
+            if(backgroundMusic==null || !backgroundMusic.isPlaying()){
+                showMusic();
+
+            }
+
+        }
+        private void showBackground(){
+            background = new Texture(Gdx.files.internal("backgrounds/background_map.jpg"));
         }
         private void viewportConfiguration(){
             viewport = new StretchViewport(2400, 1080);
@@ -77,6 +91,12 @@ public class MapScreen implements Screen {
             font = new BitmapFont(Gdx.files.internal("fonts/font.fnt"), Gdx.files.internal("fonts/font.png"), false);
             font.getData().setScale(1f);
         }
+        private void  showMusic(){
+            backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/hub_music.mp3"));
+            backgroundMusic.setLooping(true);
+            backgroundMusic.setVolume(0.3f);
+            backgroundMusic.play();
+        }
 
         @Override
         public void render(float delta) {
@@ -90,12 +110,17 @@ public class MapScreen implements Screen {
             ScreenUtils.clear(0, 0, 0, 1);
             elapsedTime += delta;
             batch.begin();
+            backgroundDraw();
             mapDraw(elapsedTime);
             deckButtonDemonstrationDraw();
             playerDraw();
             buttonsDraw();
             healthBarDraw();
+
             batch.end();
+        }
+        private void backgroundDraw(){
+            batch.draw(background,0,0,viewport.getWorldWidth(),viewport.getScreenHeight());
         }
         private  void mapDraw(float elapsedTime){
             for (CellMap[] cellMaps : map) {
@@ -147,6 +172,9 @@ public class MapScreen implements Screen {
         }
         private void cellAction(){
             if(map[player.getCellY()][player.getCellX()].isPlayerIn() && map[player.getCellY()][player.getCellX()].isAvailable()){
+                if(map[player.getCellY()][player.getCellX()] instanceof FightCell|| map[player.getCellY()][player.getCellX()] instanceof EventCell){
+                    dispose();
+                }
                 map[player.getCellY()][player.getCellX()].action(this);
             }
         }
@@ -251,6 +279,8 @@ public class MapScreen implements Screen {
 
         @Override
         public void dispose() {
+            backgroundMusic.stop();
+            backgroundMusic.dispose();
         }
 
         public Player getPlayer() {

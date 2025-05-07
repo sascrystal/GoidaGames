@@ -263,10 +263,13 @@ public abstract class   Player {
     }
 
     public void healing(int heal){
-        if(maxHealth==heal+health){
-            return;
+        if(maxHealth<=heal+health){
+            health = maxHealth;
         }
-        health += heal;
+        else {
+            health += heal;
+        }
+
     }
 
     public void drawMap(SpriteBatch batch, Rectangle cell){

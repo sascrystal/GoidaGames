@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
+import io.github.some_example_name.cell_map_classes.events.DialogEvent;
 import io.github.some_example_name.cell_map_classes.events.ShrineEvent;
 import io.github.some_example_name.screens.MapScreen;
 
@@ -135,7 +136,7 @@ public abstract class CellMap {
         if(randomFill == 2){
             map[i][j] = new FightCell(Stage.generateFightAct1(),map[i][j]);
         } else if(randomFill == 1){
-            map[i][j] = new EventCell(new ShrineEvent(),map[i][j]);
+            map[i][j] = new EventCell(DialogEvent.generateEventAct1(),map[i][j]);
         }
     }
 }
