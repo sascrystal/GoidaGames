@@ -71,10 +71,16 @@ public class QuestionMarkScreen implements Screen {
         batch.setProjectionMatrix(viewport.getCamera().combined);
         ScreenUtils.clear(0, 0, 0, 1);
         batch.begin();
+        if(dialogEvent.getBackground() != null){
+            drawBackground();
+        }
         drawTextField();
         drawDialogBox();
         batch.end();
         input();
+    }
+    private void drawBackground(){
+        batch.draw(dialogEvent.getBackground(),0,0,viewport.getWorldWidth(),viewport.getScreenHeight());
     }
 
     private void drawTextField() {

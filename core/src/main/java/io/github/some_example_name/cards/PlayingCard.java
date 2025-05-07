@@ -2,7 +2,6 @@ package io.github.some_example_name.cards;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -29,7 +28,6 @@ import io.github.some_example_name.cards.non_target_cards.defence_cards.Evade;
 import io.github.some_example_name.cards.non_target_cards.defence_cards.GlassShield;
 import io.github.some_example_name.cards.non_target_cards.defence_cards.Inheritance;
 import io.github.some_example_name.cards.target_cards.Overload;
-import io.github.some_example_name.cards.target_cards.attack_cards.Attack;
 import io.github.some_example_name.cards.target_cards.attack_cards.AttackVoid;
 import io.github.some_example_name.cards.target_cards.attack_cards.ComboAttack;
 import io.github.some_example_name.cards.target_cards.attack_cards.FeintCard;
@@ -43,7 +41,9 @@ import io.github.some_example_name.player.Player;
 
 public abstract class PlayingCard {
     public static final float WIDTH, HEIGHT;
-    private static  BitmapFont FONT_MANA,FONT_DESCRIPTION,FONT_NAME;
+    private static final BitmapFont FONT_MANA;
+    private static final BitmapFont FONT_DESCRIPTION;
+    private static final BitmapFont FONT_NAME;
     protected  String name,description;
     protected int cost;
     protected boolean burnable = false, ethereal = false;
@@ -146,8 +146,7 @@ public abstract class PlayingCard {
         batch.draw(texture, x,y);
         FONT_MANA.draw(batch,String.valueOf(getCost()),x+WIDTH*0.12f,y+HEIGHT*0.95f);
         FONT_NAME.draw(batch, name,x + WIDTH*0.18f,y+HEIGHT*0.53f);
-        //FONT_DESCRIPTION.draw(batch, description, x+WIDTH*0.20f, y+HEIGHT*0.4f);
-        //drawWrappedDescription(batch, x, y, width, height);
+
     }
 
     private void drawWrappedDescription(SpriteBatch batch, float x, float y, float width, float height) {

@@ -1,6 +1,10 @@
 package io.github.some_example_name.cell_map_classes.events;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
+
+import java.util.ArrayList;
 
 import io.github.some_example_name.Main;
 import io.github.some_example_name.screens.MapScreen;
@@ -12,7 +16,11 @@ import io.github.some_example_name.screens.QuestionMarkScreen;
 public abstract class DialogEvent {
     protected String[] dialogOptions;
     protected String eventDescription;
+    protected Texture background;
 
+    public Texture getBackground() {
+        return background;
+    }
 
     public  void action(Player player, CellMap[][] map, int index){
         switch (index){
@@ -56,6 +64,14 @@ public abstract class DialogEvent {
     public String[] getDialogOptions() {
         return dialogOptions;
     }
+    public static DialogEvent generateEventAct1(){
+        ArrayList<DialogEvent> EVENTS = new ArrayList<>();
+        EVENTS.add(new GolikovEvent());
+        EVENTS.add(new ShrineEvent());
+        EVENTS.add(new DanceEvent());
+        return EVENTS.get(MathUtils.random(EVENTS.size()-1));
+    }
+
 }
 
 
