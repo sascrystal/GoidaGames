@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 import io.github.some_example_name.cell_map_classes.events.DialogEvent;
-import io.github.some_example_name.cell_map_classes.events.ShrineEvent;
 import io.github.some_example_name.screens.MapScreen;
 
 import io.github.some_example_name.cell_map_classes.stage.Stage;

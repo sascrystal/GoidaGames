@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 import io.github.some_example_name.cards.PlayingCard;
 import io.github.some_example_name.cards.target_cards.Overload;
-import io.github.some_example_name.cards.target_cards.attack_cards.PhantomPain;
+
 import io.github.some_example_name.cell_map_classes.cell_maps.CellMap;
 import io.github.some_example_name.player.Player;
 

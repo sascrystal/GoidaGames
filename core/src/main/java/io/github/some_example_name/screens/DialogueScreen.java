@@ -19,9 +19,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.XmlReader;
 
 import io.github.some_example_name.Main;
-import io.github.some_example_name.cell_map_classes.cell_maps.CellMap;
-import io.github.some_example_name.player.CharacterKnight;
-import io.github.some_example_name.player.Player;
+
 
 public class DialogueScreen implements Screen {
     private SpriteBatch batch;
@@ -30,13 +28,13 @@ public class DialogueScreen implements Screen {
     private Texture whitePixel;
     private GlyphLayout layout;
     private Array<String> dialoguePages;
-    private Array<String> backgroundPaths; // Список путей к фонам
-    private Array<String> musicPaths; // Список путей к музыке
+    private final Array<String> backgroundPaths; // Список путей к фонам
+    private final Array<String> musicPaths; // Список путей к музыке
     private Texture backgroundTexture; // Текущая фоновая текстура
     private Music currentMusic; // Текущая музыка
     private String currentText;
     private float textProgress;
-    private float charDisplayTime = 0.01f;
+    private final float charDisplayTime = 0.01f;
     private float timeSinceLastChar;
     private boolean isAnimating;
     private boolean hasMoreText;
@@ -44,7 +42,7 @@ public class DialogueScreen implements Screen {
 
     // Переход фона
     private float backgroundAlpha = 1f;
-    private float fadeDuration = 0.5f; // Длительность перехода
+    private final float fadeDuration = 0.5f; // Длительность перехода
     private float fadeTimer = 0f;
     private boolean isFading = false;
 
@@ -54,7 +52,7 @@ public class DialogueScreen implements Screen {
     private static final float TEXT_BOX_HEIGHT = 200f;
     private static final float TEXT_BOX_Y = 50f;
     private static final float FONT_SCALE = 1.6f;
-    private Screen nextScreen;
+    private final Screen nextScreen;
 
     private final String dialogueId;
 
