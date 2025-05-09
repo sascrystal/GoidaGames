@@ -169,7 +169,7 @@ public class MapScreen implements Screen {
                 viewport.getWorldHeight()- heightLine/2 -5);
         }
         private void scoreDraw(){
-            font.draw(batch,"Score:" + String.valueOf(player.getScore()),viewport.getWorldWidth()-800, viewport.getWorldHeight() -100);
+            font.draw(batch,"Score:" + player.getScore(),viewport.getWorldWidth()-800, viewport.getWorldHeight() -100);
 
         }
 

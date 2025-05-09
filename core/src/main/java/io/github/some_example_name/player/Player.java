@@ -33,7 +33,7 @@ public abstract class   Player {
     protected int draftCount;
     protected int manaPool;
     protected int manaPoolMax;
-    protected static int score;
+    protected  int score;
     protected int shield;// Здоровье игрока
     protected Texture texture = new Texture(Gdx.files.internal("enemies/enemy_1.png"));
 
@@ -49,10 +49,10 @@ public abstract class   Player {
         score += dialogEvent.getScore();
     }
     public void takeScore(int score){
-        Player.score += score;
+        this.score += score;
     }
 
-    public static int getScore() {
+    public  int getScore() {
         return score;
     }
 
