@@ -35,10 +35,11 @@ public class Stage {
     }
 
     private final Enemy[] enemies;
-    private int score;
+    private final int score;
 
     public Stage(Enemy[] enemies, int score) {
         this.enemies = enemies;
+        this.score = score;
     }
 
     public static Stage generateFightAct1() {

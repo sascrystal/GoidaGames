@@ -28,6 +28,7 @@ import io.github.some_example_name.cards.target_cards.Overload;
 import io.github.some_example_name.cards.target_cards.attack_cards.AttackVoid;
 import io.github.some_example_name.cards.target_cards.attack_cards.ComboAttack;
 import io.github.some_example_name.cards.target_cards.attack_cards.FeintCard;
+import io.github.some_example_name.cards.target_cards.attack_cards.GlassSword;
 import io.github.some_example_name.cards.target_cards.attack_cards.LetsGoGambling;
 import io.github.some_example_name.cards.target_cards.attack_cards.PhantomPain;
 import io.github.some_example_name.cards.target_cards.attack_cards.SugarSplash;
@@ -89,6 +90,8 @@ public abstract class PlayingCard {
         CARDS.add(new CookieOfPower());
         CARDS.add(new CookieOfReinforce());
         CARDS.add(new CookiesOfMadness());
+        CARDS.add(new GlassSword());
+
         return CARDS.get(MathUtils.random(CARDS.size() - 1));
     }
 
