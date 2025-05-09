@@ -12,7 +12,7 @@ import io.github.some_example_name.enemy_classes.enemy_moves.DebuffAttackEnemy;
 import io.github.some_example_name.enemy_classes.enemy_moves.MoveEnemy;
 import io.github.some_example_name.screens.GameScreen;
 
-public class SkeletonHalberd extends  Enemy{
+public class SkeletonHalberd extends Enemy {
     public SkeletonHalberd() {
         TextureAtlas frames = new TextureAtlas(Gdx.files.internal("enemies/skeleton.atlas"));
         animation = new Animation<>(0.2f,
@@ -23,13 +23,13 @@ public class SkeletonHalberd extends  Enemy{
         Texture texture = new Texture(Gdx.files.internal("enemies/skeleton.png"));
         bounds = new Rectangle((float) (GameScreen.viewport.getWorldWidth() / 2.4),
             GameScreen.viewport.getWorldHeight() / 3,
-            (float) (((double) texture.getWidth() / FRAMES)*10),
-            (float) (texture.getHeight())*7);
+            (float) (((double) texture.getWidth() / FRAMES) * 10),
+            (float) (texture.getHeight()) * 7);
 
         health = 30; // Установка здоровья
         moveList = new MoveEnemy[3];// Установка массива возможностей enemy
         moveList[0] = new AttackEnemy(6);
         moveList[1] = new AttackEnemy(8);
-        moveList[2] = new DebuffAttackEnemy(3,new Weakness());
+        moveList[2] = new DebuffAttackEnemy(3, new Weakness());
     }
 }

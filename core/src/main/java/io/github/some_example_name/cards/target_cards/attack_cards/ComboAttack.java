@@ -13,10 +13,6 @@ public class ComboAttack extends CardAttack {
         condition = false;
     }
 
-    public static void setCondition(boolean condition) {
-        ComboAttack.condition = condition;
-    }
-
     public ComboAttack() {
         name = "Комбо атака";
         description = "Тип: атака. Наносит 7 урона, если использовано в одному ходу 2 карты этого типа, то получаешь в руку бесплатную эфирную карту комбо атаки";
@@ -31,6 +27,10 @@ public class ComboAttack extends CardAttack {
         texture = new Texture(Gdx.files.internal("cards/cardComboAttack.png"));
         damage = 7;
         this.cost = cost;
+    }
+
+    public static void setCondition(boolean condition) {
+        ComboAttack.condition = condition;
     }
 
     @Override

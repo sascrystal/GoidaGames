@@ -5,11 +5,10 @@ import com.badlogic.gdx.graphics.Texture;
 
 import io.github.some_example_name.cards.PlayingCard;
 import io.github.some_example_name.cards.target_cards.Overload;
-
 import io.github.some_example_name.cell_map_classes.cell_maps.CellMap;
 import io.github.some_example_name.player.Player;
 
-public class GolikovEvent extends DialogEvent{
+public class GolikovEvent extends DialogEvent {
     public GolikovEvent() {
         background = new Texture(Gdx.files.internal("backgrounds/golikov_event_background.jpg"));
         eventDescription = "Вы встречаете высокого человека с очками для зрения, у него в руке две карты: одна пишет bash скрипт на питоне, другая делает тебя амбассадором vibe-coding. Что ты сделаешь?";

@@ -6,10 +6,9 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Rectangle;
 
-
+import io.github.some_example_name.buffs.HamsterBuff;
 import io.github.some_example_name.enemy_classes.enemy_moves.AttackEnemy;
 import io.github.some_example_name.enemy_classes.enemy_moves.MoveEnemy;
-import io.github.some_example_name.buffs.HamsterBuff;
 import io.github.some_example_name.screens.GameScreen;
 
 public class EnemyHamster extends Enemy {

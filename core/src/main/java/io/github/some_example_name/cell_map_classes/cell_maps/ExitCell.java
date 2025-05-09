@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import io.github.some_example_name.screens.MapScreen;
 
 public class ExitCell extends CellMap {
-    private int act;
+    private final int act;
 
     public ExitCell(int act, Rectangle bounds) {
         this.act = act;

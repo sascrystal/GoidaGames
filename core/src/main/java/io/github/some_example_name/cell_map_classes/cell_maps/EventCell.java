@@ -10,8 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import io.github.some_example_name.cell_map_classes.events.DialogEvent;
 import io.github.some_example_name.screens.MapScreen;
 
-public class  EventCell extends CellMap {
-    private final DialogEvent dialogEvent;
+public class EventCell extends CellMap {
     private static final Animation<TextureRegion> ANIMATION_MARK;
 
     static {
@@ -20,6 +19,8 @@ public class  EventCell extends CellMap {
             frames.findRegions("questionMark"),
             Animation.PlayMode.LOOP);
     }
+
+    private final DialogEvent dialogEvent;
 
     public EventCell(DialogEvent dialogEvent, CellMap cell) {
         this.dialogEvent = dialogEvent;

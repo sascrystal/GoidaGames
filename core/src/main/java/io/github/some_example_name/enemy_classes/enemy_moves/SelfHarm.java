@@ -1,8 +1,6 @@
 package io.github.some_example_name.enemy_classes.enemy_moves;
 
 
-
-
 import io.github.some_example_name.buffs.Power;
 import io.github.some_example_name.buffs.modifier_buffs.OverloadBuff;
 import io.github.some_example_name.buffs.modifier_buffs.Weakness;

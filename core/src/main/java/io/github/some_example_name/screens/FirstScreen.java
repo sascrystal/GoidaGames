@@ -19,10 +19,10 @@ import io.github.some_example_name.player.CharacterKnight;
 import io.github.some_example_name.player.Player;
 
 public class FirstScreen implements Screen {
+    private final Texture BG_image;
     private SpriteBatch batch;
     private StretchViewport viewport;
     private Stage stage;
-    private final Texture BG_image;
     private float backgroundX1;
     private float backgroundX2;
     private Music backgroundMusic, backgroundNoiseMenu;

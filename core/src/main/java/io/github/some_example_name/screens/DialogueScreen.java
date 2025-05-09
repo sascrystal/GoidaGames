@@ -2,7 +2,7 @@ package io.github.some_example_name.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music; // Импорт для работы с музыкой
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -10,51 +10,48 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.XmlReader;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import io.github.some_example_name.Main;
 
 
 public class DialogueScreen implements Screen {
-    private SpriteBatch batch;
-    private Stage stage;
-    private BitmapFont font;
-    private Texture whitePixel;
-    private GlyphLayout layout;
-    private Array<String> dialoguePages;
-    private final Array<String> backgroundPaths; // Список путей к фонам
-    private final Array<String> musicPaths; // Список путей к музыке
-    private Texture backgroundTexture; // Текущая фоновая текстура
-    private Music currentMusic; // Текущая музыка
-    private String currentText;
-    private float textProgress;
-    private final float charDisplayTime = 0.01f;
-    private float timeSinceLastChar;
-    private boolean isAnimating;
-    private boolean hasMoreText;
-    private int currentPageIndex;
-
-    // Переход фона
-    private float backgroundAlpha = 1f;
-    private final float fadeDuration = 0.5f; // Длительность перехода
-    private float fadeTimer = 0f;
-    private boolean isFading = false;
-
     // Конфигурация
     private static final Color BACKGROUND_COLOR = new Color(0f, 0f, 0f, 0.7f);
     private static final float PADDING = 20f;
     private static final float TEXT_BOX_HEIGHT = 200f;
     private static final float TEXT_BOX_Y = 50f;
     private static final float FONT_SCALE = 1.6f;
+    private final Array<String> backgroundPaths; // Список путей к фонам
+    private final Array<String> musicPaths; // Список путей к музыке
+    private final float charDisplayTime = 0.01f;
+    private final float fadeDuration = 0.5f; // Длительность перехода
     private final Screen nextScreen;
-
     private final String dialogueId;
+    private SpriteBatch batch;
+    private Stage stage;
+    private BitmapFont font;
+    private Texture whitePixel;
+    private GlyphLayout layout;
+    private Array<String> dialoguePages;
+    private Texture backgroundTexture; // Текущая фоновая текстура
+    private Music currentMusic; // Текущая музыка
+    private String currentText;
+    private float textProgress;
+    private float timeSinceLastChar;
+    private boolean isAnimating;
+    private boolean hasMoreText;
+    private int currentPageIndex;
+    // Переход фона
+    private float backgroundAlpha = 1f;
+    private float fadeTimer = 0f;
+    private boolean isFading = false;
 
     public DialogueScreen(String dialogueId, Screen nextScreen) {
         this.dialogueId = dialogueId;
@@ -215,13 +212,12 @@ public class DialogueScreen implements Screen {
         }
 
 
-
     }
 
-    private void setNextScreen(){
+    private void setNextScreen() {
         nextScreen.show();
         dispose();
-        ((Main)Gdx.app.getApplicationListener()).setScreen(nextScreen);
+        ((Main) Gdx.app.getApplicationListener()).setScreen(nextScreen);
 
     }
 
