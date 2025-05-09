@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.List;
 
 import io.github.some_example_name.cards.target_cards.attack_cards.ComboAttack;
+import io.github.some_example_name.cell_map_classes.events.DialogEvent;
+import io.github.some_example_name.cell_map_classes.stage.Stage;
 import io.github.some_example_name.enemy_classes.enemies.Enemy;
 import io.github.some_example_name.buffs.modifier_buffs.ModifierBuff;
 import io.github.some_example_name.buffs.Buff;
@@ -31,6 +33,7 @@ public abstract class   Player {
     protected int draftCount;
     protected int manaPool;
     protected int manaPoolMax;
+    protected static int score;
     protected int shield;// Здоровье игрока
     protected Texture texture = new Texture(Gdx.files.internal("enemies/enemy_1.png"));
 
@@ -39,6 +42,19 @@ public abstract class   Player {
     protected List<PlayingCard> draftDeck = new ArrayList<>();
 
     protected PlayingCard[] hand = new PlayingCard[GameScreen.HAND_META];
+    public void takeScore(Stage stage){
+        score += stage.getScore();
+    }
+    public void takeScore(DialogEvent dialogEvent){
+        score += dialogEvent.getScore();
+    }
+    public void takeScore(int score){
+        Player.score += score;
+    }
+
+    public static int getScore() {
+        return score;
+    }
 
     public int getShield(){
         return shield;
@@ -259,6 +275,7 @@ public abstract class   Player {
     }
 
     public void useManaForCard(PlayingCard x){
+            takeScore(x.getCost());
             manaPool -= x.getCost();
     }
 

@@ -110,12 +110,14 @@ public class MapScreen implements Screen {
             ScreenUtils.clear(0, 0, 0, 1);
             elapsedTime += delta;
             batch.begin();
+
             backgroundDraw();
             mapDraw(elapsedTime);
             deckButtonDemonstrationDraw();
             playerDraw();
             buttonsDraw();
             healthBarDraw();
+            scoreDraw();
 
             batch.end();
         }
@@ -165,6 +167,10 @@ public class MapScreen implements Screen {
                 player.getHealth()+"/"+player.getMaxHealth(),
                 viewport.getWorldWidth()-widthLine/2-120,
                 viewport.getWorldHeight()- heightLine/2 -5);
+        }
+        private void scoreDraw(){
+            font.draw(batch,"Score:" + String.valueOf(player.getScore()),viewport.getWorldWidth()-800, viewport.getWorldHeight() -100);
+
         }
 
         private void logic(){

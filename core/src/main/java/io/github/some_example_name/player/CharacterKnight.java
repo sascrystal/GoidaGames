@@ -26,5 +26,6 @@ public class CharacterKnight extends Player {
         manaPool = 3;
         manaPoolMax = 3;
         draftCount = 4;
+        score = 0;
     }
 }

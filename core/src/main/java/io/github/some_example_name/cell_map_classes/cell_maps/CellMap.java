@@ -111,9 +111,8 @@ public abstract class CellMap {
 
     private static void generateUpBranch(CellMap[][] map, int index,Random random){
         int center = map.length/2;
-        int min = 0;
         int max = 4;
-        int rand = random.nextInt(max) + min;
+        int rand = random.nextInt(max);
         for(int i = 1; i<=rand; i++){
             map[center-i][index] = new EmptyCell(map[center-i+1][index].getBounds().getX(),
                 map[center-i+1][index].getBounds().getY()+map[center-i+1][index].getBounds().getHeight());
@@ -123,9 +122,8 @@ public abstract class CellMap {
 
     private static void generateDownBranch(CellMap[][] map, int index,Random random){
         int center = map.length/2;
-        int min = 0;
         int max = 4;
-        int rand = random.nextInt(max) + min;
+        int rand = random.nextInt(max);
         for(int i = 1; i<=rand; i++){
             map[center+i][index] = new EmptyCell(map[center+i-1][index].getBounds().getX(),
                 map[center+i-1][index].getBounds().getY()-map[center+i-1][index].getBounds().getHeight());
@@ -134,9 +132,8 @@ public abstract class CellMap {
     }
 
     private static void fillCell(CellMap[][] map, int i, int j,Random random){
-        int min = 0;
         int max = 4;
-        int randomFill =random.nextInt(max) + min;;
+        int randomFill =random.nextInt(max);
         if(randomFill == 2){
             map[i][j] = new FightCell(Stage.generateFightAct1(),map[i][j]);
         } else if(randomFill == 1){

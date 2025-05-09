@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 
-import java.util.ArrayList;
 
 import io.github.some_example_name.Main;
 import io.github.some_example_name.screens.MapScreen;
@@ -17,6 +16,12 @@ public abstract class DialogEvent {
     protected String[] dialogOptions;
     protected String eventDescription;
     protected Texture background;
+    protected int score;
+
+    public int getScore() {
+        return score;
+    }
+
     private static final DialogEvent[] EVENTS;
     static{
         EVENTS = new DialogEvent[3];
@@ -51,12 +56,15 @@ public abstract class DialogEvent {
     }
 
     public  void actionFirst(Player player,CellMap[][] map){
+        player.takeScore(this);
         returnToMap(player, map);
     }
     public  void actionSecond(Player player,CellMap[][] map){
+        player.takeScore(this);
         returnToMap(player, map);
     }
     public  void actionThird(Player player,CellMap[][] map){
+        player.takeScore(this);
         returnToMap(player, map);
     }
 
