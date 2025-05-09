@@ -7,13 +7,17 @@ import io.github.some_example_name.enemy_classes.enemies.Enemy;
 import io.github.some_example_name.enemy_classes.enemies.EnemyGambler;
 import io.github.some_example_name.enemy_classes.enemies.EnemyHamster;
 import io.github.some_example_name.enemy_classes.enemies.SkeletonHalberd;
+import io.github.some_example_name.player.Player;
 import io.github.some_example_name.screens.GameScreen;
 import io.github.some_example_name.screens.MapScreen;
 
-public class Stage {
+public class Stage  {
+    private int score;
+
     private final Enemy[] enemies;
 
-    public Stage(Enemy[] enemies) {
+
+    public Stage(Enemy[] enemies,int score) {
         this.enemies = enemies;
     }
     private static final Stage[] STAGES;
@@ -21,19 +25,25 @@ public class Stage {
         STAGES = new Stage[3];
 
         Enemy[] enemies = new Enemy[3];
+        int score =15;
         enemies[0] = new EnemyGambler();
-        STAGES[0] = new Stage(enemies);
+        STAGES[0] = new Stage(enemies,score);
 
+
+        score = 26;
         enemies = new Enemy[3];
         enemies[0] = new EnemyHamster();
-        STAGES[1] = new Stage(enemies);
+        STAGES[1] = new Stage(enemies,score);
         enemies = new Enemy[3];
+
+        score = 30;
         enemies[0] = new SkeletonHalberd();
         enemies[1] = new SkeletonHalberd();
-        STAGES[2] = new Stage(enemies);
+        STAGES[2] = new Stage(enemies,score);
     }
 
     public void stageAction(MapScreen map){
+        map.getPlayer().takeScore(this);
         ((Main) Gdx.app.getApplicationListener()).setScreen(new GameScreen(enemies,map));
     }
 
@@ -43,22 +53,31 @@ public class Stage {
         returnStageInPool(random);
         return  randomStage;
     }
+
+    public int getScore() {
+        return score;
+    }
+
     private static void returnStageInPool(int index){
         Enemy[] enemies = new Enemy[3];
+        int score;
         switch (index){
             case 0:
+                score =15;
                 enemies[0] = new EnemyGambler();
-                STAGES[0] = new Stage(enemies);
+                STAGES[0] = new Stage(enemies,score);
                 break;
             case 1:
+                score = 26;
                 enemies = new Enemy[3];
                 enemies[0] = new EnemyHamster();
-                STAGES[1] = new Stage(enemies);
+                STAGES[1] = new Stage(enemies,score);
                 break;
             case 2:
+                score = 30;
                 enemies[0] = new SkeletonHalberd();
                 enemies[1] = new SkeletonHalberd();
-                STAGES[2] = new Stage(enemies);
+                STAGES[2] = new Stage(enemies,score);
                 break;
         }
 

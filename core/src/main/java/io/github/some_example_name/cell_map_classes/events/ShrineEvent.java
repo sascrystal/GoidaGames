@@ -22,13 +22,13 @@ public class ShrineEvent extends DialogEvent {
     public void actionFirst(Player player, CellMap[][] map) {
         int heal = 15;
         player.healing(heal);
-        returnToMap(player, map);
+        super.actionThird(player,map);
     }
 
     @Override
     public void actionThird(Player player, CellMap[][] map) {
         PlayingCard givingCard = new PhantomPain();
         player.addCardInDeck(givingCard);
-        returnToMap(player, map);
+        super.actionThird(player,map);
     }
 }
