@@ -18,20 +18,18 @@ public abstract class CellMap {
     protected Texture texture;
     protected boolean isPlayerIn = false, isAvailable = true;
 
+
     public static CellMap[][] generateAct1(Player player) {
         Random random = new Random();
-
         random.nextInt();
         int wight = generateWight(random);
         int height = 7;
         CellMap[][] map = new CellMap[height][wight];
-
         generateMainLine(map);
         setPlayer(map, player);
         generateMiniBossesAct1(map, random);
         generateTailOfAct1(map);
         generateSideBranches(map, random);
-
         return map;
     }
 
@@ -117,22 +115,40 @@ public abstract class CellMap {
             map[i][j] = new EventCell(DialogEvent.generateEventAct1(), map[i][j]);
         }
     }
-    private static CellMap[][] createTrainingAct(Player player){
+
+    public static CellMap[][] createTrainingAct(Player player) {
         CellMap[][] trainingMap = new CellMap[4][13];
         player.setCellX(0);
         player.setCellY(1);
-           int cellWight = 150;
-           float center = (viewport.getWorldHeight() / 2) - (float) cellWight / 2;
+        int cellWight = 150;
+        float center = (viewport.getWorldHeight() / 2) - (float) cellWight / 2;
         trainingMap[1][0] = new EmptyCell(0, center);
-        trainingMap[1][1]
-
-
-
-
-
-
-
-
+        trainingMap[1][1] = new FightCell(Stage.generateFightAct1(), new EmptyCell(trainingMap[1][0], "Right"));
+        trainingMap[1][2] = new EmptyCell(trainingMap[1][1], "Right");
+        trainingMap[1][3] = new FightCell(Stage.generateFightAct1(), new EmptyCell(trainingMap[1][2], "Right"));
+        trainingMap[1][4] = new EmptyCell(trainingMap[1][3], "Right");
+        trainingMap[1][5] = new EventCell(DialogEvent.generateEventAct1(), new EmptyCell(trainingMap[1][4], "Right"));
+        trainingMap[1][6] = new FightCell(Stage.generateFightAct1(), new EmptyCell(trainingMap[1][5], "Right"));
+        trainingMap[0][6] = new EmptyCell(trainingMap[1][6], "Up");
+        trainingMap[2][6] = new EmptyCell(trainingMap[1][6], "Down");
+        trainingMap[0][7] = new EmptyCell(trainingMap[0][6], "Right");
+        trainingMap[0][8] = new EventCell(DialogEvent.generateEventAct1(), new EmptyCell(trainingMap[0][7], "Right"));
+        trainingMap[0][9] = new EmptyCell(trainingMap[0][8], "Right");
+        trainingMap[0][10] = new FightCell(Stage.generateFightAct1(), new EmptyCell(trainingMap[0][9], "Right"));
+        trainingMap[0][4] = new EventCell(DialogEvent.generateEventAct1(), new EmptyCell(trainingMap[1][4], "Up"));
+        trainingMap[2][4] = new FightCell(Stage.generateFightAct1(), new EmptyCell(trainingMap[1][4], "Down"));
+        trainingMap[3][4] = new EmptyCell(trainingMap[2][4], "Down");
+        trainingMap[3][5] = new EventCell(DialogEvent.generateEventAct1(), new EmptyCell(trainingMap[3][4], "Right"));
+        trainingMap[3][6] = new FightCell(Stage.generateFightAct1(), new EmptyCell(trainingMap[3][5], "Right"));
+        trainingMap[3][7] = new EmptyCell(trainingMap[3][6], "Right");
+        trainingMap[3][8] = new EventCell(DialogEvent.generateEventAct1(), new EmptyCell(trainingMap[3][7], "Right"));
+        trainingMap[3][9] = new EmptyCell(trainingMap[3][8], "Right");
+        trainingMap[3][10] = new EventCell(DialogEvent.generateEventAct1(), new EmptyCell(trainingMap[3][9], "Right"));
+        trainingMap[2][10] = new EmptyCell(trainingMap[3][10], "Up");
+        trainingMap[1][10] = new EmptyCell(trainingMap[2][10], "Up");
+        trainingMap[1][11] = new EmptyCell(trainingMap[1][10], "Right");
+        trainingMap[1][12] = new FightCell(Stage.generateFightAct1(), new EmptyCell(trainingMap[1][11], "Right"));
+        return trainingMap;
     }
 
     abstract public void action(MapScreen map);
