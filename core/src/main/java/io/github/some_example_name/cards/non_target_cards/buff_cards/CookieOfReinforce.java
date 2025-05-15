@@ -4,9 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
 import io.github.some_example_name.buffs.Reinforce;
+import io.github.some_example_name.cards.non_target_cards.NonTargetCard;
 import io.github.some_example_name.enemy_classes.enemies.Enemy;
 import io.github.some_example_name.player.Player;
-import io.github.some_example_name.cards.non_target_cards.NonTargetCard;
 
 public class CookieOfReinforce extends NonTargetCard {
     int reinforce, damageSelf;

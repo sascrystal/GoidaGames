@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 
 import io.github.some_example_name.buffs.modifier_buffs.OverloadBuff;
 import io.github.some_example_name.enemy_classes.enemies.Enemy;
-
 import io.github.some_example_name.player.Player;
 
 public class Overload extends TargetCard {

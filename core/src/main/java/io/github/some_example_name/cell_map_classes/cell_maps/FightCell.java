@@ -11,7 +11,6 @@ import io.github.some_example_name.cell_map_classes.stage.Stage;
 import io.github.some_example_name.screens.MapScreen;
 
 public class FightCell extends CellMap {
-    private final Stage stage;
     private static final Animation<TextureRegion> ANIMATION_MARK;
 
     static {
@@ -20,6 +19,8 @@ public class FightCell extends CellMap {
             frames.findRegions("Mark"),
             Animation.PlayMode.LOOP);
     }
+
+    private final Stage stage;
 
     public FightCell(Stage stage, CellMap cell) {
         this.stage = stage;

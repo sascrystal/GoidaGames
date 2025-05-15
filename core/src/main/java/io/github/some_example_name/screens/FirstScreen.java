@@ -19,10 +19,10 @@ import io.github.some_example_name.player.CharacterKnight;
 import io.github.some_example_name.player.Player;
 
 public class FirstScreen implements Screen {
+    private final Texture BG_image;
     private SpriteBatch batch;
     private StretchViewport viewport;
     private Stage stage;
-    private final Texture BG_image;
     private float backgroundX1;
     private float backgroundX2;
     private Music backgroundMusic, backgroundNoiseMenu;
@@ -69,6 +69,7 @@ public class FirstScreen implements Screen {
                 Player player = new CharacterKnight();
                 CellMap[][] map = CellMap.generateAct1(player);
                 MapScreen act1 = new MapScreen(player, map);
+                DialogueScreen dialogueScreen = new DialogueScreen("intro", act1);
                 ((Main) Gdx.app.getApplicationListener()).setScreen(act1);
             }
         });
@@ -80,10 +81,9 @@ public class FirstScreen implements Screen {
                 backgroundMusic.stop();
                 dispose();
                 Player player = new CharacterKnight();
-                CellMap[][] map = CellMap.generateAct1(player);
-                MapScreen act1 = new MapScreen(player, map);
-                DialogueScreen dialogueScreen = new DialogueScreen("intro", act1);
-                ((Main) Gdx.app.getApplicationListener()).setScreen(dialogueScreen);
+                CellMap[][] map = CellMap.createTrainingAct(player);
+                MapScreen training = new MapScreen(player, map);
+                ((Main) Gdx.app.getApplicationListener()).setScreen(training);
             }
         });
 

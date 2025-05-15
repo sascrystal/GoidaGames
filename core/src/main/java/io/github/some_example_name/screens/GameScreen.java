@@ -3,31 +3,38 @@ package io.github.some_example_name.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
-
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import io.github.some_example_name.Main;
+import io.github.some_example_name.cards.PlayingCard;
+import io.github.some_example_name.cards.non_target_cards.NonTargetCard;
 import io.github.some_example_name.cell_map_classes.cell_maps.CellMap;
 import io.github.some_example_name.enemy_classes.enemies.Enemy;
-import io.github.some_example_name.Main;
 import io.github.some_example_name.player.Player;
-import io.github.some_example_name.cards.non_target_cards.NonTargetCard;
-import io.github.some_example_name.cards.PlayingCard;
 
 
 public class GameScreen implements Screen {
+    public static final int HAND_META = 10;
+    public static StretchViewport viewport = new StretchViewport(2400, 1080);
+    // Добавляем противника и игрока
+    private final Enemy[] enemies;
+    private final Player player;
+    private final List<PlayingCard> animationCardQueue = new ArrayList<>();
+    private final List<Integer> animationCardQueueIndex = new ArrayList<>();
+    private final CellMap[][] map;
     private Texture background;
     private boolean endTurnButtonPressed = false;
     private SpriteBatch batch;
@@ -37,62 +44,30 @@ public class GameScreen implements Screen {
     private float draggedCardX, draggedCardY;
     private boolean isDragging;
     private int draggedCardIndex;
-    public static StretchViewport viewport = new StretchViewport(2400, 1080);
     private PlayingCard[] choosingCards;
-    private  PlayingCard chooseCard;
+    private PlayingCard chooseCard;
     private boolean needChooseCard;
     private Rectangle[] choosingCardsRectangle;
-
-
-
-    public static final int HAND_META = 10;
-
-
-    private float[] initialCardPositionsX,initialCardPositionsY;
-
-
+    private float[] initialCardPositionsX, initialCardPositionsY;
     private Music backgroundMusic;
-
-
     private Sound soundEffectCardTaking, soundEffectPlaceCard, soundEffectEndTurn,
         soundEffectNotEnoughMana;
-
-
-    private Texture cardInfoTexture,attackImage, BGImage, interfaceImage;// Текстура для отображения информации о карте
-
-
+    private Texture cardInfoTexture, attackImage, BGImage, interfaceImage;// Текстура для отображения информации о карте
     private String cardName; // Название карты
     private String cardDescription; // Описание карты
     private boolean isCardInfoVisible;
-
-
-    // Добавляем противника и игрока
-    private final Enemy[] enemies;
-    private final Player player;
     private boolean playerTurn;
     private BitmapFont font;
-
-
     // Кнопка завершения хода
     private Texture endTurnButtonTexture;
     private Rectangle endTurnButtonBounds;
-
-
-    private  float elapsedTime = 0;
-
-
+    private float elapsedTime = 0;
     private float cardAnimationTime;
-    private final List<PlayingCard> animationCardQueue =  new ArrayList<>();
-    private final List<Integer> animationCardQueueIndex = new ArrayList<>();
-
     private Vector2 touchPos;
-
-    private final CellMap[][] map;
-
     // Невидимое поле для карт
     private Rectangle invisibleCardArea;
 
-    public GameScreen(Enemy[] enemies, MapScreen map){
+    public GameScreen(Enemy[] enemies, MapScreen map) {
         this.enemies = enemies;
         this.map = map.getMap();
         this.player = map.getPlayer();
@@ -115,34 +90,39 @@ public class GameScreen implements Screen {
         playerTurn = true; // Начинаем с хода игрока
         cardAnimationTime = 0F;
     }
-    private void showBackGround(){
+
+    private void showBackGround() {
         background = new Texture("backgrounds/background.jpg");
     }
-    private void showChooseCard(){
+
+    private void showChooseCard() {
         choosingCards = new PlayingCard[3];
         choosingCardsRectangle = new Rectangle[3];
         needChooseCard = false;
         float initialPositionX = 500;
         float modifier = 2;
-        for (int  i = 0 ;i<choosingCardsRectangle.length;i++){
-            choosingCardsRectangle[i] = new Rectangle(initialPositionX+(i+1)*PlayingCard.WIDTH*modifier,400,
-                PlayingCard.WIDTH*modifier,PlayingCard.HEIGHT*modifier);
+        for (int i = 0; i < choosingCardsRectangle.length; i++) {
+            choosingCardsRectangle[i] = new Rectangle(initialPositionX + (i + 1) * PlayingCard.WIDTH * modifier, 400,
+                PlayingCard.WIDTH * modifier, PlayingCard.HEIGHT * modifier);
         }
     }
-    private void showEndButton(){
+
+    private void showEndButton() {
         endTurnButtonTexture = new Texture(Gdx.files.internal("HUD/endhod_new.png"));
         endTurnButtonBounds = new Rectangle(
             (float) (viewport.getWorldWidth() / 1.173),
             (float) (viewport.getWorldHeight() / 2.8),
-            (float) (endTurnButtonTexture.getWidth()/0.7),
-            (float)(endTurnButtonTexture.getHeight()/0.7));
+            (float) (endTurnButtonTexture.getWidth() / 0.7),
+            (float) (endTurnButtonTexture.getHeight() / 0.7));
     }
-    private void showInterface(){
+
+    private void showInterface() {
         BGImage = new Texture(Gdx.files.internal("menu/BG_2.png"));
         attackImage = new Texture(Gdx.files.internal("HUD/attak.png"));
         interfaceImage = new Texture(Gdx.files.internal("HUD/interface.png"));
     }
-    private  void showCards(){
+
+    private void showCards() {
         cardBounds = new Rectangle[HAND_META];
         isCardVisible = new boolean[HAND_META];
         initialCardPositionsX = new float[HAND_META];
@@ -153,16 +133,18 @@ public class GameScreen implements Screen {
         cardAnimationTime = 0F;
         preRenderCards();
     }
-    private void showFont(){
+
+    private void showFont() {
         font = new BitmapFont(Gdx.files.internal("fonts/font.fnt"), Gdx.files.internal("fonts/font.png"), false);
         font.getData().setScale(2.0f);
     }
-    private void  showEnemies(){
-        if(enemies[1]!= null){
-            enemies[1].getBounds().setX(enemies[0].getBounds().getX()+ enemies[0].getBounds().getWidth() + 200);
+
+    private void showEnemies() {
+        if (enemies[1] != null) {
+            enemies[1].getBounds().setX(enemies[0].getBounds().getX() + enemies[0].getBounds().getWidth() + 200);
         }
-        if(enemies[2] != null){
-            enemies[2].getBounds().setX(enemies[0].getBounds().getX()- enemies[1].getBounds().getWidth() - 200);
+        if (enemies[2] != null) {
+            enemies[2].getBounds().setX(enemies[0].getBounds().getX() - enemies[1].getBounds().getWidth() - 200);
         }
     }
 
@@ -179,7 +161,8 @@ public class GameScreen implements Screen {
         logic();
 
     }
-    private void cardAnimationUpdate(float delta){
+
+    private void cardAnimationUpdate(float delta) {
         if (!animationCardQueue.isEmpty()) {
             cardAnimationTime += delta;
             // Проверка завершения анимации
@@ -190,12 +173,14 @@ public class GameScreen implements Screen {
             }
         }
     }
-    private void music(){
+
+    private void music() {
         backgroundMusic.setLooping(true);
         backgroundMusic.setVolume(0.3f);
         backgroundMusic.play();
     }
-    private void draw(){
+
+    private void draw() {
         ScreenUtils.clear(0, 0, 0, 1);
         batch.begin();
         backgroundDraw();
@@ -211,72 +196,82 @@ public class GameScreen implements Screen {
         if (!animationCardQueue.isEmpty()) {
             cardAnimationDraw();
         }
-        if(needChooseCard){
+        if (needChooseCard) {
             choosingCardDraw();
         }
 
         batch.end();
 
     }
-    private void backgroundDraw(){
-        batch.draw(background,0,0,viewport.getScreenWidth(),viewport.getScreenHeight());
+
+    private void backgroundDraw() {
+        batch.draw(background, 0, 0, viewport.getScreenWidth(), viewport.getScreenHeight());
     }
-    private void logic(){
-        if(isPlayerWin()){
+
+    private void logic() {
+        if (isPlayerWin()) {
             choosingCardLogic();
         }
     }
-    private void choosingCardLogic(){
-        if(choosingCards[0] == null){
+
+    private void choosingCardLogic() {
+        if (choosingCards[0] == null) {
             generateCardsForWin();
         }
-        if(chooseCard == null){
+        if (chooseCard == null) {
             needChooseCard = true;
             player.dropDeckClear();
             player.draftDeckClear();
             player.handClear();
         }
-        if(chooseCard != null){
+        if (chooseCard != null) {
             endFight();
         }
 
     }
-    private void generateCardsForWin(){
+
+    private void generateCardsForWin() {
         choosingCards = PlayingCard.generateCard(3);
     }
-    private void choosingCardDraw(){
-        font.draw(batch,"Выберите карты",300,300);
 
-        for(int i = 0; i<choosingCards.length;i++){
-            if(choosingCards[i] != null){
+    private void choosingCardDraw() {
+        font.draw(batch, "Выберите карты", 300, 300);
+
+        for (int i = 0; i < choosingCards.length; i++) {
+            if (choosingCards[i] != null) {
                 choosingCards[i].draw(batch, choosingCardsRectangle[i].x, choosingCardsRectangle[i].y,
-                    choosingCardsRectangle[i].width,choosingCardsRectangle[i].height);
+                    choosingCardsRectangle[i].width, choosingCardsRectangle[i].height);
             }
         }
 
     }
-    private void interfaceDraw(){
+
+    private void interfaceDraw() {
         batch.draw(interfaceImage, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
         batch.draw(endTurnButtonTexture, endTurnButtonBounds.x, endTurnButtonBounds.y);
     }
-    private void playerStatsDraw(){
-        font.draw(batch, String.valueOf(player.getHealth()), 20, (float)(viewport.getWorldHeight() / 1.5));
-        font.draw(batch, String.valueOf(player.getShield()), 120, (float)(viewport.getWorldHeight() / 1.5));
-        font.draw(batch, String.valueOf(player.getManaPool()), 220, (float)(viewport.getWorldHeight() / 2.25));
+
+    private void playerStatsDraw() {
+        font.draw(batch, String.valueOf(player.getHealth()), 20, (float) (viewport.getWorldHeight() / 1.5));
+        font.draw(batch, String.valueOf(player.getShield()), 120, (float) (viewport.getWorldHeight() / 1.5));
+        font.draw(batch, String.valueOf(player.getManaPool()), 220, (float) (viewport.getWorldHeight() / 2.25));
     }
-    private void enemiesDraw(){
-        for (int i = 0; i<3; i++){
-            if(enemies[i] != null && enemies[i].isAlive()){
-                enemies[i].draw(batch, font, elapsedTime,player);
+
+    private void enemiesDraw() {
+        for (int i = 0; i < 3; i++) {
+            if (enemies[i] != null && enemies[i].isAlive()) {
+                enemies[i].draw(batch, font, elapsedTime, player);
             }
         }
     }
-    private void draggedCardDraw(){
+
+    private void draggedCardDraw() {
         if (isDragging && draggedCard != null) {
             batch.draw(draggedCard, draggedCardX, draggedCardY, cardBounds[0].width, cardBounds[0].height);
         }
     }
-    private void cardInfoDraw(){
+
+    private void cardInfoDraw() {
         float cardInfoX = viewport.getWorldWidth() - cardInfoTexture.getWidth() - 10;
         float cardInfoY = viewport.getWorldHeight() - cardInfoTexture.getHeight() - 10;
 
@@ -289,23 +284,21 @@ public class GameScreen implements Screen {
 
         font.draw(batch, cardDescription, descriptionX, descriptionY, maxWidth, 1, true); // true для переноса строк
     }
-    private void cardAnimationDraw(){
+
+    private void cardAnimationDraw() {
         animationCardQueue.get(0).drawAnimation(cardAnimationTime, batch, enemies[animationCardQueueIndex.get(0)]);
     }
-
-
-
 
 
     private void handleInput() {
         if (Gdx.input.isTouched()) {
             touchPos = new Vector2(Gdx.input.getX(), Gdx.input.getY());
             viewport.unproject(touchPos);
-            if(!isPlayerWin()){
+            if (!isPlayerWin()) {
                 endTurnButtonPressed = endTurnButtonBounds.contains(touchPos) && playerTurn;
             }
             if (!isDragging) {
-                if(needChooseCard){
+                if (needChooseCard) {
                     chooseCardsTouching();
                 }
                 touchCards();
@@ -326,9 +319,10 @@ public class GameScreen implements Screen {
             }
         }
     }
-    private void chooseCardsTouching(){
-        for (int i = 0; i<choosingCards.length;i++){
-            if(choosingCards[i] != null && choosingCardsRectangle[i].contains(touchPos)){
+
+    private void chooseCardsTouching() {
+        for (int i = 0; i < choosingCards.length; i++) {
+            if (choosingCards[i] != null && choosingCardsRectangle[i].contains(touchPos)) {
                 chooseCard = choosingCards[i];
                 needChooseCard = false;
                 choosingCardsDispose();
@@ -336,7 +330,8 @@ public class GameScreen implements Screen {
             }
         }
     }
-    private void placeCard(){
+
+    private void placeCard() {
         if (invisibleCardArea.contains(draggedCardX, draggedCardY)) {
             soundEffectPlaceCard.play(0.7f);
             returnCard();
@@ -344,15 +339,16 @@ public class GameScreen implements Screen {
             tryUseCard();
         }
     }
-    private void tryUseCard(){
+
+    private void tryUseCard() {
         boolean returnCard = true;
-        if (manaPoolCheck()){
-            if(player.getHand()[draggedCardIndex] instanceof NonTargetCard &&
-                !invisibleCardArea.contains(cardBounds[draggedCardIndex])){
+        if (manaPoolCheck()) {
+            if (player.getHand()[draggedCardIndex] instanceof NonTargetCard &&
+                !invisibleCardArea.contains(cardBounds[draggedCardIndex])) {
                 useCard();
                 returnCard = false;
-            }else {
-                for(int i = 0; i<3; i++) {
+            } else {
+                for (int i = 0; i < 3; i++) {
                     if (enemies[i] != null && enemies[i].getBounds().contains(touchPos)) {
                         useCard(i);
                         returnCard = false;
@@ -362,21 +358,22 @@ public class GameScreen implements Screen {
             }
 
         }
-        if (returnCard){
+        if (returnCard) {
             soundEffectNotEnoughMana.play(0.7f);
             returnCard();
         }
     }
 
-    private void touchCards(){
+    private void touchCards() {
         for (int i = 0; i < cardBounds.length; i++) {
-            if (player.getHand()[i]!= null && isCardVisible[i] && cardBounds[i].contains(touchPos)) {
+            if (player.getHand()[i] != null && isCardVisible[i] && cardBounds[i].contains(touchPos)) {
                 takeCard(i);
                 break;
             }
         }
     }
-    private void takeCard(int index){
+
+    private void takeCard(int index) {
         isDragging = true;
         draggedCard = new TextureRegion(player.getHand()[index].getTexture());
         draggedCardX = touchPos.x - cardBounds[index].width / 2;
@@ -394,17 +391,18 @@ public class GameScreen implements Screen {
         isCardVisible[index] = false;
         draggedCardIndex = index;
     }
-    private void moveCard(){
+
+    private void moveCard() {
         isCardInfoVisible = true; // Скрываем информацию о карте
         // Обновляем позицию перетаскиваемой карты
-        draggedCardX =  touchPos.x-  (float) draggedCard.getRegionWidth() / 2;
-        draggedCardY = touchPos.y -  (float) draggedCard.getRegionHeight() / 2;
+        draggedCardX = touchPos.x - (float) draggedCard.getRegionWidth() / 2;
+        draggedCardY = touchPos.y - (float) draggedCard.getRegionHeight() / 2;
     }
 
     private void endTurn() {
         playerTurn = false;// Завершаем ход игрока
-        for (int i = 0; i<3; i++){
-            if(enemies[i] != null && enemies[i].isAlive()){
+        for (int i = 0; i < 3; i++) {
+            if (enemies[i] != null && enemies[i].isAlive()) {
                 enemies[i].endTurn(player);
             }
         }
@@ -432,15 +430,18 @@ public class GameScreen implements Screen {
     }
 
     @Override
-    public void pause() {}
+    public void pause() {
+    }
 
 
     @Override
-    public void resume() {}
+    public void resume() {
+    }
 
 
     @Override
-    public void hide() {}
+    public void hide() {
+    }
 
 
     @Override
@@ -451,14 +452,14 @@ public class GameScreen implements Screen {
         interfaceImage.dispose();
         attackImage.dispose();
         endTurnButtonTexture.dispose();
-        for(int i = 0; i<3 ; i++){
-            if(enemies[i] != null){
+        for (int i = 0; i < 3; i++) {
+            if (enemies[i] != null) {
                 enemies[i].dispose();
             }
         }
         font.dispose();
 
-        for (int i = 0; i < player.getHand().length-1 && player.getHand()[i] != null;  i++) {
+        for (int i = 0; i < player.getHand().length - 1 && player.getHand()[i] != null; i++) {
             player.getHand()[i].getTexture().dispose();
         }
 
@@ -473,13 +474,14 @@ public class GameScreen implements Screen {
         soundEffectPlaceCard.dispose();
         animationCardQueue.clear();
     }
-    private void choosingCardsDispose(){
+
+    private void choosingCardsDispose() {
         Arrays.fill(choosingCards, null);
     }
 
     private void preRenderCards() {
         float cardHeight = 300;
-        float cardWidth = (float)(cardHeight * 0.6); // Ширина карты
+        float cardWidth = (float) (cardHeight * 0.6); // Ширина карты
         float startX = 500; // Центрирование по X
         float startY = 20; // Фиксированная позиция Y
 
@@ -505,7 +507,7 @@ public class GameScreen implements Screen {
         }
     }
 
-    private void useCard(int i){
+    private void useCard(int i) {
         animationCardQueue.add(player.getHand()[draggedCardIndex]);
         animationCardQueueIndex.add(i);
 
@@ -516,7 +518,7 @@ public class GameScreen implements Screen {
         preRenderCards();
     }
 
-    private void useCard(){
+    private void useCard() {
         animationCardQueue.add(player.getHand()[draggedCardIndex]);
         animationCardQueueIndex.add(0);
         player.playCard(enemies[0], draggedCardIndex);
@@ -524,7 +526,7 @@ public class GameScreen implements Screen {
         preRenderCards();
     }
 
-    private void returnCard(){
+    private void returnCard() {
         cardBounds[draggedCardIndex].setPosition(initialCardPositionsX[draggedCardIndex],
             initialCardPositionsY[draggedCardIndex]);
 
@@ -533,23 +535,24 @@ public class GameScreen implements Screen {
         isCardInfoVisible = false;
     }
 
-    private boolean manaPoolCheck(){
+    private boolean manaPoolCheck() {
         return player.getManaPool() - player.getHand()[draggedCardIndex].getCost() >= 0;
 
 
     }
 
-    private void musicShow(){
+    private void musicShow() {
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/fightMusic.mp3"));
         soundEffectCardTaking = Gdx.audio.newSound(Gdx.files.internal("sounds/takeCard.wav"));
         soundEffectPlaceCard = Gdx.audio.newSound(Gdx.files.internal("sounds/placeCard.wav"));
         soundEffectEndTurn = Gdx.audio.newSound(Gdx.files.internal("sounds/endTurn.wav"));
         soundEffectNotEnoughMana = Gdx.audio.newSound(Gdx.files.internal("sounds/notEnoughMana.wav"));
     }
-    private boolean isPlayerWin(){
+
+    private boolean isPlayerWin() {
         boolean isPlayerWin = true;
-        for(int i = 0; i<3;i++){
-            if(enemies[i]!= null && enemies[i].isAlive()){
+        for (int i = 0; i < 3; i++) {
+            if (enemies[i] != null && enemies[i].isAlive()) {
                 isPlayerWin = false;
                 break;
             }
@@ -557,7 +560,8 @@ public class GameScreen implements Screen {
         return isPlayerWin;
 
     }
-    private void endFight(){
+
+    private void endFight() {
 
         backgroundMusic.stop();
         player.addCardInDeck(chooseCard);

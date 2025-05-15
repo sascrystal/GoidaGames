@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "519602376840",
+    "firebase_url": "https://goidagames-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "goidagames",
+    "storage_bucket": "goidagames.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:519602376840:android:651128be8f7401641acf3d",
+        "android_client_info": {
+          "package_name": "io.github.some_example_name"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDO515r4YvDg48n6InxHTLNx1cu6vU-BY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

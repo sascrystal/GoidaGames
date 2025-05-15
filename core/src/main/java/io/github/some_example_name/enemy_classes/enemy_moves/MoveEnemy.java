@@ -12,26 +12,26 @@ import io.github.some_example_name.player.Player;
 
 public abstract class MoveEnemy {
     protected TextureAtlas frames = new TextureAtlas(Gdx.files.internal("enemyMove/questionMark.atlas"));
-    protected Animation<TextureRegion> animation = new Animation<>(1/3F,
+    protected Animation<TextureRegion> animation = new Animation<>(1 / 3F,
         frames.findRegions("questionMark"), Animation.PlayMode.LOOP);
 
 
-
     public abstract void enemyAction(Enemy x, Player y);
-    public abstract  String showNumericalValue(Enemy x, Player y);
+
+    public abstract String showNumericalValue(Enemy x, Player y);
 
 
-    public void draw(Batch batch, BitmapFont font, float elapsedTime, Enemy enemy,Player player){
+    public void draw(Batch batch, BitmapFont font, float elapsedTime, Enemy enemy, Player player) {
 
-        font.draw(batch, String.valueOf(showNumericalValue(enemy,player)),
-            (enemy.getBounds().getX()+enemy.getBounds().getWidth()+50),
-            enemy.getBounds().getY() + enemy.getBounds().getHeight()+100);
+        font.draw(batch, String.valueOf(showNumericalValue(enemy, player)),
+            (enemy.getBounds().getX() + enemy.getBounds().getWidth() + 50),
+            enemy.getBounds().getY() + enemy.getBounds().getHeight() + 100);
 
         TextureRegion currentFrame = animation.getKeyFrame(elapsedTime, true);
         batch.draw(currentFrame,
             enemy.getBounds().getX() + enemy.getBounds().getWidth() - 40,
             enemy.getBounds().getY() + enemy.getBounds().getHeight() + 30,
-            100,130);
+            100, 130);
     }
 }
 

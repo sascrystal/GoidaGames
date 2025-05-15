@@ -8,7 +8,7 @@ import io.github.some_example_name.cards.non_target_cards.buff_cards.DanceKiller
 import io.github.some_example_name.cell_map_classes.cell_maps.CellMap;
 import io.github.some_example_name.player.Player;
 
-public class DanceEvent extends DialogEvent{
+public class DanceEvent extends DialogEvent {
     public DanceEvent() {
         score = 40;
         background = new Texture(Gdx.files.internal("backgrounds/dance_event_background.jpg"));

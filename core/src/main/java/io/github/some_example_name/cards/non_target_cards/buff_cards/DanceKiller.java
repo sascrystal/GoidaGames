@@ -12,6 +12,7 @@ public class DanceKiller extends NonTargetCard {
         description = "Тип: способность. дает одну силу и одно укрепление. Она точно была монстром?";
         cost = 1;
     }
+
     @Override
     public void cardAction(Enemy x, Player y, int index) {
         super.cardAction(x, y, index);

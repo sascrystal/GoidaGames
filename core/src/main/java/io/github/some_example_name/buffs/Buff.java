@@ -10,12 +10,11 @@ public abstract class Buff {
     //это флаги, которые показывают когда триггерится бафф
     protected boolean inEndTurn = false, inBeginTurn = false, inCardAction = false,
         inBeginFight = false, inReaction = false;
-    protected int  stack;
+    protected int stack;
     protected String name, description;
 
 
-
-    public  String getName() {
+    public String getName() {
         return name;
     }
 
@@ -23,7 +22,7 @@ public abstract class Buff {
         return stack;
     }
 
-    public  String getDescription() {
+    public String getDescription() {
         return description;
     }
 
@@ -31,8 +30,8 @@ public abstract class Buff {
         return decrease;
     }
 
-    public boolean triggerBuff(String situation){
-        switch (situation){
+    public boolean triggerBuff(String situation) {
+        switch (situation) {
             case "EndTurn":
                 return inEndTurn;
             case "BeginTurn":
@@ -42,29 +41,29 @@ public abstract class Buff {
             case "BeginFight":
                 return inBeginFight;
             case "Reaction":
-                return  inReaction;
+                return inReaction;
             default:
                 return false;
         }
     }
 
-    public void buffAction(){
+    public void buffAction() {
 
     }
 
-    public void buffAction(Enemy owner){
+    public void buffAction(Enemy owner) {
 
     }
 
-    public void buffAction(Player player){
+    public void buffAction(Player player) {
 
     }
 
-    public void addStack(){
+    public void addStack() {
         stack += 1;
     }
 
-    public void decreaseStack(){
+    public void decreaseStack() {
         stack -= 1;
     }
 
