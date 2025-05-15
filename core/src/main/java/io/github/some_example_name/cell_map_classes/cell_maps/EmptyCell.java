@@ -8,8 +8,31 @@ import io.github.some_example_name.screens.MapScreen;
 
 public class EmptyCell extends CellMap {
     public EmptyCell(float x, float y) {
+        int cellWight = 150;
         texture = new Texture(Gdx.files.internal("cell/emptyCell.png"));
-        bounds = new Rectangle(x, y, 150, 150);
+        bounds = new Rectangle(x, y, cellWight, cellWight);
+    }
+    public EmptyCell(EmptyCell emptyCell, String direction){
+        texture = new Texture(Gdx.files.internal("cell/emptyCell.png"));
+        int cellWight = 150;
+        switch (direction){
+            case "Up":
+                bounds = new Rectangle(emptyCell.bounds.getX(),emptyCell.bounds.getY() + cellWight,cellWight,cellWight);
+                break;
+            case "Down":
+                bounds = new Rectangle(emptyCell.bounds.getX(), emptyCell.bounds.getY() - cellWight, cellWight,cellWight);
+                break;
+            case "Left":
+                bounds = new Rectangle(emptyCell.bounds.getX()-cellWight, emptyCell.bounds.getY(), cellWight,cellWight);
+                break;
+            case "Right":
+                bounds = new Rectangle(emptyCell.bounds.getX()+cellWight, emptyCell.bounds.getY(), cellWight,cellWight);
+                break;
+            default:
+                Gdx.app.log("E","misdirection when creating a cell");
+                bounds = new Rectangle(0,0, 150,150);
+                break;
+        }
     }
 
 

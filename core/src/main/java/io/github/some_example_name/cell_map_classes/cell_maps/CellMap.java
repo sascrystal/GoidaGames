@@ -117,6 +117,23 @@ public abstract class CellMap {
             map[i][j] = new EventCell(DialogEvent.generateEventAct1(), map[i][j]);
         }
     }
+    private static CellMap[][] createTrainingAct(Player player){
+        CellMap[][] trainingMap = new CellMap[4][13];
+        player.setCellX(0);
+        player.setCellY(1);
+           int cellWight = 150;
+           float center = (viewport.getWorldHeight() / 2) - (float) cellWight / 2;
+        trainingMap[1][0] = new EmptyCell(0, center);
+        trainingMap[1][1]
+
+
+
+
+
+
+
+
+    }
 
     abstract public void action(MapScreen map);
 
