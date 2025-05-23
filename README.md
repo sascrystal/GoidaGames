@@ -1,49 +1,112 @@
-# Основная часть
-GoidaCards  - мобильная игра в жанре карточный rogue-like. Является курсовой работой 2-го курса по дисциплине "технологии и методы программирования". Так же продвигается эта игра на курсе Samsung innovation campus java мобильная разработка.
-## Основный игровой процесс
-Главный геймплей игрока является прохождение подземелья, сражение против врагов с помощью карт, собирание уникальной колоды. Чем лучше игрок этим занимается, тем больше очков он получает в конце и в итоге может попасть лидерборд как человек с самым большим количеством очков.
+# 🎮 GoidaCards — Карточный Rogue-Lite на Java + LibGDX
 
-# Создатели
-Клотченко Валерий Вадимович - backend разработчик.
-Чаплыгин Виктор Андреевич - frontend разработчик.
+[![Build Status](https://img.shields.io/badge/Platform-Android%20%26%20Web-brightgreen)]()
+[![License](https://img.shields.io/badge/License-MIT-blue)]()
 
-# Особая благодарность
-Алина Лоскутова - художник
-Алина Мезенцева - художник
-Богдан Полянский - музыкант
+> **GoidaCards** — это мобильная игра в жанре карточного rogue-lite. Является курсовой работой второго курса по дисциплине *"Технологии и методы программирования"*. Также продвигается в рамках курса **Samsung Innovation Campus: Java-мобильная разработка**.
 
-# GoidaGame
+## 🧩 Основной игровой процесс
+Игрок исследует подземелья, сражается с врагами с помощью карт и собирает уникальную колоду. Чем лучше игрок проходит испытания, тем больше очков он получает в конце игры. Вы можете попасть в лидерборд как обладатель самой высокой суммы очков!
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+📌 **Основные особенности:**
+- Динамичные бои на основе карт.
+- Процедурно генерируемые подземелья.
+- Система сбора и улучшения карт.
+- Лидерборд с рекордами игроков.
 
-This project was generated with a template including simple application launchers and a main class extending `Game` that sets the first screen.
+---
 
-## Platforms
+## 👥 Создатели
 
-- `core`: Main module with the application logic shared by all platforms.
-- `android`: Android mobile platform. Needs Android SDK.
-- `html`: Web platform using GWT and WebGL. Supports only Java projects.
+| Роль                   | Имя                     |
+|------------------------|-------------------------|
+| Backend-разработчик    | [Клотченко Валерий](https://github.com/sascrystal)     |
+| Frontend-разработчик   | [Чаплыгин Виктор](https://github.com/Xpohoc28)       |
 
-## Gradle
+### 💖 Особая благодарность
+- Алина Лоскутова — художник  
+- Алина Мезенцева — художник  
+- Богдан Полянский — саунд-дизайнер  
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
+---
 
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `android:lint`: performs Android project validation.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `html:dist`: compiles GWT sources. The compiled application can be found at `html/build/dist`: you can use any HTTP server to deploy it.
-- `html:superDev`: compiles GWT sources and runs the application in SuperDev mode. It will be available at [localhost:8080/html](http://localhost:8080/html). Use only during development.
-- `idea`: generates IntelliJ project data.
-- `test`: runs unit tests (if any).
+## 🛠 Техническая информация
 
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+Проект реализован с использованием фреймворка [LibGDX](https://libgdx.com/) — мощного кроссплатформенного инструмента для разработки 2D/3D игр на Java (https://libgdx.com/).
+
+### 📁 Структура проекта:
+- `core`: основная логика игры (общая для всех платформ).
+- `android`: модуль для Android-приложения.
+- `html`: веб-версия игры через GWT/WebGL (https://github.com/libgdx/gdx-liftoff).
+
+### 📦 Инструменты:
+- **Gradle** — система управления зависимостями и сборки.
+- **gdx-liftoff** — шаблонизатор проекта LibGDX.
+
+#### 🧪 Полезные команды Gradle:
+```bash
+./gradlew build              # Собрать проект
+./gradlew html:dist          # Собрать HTML-версию
+./gradlew android:install    # Установить на Android
+./gradlew test               # Запустить тесты
+```
+
+Дополнительные опции:
+- `--continue` — продолжить выполнение при ошибках.
+- `--offline` — использовать локальные зависимости.
+- `--refresh-dependencies` — перепроверить зависимости.
+
+📖 Подробнее о настройке LibGDX можно узнать из официальной документации или учебных материалов, таких как *"LibGDX Game Development"* (https://www.packtpub.com/product/libgdx-game-development-second-edition/9781785888476) или *"LibGDX Game Development Guide"* (https://book.douban.com/subject/26834311/).
+
+---
+
+## 🖼 Скриншоты
+
+![Скриншот 1](assets/screenshots/screenshot3.jpg)  
+*Боевая система*
+
+![Скриншот 2](assets/screenshots/screenshot2.jpg)
+*Меню выбора карт*
+
+![Скриншот 3](assets/screenshots/screenshot1.jpg)
+*Карта локации*
+
+![Скриншот 4](assets/screenshots/screenshot4.jpg)
+*Случайные ивенты*
+
+---
+
+## 🔧 Как собрать проект?
+
+1. Убедитесь, что установлен **JDK 11+**, **Android SDK** и **Gradle**.
+2. Клонируйте репозиторий:
+   ```bash
+   git clone https://github.com/yourname/GoidaCards.git
+   ```
+3. Перейдите в папку проекта и соберите его:
+   ```bash
+   cd GoidaCards
+   ./gradlew build
+   ```
+4. Для запуска Android-версии:
+   ```bash
+   ./gradlew android:installDebug android:run
+   ```
+
+---
+
+## 🌐 Где посмотреть?
+
+- **GitHub**: [https://github.com/yourname/GoidaCards](https://github.com/yourname/GoidaCards)
+- **Веб-версия** (после сборки): `html/build/dist/index.html`
+- **Android APK** (по мере готовности)
+
+---
+
+## ❤️ Нравится проект? Поддержи нас!
+
+Если вы хотите помочь развитию проекта, улучшить графику или добавить новые механики — добро пожаловать в Pull Requests или Issues!
+
+---
+
+> Разработано студентами 2 курса специальности "Информационные системы и технологии".
