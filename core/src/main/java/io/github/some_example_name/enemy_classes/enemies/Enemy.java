@@ -16,6 +16,7 @@ import io.github.some_example_name.buffs.Buff;
 import io.github.some_example_name.buffs.modifier_buffs.ModifierBuff;
 import io.github.some_example_name.enemy_classes.enemy_moves.MoveEnemy;
 import io.github.some_example_name.player.Player;
+import io.github.some_example_name.screens.GameScreen;
 
 public abstract class Enemy {
     protected static final Texture heart = new Texture(Gdx.files.internal("HUD/heart.png"));
@@ -50,7 +51,7 @@ public abstract class Enemy {
             bounds.width,
             bounds.height);// Получаем текущий кадр анимации
 
-        font.draw(batch, "Health: " + health, bounds.getX(), bounds.getY() + bounds.getHeight() + 100);
+        font.draw(batch, "Health: " + health, bounds.getX()-100, bounds.getY() + bounds.getHeight() + 100);
         // кто читает эту заметку тот лох
 
 
@@ -169,6 +170,9 @@ public abstract class Enemy {
                 buffs.get(i).buffAction(this);
             }
         }
+    }
+    protected float  centerOfGameScreen(float width, float scale){
+        return (float) GameScreen.viewport.getWorldWidth() / 2 - ((width*scale)/2);
     }
 }
 

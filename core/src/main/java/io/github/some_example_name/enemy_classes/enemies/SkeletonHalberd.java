@@ -19,12 +19,16 @@ public class SkeletonHalberd extends Enemy {
             frames.findRegions("Skeleton Idle"),
             Animation.PlayMode.LOOP);
         stateTime = 0f;
-        int FRAMES = 12;
         Texture texture = new Texture(Gdx.files.internal("enemies/skeleton.png"));
-        bounds = new Rectangle((float) (GameScreen.viewport.getWorldWidth() / 2.4),
+
+        int countFrames  = 12;
+        float width = (float) texture.getWidth() /countFrames;
+        float height = texture.getHeight();
+        float scale = 7;
+        bounds = new Rectangle(centerOfGameScreen(width,scale),
             GameScreen.viewport.getWorldHeight() / 3,
-            (float) (((double) texture.getWidth() / FRAMES) * 10),
-            (float) (texture.getHeight()) * 7);
+            width*scale,
+            height*scale);
 
         health = 30; // Установка здоровья
         moveList = new MoveEnemy[3];// Установка массива возможностей enemy

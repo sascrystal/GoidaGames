@@ -24,11 +24,14 @@ public class EnemyGambler extends Enemy {
         // Инициализация анимации
         stateTime = 0f; // Инициализация времени состояния
         Texture texture = new Texture(Gdx.files.internal("enemies/Gambler.png"));
-        int FRAMES = 3;
-        bounds = new Rectangle((float) (GameScreen.viewport.getWorldWidth() / 2.4),
+        int countFrames = 3;
+        float width = (float) texture.getWidth()/countFrames;
+        float height = texture.getHeight();
+        float scale = 0.5f;
+        bounds = new Rectangle(centerOfGameScreen(width,scale),
             GameScreen.viewport.getWorldHeight() / 3,
-            (float) (((double) texture.getWidth() / FRAMES) / 2.2),
-            (float) (texture.getHeight() / 2.2));
+            width*scale,height*scale);
+
 
         health = 70; // Установка здоровья
         moveList = new MoveEnemy[2];// Установка массива возможностей моба

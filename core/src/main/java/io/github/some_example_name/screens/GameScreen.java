@@ -52,7 +52,7 @@ public class GameScreen implements Screen {
     private Music backgroundMusic;
     private Sound soundEffectCardTaking, soundEffectPlaceCard, soundEffectEndTurn,
         soundEffectNotEnoughMana;
-    private Texture cardInfoTexture, attackImage, BGImage, interfaceImage;// Текстура для отображения информации о карте
+    private Texture cardInfoTexture, interfaceImage;// Текстура для отображения информации о карте
     private String cardName; // Название карты
     private String cardDescription; // Описание карты
     private boolean isCardInfoVisible;
@@ -117,8 +117,6 @@ public class GameScreen implements Screen {
     }
 
     private void showInterface() {
-        BGImage = new Texture(Gdx.files.internal("menu/BG_2.png"));
-        attackImage = new Texture(Gdx.files.internal("HUD/attak.png"));
         interfaceImage = new Texture(Gdx.files.internal("HUD/interface.png"));
     }
 
@@ -141,10 +139,10 @@ public class GameScreen implements Screen {
 
     private void showEnemies() {
         if (enemies[1] != null) {
-            enemies[1].getBounds().setX(enemies[0].getBounds().getX() + enemies[0].getBounds().getWidth() + 200);
+            enemies[1].getBounds().setX(viewport.getWorldWidth()/4-enemies[1].getBounds().width/2);
         }
         if (enemies[2] != null) {
-            enemies[2].getBounds().setX(enemies[0].getBounds().getX() - enemies[1].getBounds().getWidth() - 200);
+            enemies[2].getBounds().setX((viewport.getWorldWidth()/4)*3-enemies[1].getBounds().width/2);
         }
     }
 
@@ -205,7 +203,7 @@ public class GameScreen implements Screen {
     }
 
     private void backgroundDraw() {
-        batch.draw(background, 0, 0, viewport.getScreenWidth(), viewport.getScreenHeight());
+        batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
     }
 
     private void logic() {
@@ -448,9 +446,7 @@ public class GameScreen implements Screen {
     public void dispose() {
         cardInfoTexture.dispose();
         batch.dispose();
-        BGImage.dispose();
         interfaceImage.dispose();
-        attackImage.dispose();
         endTurnButtonTexture.dispose();
         for (int i = 0; i < 3; i++) {
             if (enemies[i] != null) {
