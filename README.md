@@ -62,17 +62,25 @@
 
 ## 🖼 Скриншоты
 
-![Скриншот 1](assets/screenshots/screenshot3.jpg)  
-*Боевая система*
+<div style="display: flex; flex-direction: column; align-items: center;">
+  <img src="assets/screenshots/screenshot3.jpg" alt="Боевая система" width="500">
+  <p style="text-align: center;">Боевая система</p>
+</div>
 
-![Скриншот 2](assets/screenshots/screenshot2.jpg)
-*Меню выбора карт*
+<div style="display: flex; flex-direction: column; align-items: center;">
+  <img src="assets/screenshots/screenshot2.jpg" alt="Меню выбора карт" width="500">
+  <p style="text-align: center;">Меню выбора карт</p>
+</div>
 
-![Скриншот 3](assets/screenshots/screenshot1.jpg)
-*Карта локации*
+<div style="display: flex; flex-direction: column; align-items: center;">
+  <img src="assets/screenshots/screenshot1.jpg" alt="Карта локации" width="500">
+  <p style="text-align: center;">Карта локации</p>
+</div>
 
-![Скриншот 4](assets/screenshots/screenshot4.jpg)
-*Случайные ивенты*
+<div style="display: flex; flex-direction: column; align-items: center;">
+  <img src="assets/screenshots/screenshot4.jpg" alt="Случайные ивенты" width="500">
+  <p style="text-align: center;">Случайные ивенты</p>
+</div>
 
 ---
 
