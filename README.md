@@ -62,25 +62,14 @@
 
 ## 🖼 Скриншоты
 
-<div style="display: flex; flex-direction: column; align-items: center;">
-  <img src="assets/screenshots/screenshot3.jpg" alt="Боевая система" width="500">
-  <p style="text-align: center;">Боевая система</p>
-</div>
+## 🖼 Скриншоты
 
-<div style="display: flex; flex-direction: column; align-items: center;">
-  <img src="assets/screenshots/screenshot2.jpg" alt="Меню выбора карт" width="500">
-  <p style="text-align: center;">Меню выбора карт</p>
-</div>
-
-<div style="display: flex; flex-direction: column; align-items: center;">
-  <img src="assets/screenshots/screenshot1.jpg" alt="Карта локации" width="500">
-  <p style="text-align: center;">Карта локации</p>
-</div>
-
-<div style="display: flex; flex-direction: column; align-items: center;">
-  <img src="assets/screenshots/screenshot4.jpg" alt="Случайные ивенты" width="500">
-  <p style="text-align: center;">Случайные ивенты</p>
-</div>
+| Скриншот | Описание |
+|----------|----------|
+| ![Боевая система](assets/screenshots/screenshot3.jpg) | *Боевая система* |
+| ![Меню выбора карт](assets/screenshots/screenshot2.jpg) | *Меню выбора карт* |
+| ![Карта локации](assets/screenshots/screenshot1.jpg) | *Карта локации* |
+| ![Случайные ивенты](assets/screenshots/screenshot4.jpg) | *Случайные ивенты* |
 
 ---
 
