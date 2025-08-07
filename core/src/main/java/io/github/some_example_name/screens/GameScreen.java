@@ -35,7 +35,7 @@ public class GameScreen implements Screen {
     private final List<PlayingCard> animationCardQueue = new ArrayList<>();
     private final List<Integer> animationCardQueueIndex = new ArrayList<>();
     private final CellMap[][] map;
-    private Texture background;
+    private  Texture background;
     private boolean endTurnButtonPressed = false;
     private SpriteBatch batch;
     private Rectangle[] cardBounds;
@@ -154,7 +154,7 @@ public class GameScreen implements Screen {
         elapsedTime += delta;
         cardAnimationUpdate(delta);
         music();
-        draw();
+        draw(delta);
         handleInput();
         logic();
 
@@ -178,13 +178,13 @@ public class GameScreen implements Screen {
         backgroundMusic.play();
     }
 
-    private void draw() {
+    private void draw(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
         batch.begin();
         backgroundDraw();
         interfaceDraw();
         playerStatsDraw();
-        enemiesDraw();
+        enemiesDraw(delta);
         renderingCards();
         draggedCardDraw();
 
@@ -255,10 +255,10 @@ public class GameScreen implements Screen {
         font.draw(batch, String.valueOf(player.getManaPool()), 220, (float) (viewport.getWorldHeight() / 2.25));
     }
 
-    private void enemiesDraw() {
+    private void enemiesDraw(float delta) {
         for (int i = 0; i < 3; i++) {
             if (enemies[i] != null && enemies[i].isAlive()) {
-                enemies[i].draw(batch, font, elapsedTime, player);
+                enemies[i].draw(batch, font, delta, player);
             }
         }
     }

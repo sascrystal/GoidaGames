@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.some_example_name.Main;
 import io.github.some_example_name.buffs.Buff;
 import io.github.some_example_name.buffs.modifier_buffs.ModifierBuff;
 import io.github.some_example_name.enemy_classes.enemy_moves.MoveEnemy;
@@ -30,6 +31,12 @@ public abstract class Enemy {
     protected MoveEnemy[] moveList;
     protected float stateTime;// Время для анимации
     protected int indexMoveList;
+    protected boolean enemyShaking = false;
+    protected float enemyShakingDelta = 0, enemyShakingTimer = 0,enemyStep = 0;
+    public static float ENEMY_ELAPSED_TIME = 0;
+    protected static final float SPEED_SHAKING = 6f;
+    protected static final float AMPLITUDE_SHAKING = 100;
+    protected static final float STEP_VALUE = 0.3f;
 
 
     protected Sound takingDamageSoundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/takingDamageGamblerSoundEffect.wav"));
@@ -43,10 +50,11 @@ public abstract class Enemy {
     }
 
 
-    public void draw(SpriteBatch batch, BitmapFont font, float elapsedTime, Player player) {
-        TextureRegion currentFrame = animation.getKeyFrame(elapsedTime, true);
+    public void draw(SpriteBatch batch, BitmapFont font, float delta, Player player) {
+        ENEMY_ELAPSED_TIME += delta;
+        TextureRegion currentFrame = animation.getKeyFrame(ENEMY_ELAPSED_TIME, true);
         batch.draw(currentFrame,
-            bounds.x,
+            bounds.x + enemyShakingDelta*AMPLITUDE_SHAKING,
             bounds.y,
             bounds.width,
             bounds.height);// Получаем текущий кадр анимации
@@ -55,8 +63,29 @@ public abstract class Enemy {
         // кто читает эту заметку тот лох
 
 
-        moveList[getIndexMoveList()].draw(batch, font, elapsedTime, this, player);
+        moveList[getIndexMoveList()].draw(batch, font, ENEMY_ELAPSED_TIME, this, player);
+        enemyShakingDeltaChanging(delta);
 
+
+
+
+    }
+    private void enemyShakingDeltaChanging(float delta){
+
+        if(enemyShaking){
+            enemyStep += (delta)*SPEED_SHAKING;
+            enemyShakingTimer += (delta)*SPEED_SHAKING;
+            if(enemyStep >= STEP_VALUE){
+                enemyShakingDelta = (float) Math.sin(enemyShakingTimer);
+                enemyStep = 0;
+            }
+        }else {
+            enemyShakingDelta = 0;
+        }
+        if(enemyShakingTimer >= 2*Math.PI){
+            enemyShakingTimer = 0;
+            enemyShaking = false;
+        }
 
     }
 
@@ -86,6 +115,8 @@ public abstract class Enemy {
         if (health <= 0) {
             health = 0; // Убедитесь, что здоровье не становится отрицательным
         }
+        enemyShaking = true;
+
     }
 
     public void endTurn(Player y) {
