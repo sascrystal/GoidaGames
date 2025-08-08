@@ -31,12 +31,12 @@ public class GameScreen implements Screen {
     public static StretchViewport viewport = new StretchViewport(2400, 1080);
     // Добавляем противника и игрока
     private final Enemy[] enemies;
-    private int attackingEnemyIndex;
     private final Player player;
     private final List<PlayingCard> animationCardQueue = new ArrayList<>();
     private final List<Integer> animationCardQueueIndex = new ArrayList<>();
     private final CellMap[][] map;
-    private  Texture background;
+    private int attackingEnemyIndex;
+    private Texture background;
     private boolean endTurnButtonPressed = false;
     private SpriteBatch batch;
     private Rectangle[] cardBounds;
@@ -140,10 +140,10 @@ public class GameScreen implements Screen {
 
     private void showEnemies() {
         if (enemies[1] != null) {
-            enemies[1].getBounds().setX(viewport.getWorldWidth()/4-enemies[1].getBounds().width/2);
+            enemies[1].getBounds().setX(viewport.getWorldWidth() / 4 - enemies[1].getBounds().width / 2);
         }
         if (enemies[2] != null) {
-            enemies[2].getBounds().setX((viewport.getWorldWidth()/4)*3-enemies[1].getBounds().width/2);
+            enemies[2].getBounds().setX((viewport.getWorldWidth() / 4) * 3 - enemies[1].getBounds().width / 2);
         }
     }
 
@@ -213,11 +213,12 @@ public class GameScreen implements Screen {
         }
         attackingLogic();
     }
-    private void attackingLogic(){
-        if(!playerTurn){
-            if(!enemies[attackingEnemyIndex].isAttacking()){
-                for(int i = attackingEnemyIndex+1; i<enemies.length; i++){
-                    if(enemies[i] != null && enemies[i].isAlive()){
+
+    private void attackingLogic() {
+        if (!playerTurn) {
+            if (!enemies[attackingEnemyIndex].isAttacking()) {
+                for (int i = attackingEnemyIndex + 1; i < enemies.length; i++) {
+                    if (enemies[i] != null && enemies[i].isAlive()) {
                         attackingEnemyIndex = i;
                         enemies[attackingEnemyIndex].setAttacking(true);
                         return;
@@ -426,9 +427,10 @@ public class GameScreen implements Screen {
         enemies[attackingEnemyIndex].setAttacking(true);
         Arrays.fill(isCardVisible, true);
     }
-    private int findFirstAliveEnemy(){
-        for(int i = 0;i<enemies.length;i++){
-            if(enemies[i] != null && enemies[i].isAlive()){
+
+    private int findFirstAliveEnemy() {
+        for (int i = 0; i < enemies.length; i++) {
+            if (enemies[i] != null && enemies[i].isAlive()) {
                 return i;
             }
         }

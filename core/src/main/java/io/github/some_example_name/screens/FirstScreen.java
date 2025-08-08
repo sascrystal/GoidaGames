@@ -19,20 +19,17 @@ import io.github.some_example_name.player.CharacterKnight;
 import io.github.some_example_name.player.Player;
 
 public class FirstScreen implements Screen {
-    private  Texture BG_image;
+    private static final float NEW_GAME_BUTTON_SCALING = 0.48f, CONTINUE_GAME_BUTTON_SCALING = 0.5f,
+        TUTORIAL_BUTTON_SCALING = 0.5f, LOGO_SCALING = 0.8f;
+    private static final float INDENT_BUTTONS = 10, STARTING_POSITION = 200;
+    private static final float AMPLITUDE_SHAKING = 30, SPEED_SHAKING = 2f, STEP_VALUE = 0.3f;
+    private Texture BG_image;
     private Texture logoTexture;
     private SpriteBatch batch;
     private StretchViewport viewport;
     private Stage stage;
     private Music backgroundMusic, backgroundNoiseMenu;
-    private static final float NEW_GAME_BUTTON_SCALING = 0.48f, CONTINUE_GAME_BUTTON_SCALING = 0.5f,
-        TUTORIAL_BUTTON_SCALING = 0.5f, LOGO_SCALING = 0.8f;
-    private static final float INDENT_BUTTONS = 10, STARTING_POSITION = 200;
-
-    private float logoStep = 0, logoShakingDelta = 0,logoELapsedTime = 0;
-    private static final float AMPLITUDE_SHAKING = 30, SPEED_SHAKING = 2f,STEP_VALUE = 0.3f;
-
-
+    private float logoStep = 0, logoShakingDelta = 0, logoELapsedTime = 0;
 
     @Override
     public void show() {
@@ -59,16 +56,14 @@ public class FirstScreen implements Screen {
 
         startButton.setSize(startButtonTexture.getWidth() * NEW_GAME_BUTTON_SCALING, startButtonTexture.getHeight() * NEW_GAME_BUTTON_SCALING);
         continueButton.setSize(continueButtonTexture.getWidth() * CONTINUE_GAME_BUTTON_SCALING, continueButtonTexture.getHeight() * CONTINUE_GAME_BUTTON_SCALING);
-        tutorialButton.setSize(tutorialButtonTexture.getWidth()*TUTORIAL_BUTTON_SCALING,tutorialButtonTexture.getHeight()*TUTORIAL_BUTTON_SCALING);
-
-
+        tutorialButton.setSize(tutorialButtonTexture.getWidth() * TUTORIAL_BUTTON_SCALING, tutorialButtonTexture.getHeight() * TUTORIAL_BUTTON_SCALING);
 
 
         // Позиционирование кнопок
 
         continueButton.setPosition(INDENT_BUTTONS, STARTING_POSITION);
-        tutorialButton.setPosition(INDENT_BUTTONS,continueButton.getY()+continueButton.getHeight());
-        startButton.setPosition(INDENT_BUTTONS, tutorialButton.getY()+tutorialButton.getHeight());
+        tutorialButton.setPosition(INDENT_BUTTONS, continueButton.getY() + continueButton.getHeight());
+        startButton.setPosition(INDENT_BUTTONS, tutorialButton.getY() + tutorialButton.getHeight());
 
         // Масштабирование кнопок (если нужно уменьшить размер)
 
@@ -94,7 +89,7 @@ public class FirstScreen implements Screen {
             }
         });
 
-        tutorialButton.addListener(new ClickListener(){
+        tutorialButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Continue button pressed!");
@@ -141,11 +136,12 @@ public class FirstScreen implements Screen {
         stage.act(delta);
         stage.draw();
     }
-    private void logoDraw(float delta){
-        batch.draw(logoTexture, (viewport.getWorldWidth()/2)+10- (float) logoTexture.getWidth() /2, 600-logoShakingDelta*AMPLITUDE_SHAKING,
-            logoTexture.getWidth()*LOGO_SCALING,logoTexture.getHeight()*LOGO_SCALING);
-        logoStep += (delta)*SPEED_SHAKING;
-        if(logoStep >= STEP_VALUE){
+
+    private void logoDraw(float delta) {
+        batch.draw(logoTexture, (viewport.getWorldWidth() / 2) + 10 - (float) logoTexture.getWidth() / 2, 600 - logoShakingDelta * AMPLITUDE_SHAKING,
+            logoTexture.getWidth() * LOGO_SCALING, logoTexture.getHeight() * LOGO_SCALING);
+        logoStep += (delta) * SPEED_SHAKING;
+        if (logoStep >= STEP_VALUE) {
             logoELapsedTime += logoStep;
             logoShakingDelta = (float) Math.abs(Math.sin(logoELapsedTime));
             logoStep = 0;

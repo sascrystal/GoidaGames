@@ -19,6 +19,8 @@ import io.github.some_example_name.player.Player;
 
 
 public class MapScreen implements Screen {
+    private static final short DIRECTION_UP = 0, DIRECTION_RIGHT = 1, DIRECTION_DOWN = 2, DIRECTION_LEFT = 3;
+    private static final float CHARACTER_SPEED = 100f;
     private final Player player;
     private final CellMap[][] map;
     private SpriteBatch batch;
@@ -33,6 +35,9 @@ public class MapScreen implements Screen {
     private BitmapFont font;
     private float elapsedTime;
     private boolean wasTouched;
+    private short characterDirection;
+    private boolean playerIsMoving;
+
 
     public MapScreen(Player player, CellMap[][] map) {
         this.player = player;
@@ -120,10 +125,12 @@ public class MapScreen implements Screen {
         backgroundDraw();
         mapDraw(elapsedTime);
         deckButtonDemonstrationDraw();
-        playerDraw();
+        playerDraw(delta);
         buttonsDraw();
         healthBarDraw();
         scoreDraw();
+
+
 
         batch.end();
     }
@@ -148,8 +155,65 @@ public class MapScreen implements Screen {
             deckButtonDemonstrationRectangle.getWidth(), deckButtonDemonstrationRectangle.getHeight());
     }
 
-    private void playerDraw() {
+    private void playerDraw(float delta) {
+        moveCharacter(delta);
         player.drawMap(batch, map[player.getCellY()][player.getCellX()].getBounds());
+    }
+
+    private void moveCharacter(float delta) {
+        if (playerIsMoving) {
+            float yArrivalPoint;
+            float xArrivalPoint;
+            switch (characterDirection) {
+                case DIRECTION_UP:
+                    player.setyOnScreen(player.getyOnScreen() + delta * CHARACTER_SPEED);
+                    yArrivalPoint = map[player.getCellY() - 1][player.getCellX()].getBounds().getY() + 15;
+                    if (player.getyOnScreen() >= yArrivalPoint) {
+                        playerIsMoving = false;
+                        player.setCellY(player.getCellY() - 1);
+                        map[player.getCellY()][player.getCellX()].setPlayerIn(true);
+                    }
+                    break;
+                case DIRECTION_RIGHT:
+                    player.setxOnScreen(player.getXOnScreen() + delta * CHARACTER_SPEED);
+                    xArrivalPoint = map[player.getCellY()][player.getCellX() + 1].getBounds().getX() + map[player.getCellY()][player.getCellX() + 1].getBounds().getWidth() / 2 - player.getWidth() / 2;
+                    if (player.getXOnScreen() >= xArrivalPoint) {
+                        playerIsMoving = false;
+                        player.setCellX(player.getCellX() + 1);
+                        map[player.getCellY()][player.getCellX()].setPlayerIn(true);
+                    }
+                    break;
+                case DIRECTION_DOWN:
+                    player.setyOnScreen(player.getyOnScreen() - delta * CHARACTER_SPEED);
+                    yArrivalPoint = map[player.getCellY() + 1][player.getCellX()].getBounds().getY() + 15;
+                    if (player.getyOnScreen() <= yArrivalPoint) {
+                        playerIsMoving = false;
+                        player.setCellY(player.getCellY() + 1);
+                        map[player.getCellY()][player.getCellX()].setPlayerIn(true);
+                    }
+                    break;
+                case DIRECTION_LEFT:
+                    player.setxOnScreen(player.getXOnScreen() - delta * CHARACTER_SPEED);
+                    xArrivalPoint = map[player.getCellY()][player.getCellX() - 1].getBounds().getX() + map[player.getCellY()][player.getCellX() - 1].getBounds().getWidth() / 2 - player.getWidth() / 2;
+                    if (player.getXOnScreen() <= xArrivalPoint) {
+                        playerIsMoving = false;
+                        player.setCellX(player.getCellX() - 1);
+                        map[player.getCellY()][player.getCellX()].setPlayerIn(true);
+                    }
+                    break;
+            }
+        }
+        walkAnimation(delta);
+    }
+
+    private void walkAnimation(float delta) {
+        if (playerIsMoving || !player.inStatic()) {
+            player.walkAnimation(delta);
+        }
+        if (playerIsMoving || !player.notRotated()) {
+            player.rotateAnimation(delta);
+        }
+
     }
 
     private void buttonsDraw() {
@@ -213,7 +277,7 @@ public class MapScreen implements Screen {
     }
 
     private void moveButtonsInput(Vector2 touchPosition) {
-        if (!wasTouched) {
+        if (!wasTouched && !playerIsMoving) {
             if (rightButtonRectangle.contains(touchPosition.x, touchPosition.y)) {
                 movePlayer("right");
             }
@@ -246,29 +310,29 @@ public class MapScreen implements Screen {
             case "down":
                 if (moveIsPossible(player.getCellY() + 1, player.getCellX())) {
                     map[player.getCellY()][player.getCellX()].setPlayerIn(false);
-                    player.setCellY(player.getCellY() + 1);
-                    map[player.getCellY()][player.getCellX()].setPlayerIn(true);
+                    characterDirection = DIRECTION_DOWN;
+                    playerIsMoving = true;
                 }
                 break;
             case "up":
                 if (moveIsPossible(player.getCellY() - 1, player.getCellX())) {
                     map[player.getCellY()][player.getCellX()].setPlayerIn(false);
-                    player.setCellY(player.getCellY() - 1);
-                    map[player.getCellY()][player.getCellX()].setPlayerIn(true);
+                    characterDirection = DIRECTION_UP;
+                    playerIsMoving = true;
                 }
                 break;
             case "right":
                 if (moveIsPossible(player.getCellY(), player.getCellX() + 1)) {
                     map[player.getCellY()][player.getCellX()].setPlayerIn(false);
-                    player.setCellX(player.getCellX() + 1);
-                    map[player.getCellY()][player.getCellX()].setPlayerIn(true);
+                    characterDirection = DIRECTION_RIGHT;
+                    playerIsMoving = true;
                 }
                 break;
             case "left":
                 if (moveIsPossible(player.getCellY(), player.getCellX() - 1)) {
                     map[player.getCellY()][player.getCellX()].setPlayerIn(false);
-                    player.setCellX(player.getCellX() - 1);
-                    map[player.getCellY()][player.getCellX()].setPlayerIn(true);
+                    characterDirection = DIRECTION_LEFT;
+                    playerIsMoving = true;
                 }
         }
     }

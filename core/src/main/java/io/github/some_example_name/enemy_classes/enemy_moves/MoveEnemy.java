@@ -24,7 +24,6 @@ public abstract class MoveEnemy {
     public void draw(Batch batch, BitmapFont font, float elapsedTime, Enemy enemy, Player player) {
 
 
-
         TextureRegion currentFrame = animation.getKeyFrame(elapsedTime, true);
         batch.draw(currentFrame,
             enemy.getBounds().getX() + enemy.getBounds().getWidth() - 40,

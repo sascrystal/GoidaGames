@@ -43,6 +43,8 @@ public abstract class CellMap {
         int center = map.length / 2;
         player.setCellX(0);
         player.setCellY(center);
+        player.setxOnScreen(map[center][0]);
+        player.setyOnScreen(map[center][0]);
         map[center][0].setPlayerIn(true);
     }
 

@@ -22,13 +22,13 @@ public class EnemyHamster extends Enemy {
 
         Texture texture = new Texture(Gdx.files.internal("enemies/hamster.png"));
         int countFrames = 3;
-        float width = (float) texture.getWidth() /countFrames;
+        float width = (float) texture.getWidth() / countFrames;
         float height = texture.getHeight();
         float scale = 0.5f;
 
 
-        bounds = new Rectangle(centerOfGameScreen(width,scale), GameScreen.viewport.getWorldHeight() / 3,
-            width*scale,height*scale); // установка границ врага
+        bounds = new Rectangle(centerOfGameScreen(width, scale), GameScreen.viewport.getWorldHeight() / 3,
+            width * scale, height * scale); // установка границ врага
 
 
         health = 17; // Установка здоровья
