@@ -31,11 +31,12 @@ public class GameScreen implements Screen {
     public static StretchViewport viewport = new StretchViewport(2400, 1080);
     // Добавляем противника и игрока
     private final Enemy[] enemies;
+    private int attackingEnemyIndex;
     private final Player player;
     private final List<PlayingCard> animationCardQueue = new ArrayList<>();
     private final List<Integer> animationCardQueueIndex = new ArrayList<>();
     private final CellMap[][] map;
-    private Texture background;
+    private  Texture background;
     private boolean endTurnButtonPressed = false;
     private SpriteBatch batch;
     private Rectangle[] cardBounds;
@@ -52,7 +53,7 @@ public class GameScreen implements Screen {
     private Music backgroundMusic;
     private Sound soundEffectCardTaking, soundEffectPlaceCard, soundEffectEndTurn,
         soundEffectNotEnoughMana;
-    private Texture cardInfoTexture, attackImage, BGImage, interfaceImage;// Текстура для отображения информации о карте
+    private Texture cardInfoTexture, interfaceImage;// Текстура для отображения информации о карте
     private String cardName; // Название карты
     private String cardDescription; // Описание карты
     private boolean isCardInfoVisible;
@@ -117,8 +118,6 @@ public class GameScreen implements Screen {
     }
 
     private void showInterface() {
-        BGImage = new Texture(Gdx.files.internal("menu/BG_2.png"));
-        attackImage = new Texture(Gdx.files.internal("HUD/attak.png"));
         interfaceImage = new Texture(Gdx.files.internal("HUD/interface.png"));
     }
 
@@ -141,10 +140,10 @@ public class GameScreen implements Screen {
 
     private void showEnemies() {
         if (enemies[1] != null) {
-            enemies[1].getBounds().setX(enemies[0].getBounds().getX() + enemies[0].getBounds().getWidth() + 200);
+            enemies[1].getBounds().setX(viewport.getWorldWidth()/4-enemies[1].getBounds().width/2);
         }
         if (enemies[2] != null) {
-            enemies[2].getBounds().setX(enemies[0].getBounds().getX() - enemies[1].getBounds().getWidth() - 200);
+            enemies[2].getBounds().setX((viewport.getWorldWidth()/4)*3-enemies[1].getBounds().width/2);
         }
     }
 
@@ -156,7 +155,7 @@ public class GameScreen implements Screen {
         elapsedTime += delta;
         cardAnimationUpdate(delta);
         music();
-        draw();
+        draw(delta);
         handleInput();
         logic();
 
@@ -180,13 +179,13 @@ public class GameScreen implements Screen {
         backgroundMusic.play();
     }
 
-    private void draw() {
+    private void draw(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
         batch.begin();
         backgroundDraw();
         interfaceDraw();
         playerStatsDraw();
-        enemiesDraw();
+        enemiesDraw(delta);
         renderingCards();
         draggedCardDraw();
 
@@ -205,12 +204,28 @@ public class GameScreen implements Screen {
     }
 
     private void backgroundDraw() {
-        batch.draw(background, 0, 0, viewport.getScreenWidth(), viewport.getScreenHeight());
+        batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
     }
 
     private void logic() {
         if (isPlayerWin()) {
             choosingCardLogic();
+        }
+        attackingLogic();
+    }
+    private void attackingLogic(){
+        if(!playerTurn){
+            if(!enemies[attackingEnemyIndex].isAttacking()){
+                for(int i = attackingEnemyIndex+1; i<enemies.length; i++){
+                    if(enemies[i] != null && enemies[i].isAlive()){
+                        attackingEnemyIndex = i;
+                        enemies[attackingEnemyIndex].setAttacking(true);
+                        return;
+                    }
+                }
+                playerTurn = true;
+                player.beginTurn();
+            }
         }
     }
 
@@ -257,10 +272,10 @@ public class GameScreen implements Screen {
         font.draw(batch, String.valueOf(player.getManaPool()), 220, (float) (viewport.getWorldHeight() / 2.25));
     }
 
-    private void enemiesDraw() {
+    private void enemiesDraw(float delta) {
         for (int i = 0; i < 3; i++) {
             if (enemies[i] != null && enemies[i].isAlive()) {
-                enemies[i].draw(batch, font, elapsedTime, player);
+                enemies[i].draw(batch, font, delta, player);
             }
         }
     }
@@ -401,27 +416,23 @@ public class GameScreen implements Screen {
 
     private void endTurn() {
         playerTurn = false;// Завершаем ход игрока
-        for (int i = 0; i < 3; i++) {
-            if (enemies[i] != null && enemies[i].isAlive()) {
-                enemies[i].endTurn(player);
-            }
-        }
-
-        // Проверка здоровья игрока
         if (player.getHealth() <= 0) {
             backgroundMusic.stop();
             this.dispose();
             ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
         }
-
         player.endTurn();
-
-        playerTurn = true; // Ход переходит обратно к игроку
-        player.beginTurn(); // Обновляем карты в руке игрока
-
-        // Обновляем видимость карт
-        // делаем все карты видимыми (или можете настроить по вашему усмотрению)
+        attackingEnemyIndex = findFirstAliveEnemy();
+        enemies[attackingEnemyIndex].setAttacking(true);
         Arrays.fill(isCardVisible, true);
+    }
+    private int findFirstAliveEnemy(){
+        for(int i = 0;i<enemies.length;i++){
+            if(enemies[i] != null && enemies[i].isAlive()){
+                return i;
+            }
+        }
+        return 0;
     }
 
     @Override
@@ -448,9 +459,7 @@ public class GameScreen implements Screen {
     public void dispose() {
         cardInfoTexture.dispose();
         batch.dispose();
-        BGImage.dispose();
         interfaceImage.dispose();
-        attackImage.dispose();
         endTurnButtonTexture.dispose();
         for (int i = 0; i < 3; i++) {
             if (enemies[i] != null) {

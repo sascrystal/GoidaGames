@@ -72,12 +72,12 @@ public class ShowDeckScreen implements Screen, GestureDetector.GestureListener {
     private void showButtonBack() {
 
         buttonBackTexture = new Texture(Gdx.files.internal("buttons/back_button.png"));
-        float width = buttonBackTexture.getWidth();
-        float height = buttonBackTexture.getHeight();
+        float width = 100;
+        float height = 100;
         buttonBackRectangle = new Rectangle(
             viewport.getWorldWidth() - width - 100,
             viewport.getWorldHeight() - height - 100,
-            width, height);
+            100, 50);
     }
 
     @Override

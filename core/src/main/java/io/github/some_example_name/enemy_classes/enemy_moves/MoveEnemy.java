@@ -23,15 +23,16 @@ public abstract class MoveEnemy {
 
     public void draw(Batch batch, BitmapFont font, float elapsedTime, Enemy enemy, Player player) {
 
-        font.draw(batch, String.valueOf(showNumericalValue(enemy, player)),
-            (enemy.getBounds().getX() + enemy.getBounds().getWidth() + 50),
-            enemy.getBounds().getY() + enemy.getBounds().getHeight() + 100);
+
 
         TextureRegion currentFrame = animation.getKeyFrame(elapsedTime, true);
         batch.draw(currentFrame,
             enemy.getBounds().getX() + enemy.getBounds().getWidth() - 40,
             enemy.getBounds().getY() + enemy.getBounds().getHeight() + 30,
             100, 130);
+        font.draw(batch, String.valueOf(showNumericalValue(enemy, player)),
+            (enemy.getBounds().getX() + enemy.getBounds().getWidth() + currentFrame.getRegionWidth() + 2),
+            enemy.getBounds().getY() + enemy.getBounds().getHeight() + 100);
     }
 }
 

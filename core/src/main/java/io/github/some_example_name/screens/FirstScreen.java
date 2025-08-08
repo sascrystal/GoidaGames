@@ -19,19 +19,20 @@ import io.github.some_example_name.player.CharacterKnight;
 import io.github.some_example_name.player.Player;
 
 public class FirstScreen implements Screen {
-    private final Texture BG_image;
+    private  Texture BG_image;
+    private Texture logoTexture;
     private SpriteBatch batch;
     private StretchViewport viewport;
     private Stage stage;
-    private float backgroundX1;
-    private float backgroundX2;
     private Music backgroundMusic, backgroundNoiseMenu;
+    private static final float NEW_GAME_BUTTON_SCALING = 0.48f, CONTINUE_GAME_BUTTON_SCALING = 0.5f,
+        TUTORIAL_BUTTON_SCALING = 0.5f, LOGO_SCALING = 0.8f;
+    private static final float INDENT_BUTTONS = 10, STARTING_POSITION = 200;
 
-    public FirstScreen() {
-        BG_image = new Texture(Gdx.files.internal("menu/BG_1.png"));
-        backgroundX1 = 0;
-        backgroundX2 = BG_image.getWidth();
-    }
+    private float logoStep = 0, logoShakingDelta = 0,logoELapsedTime = 0;
+    private static final float AMPLITUDE_SHAKING = 30, SPEED_SHAKING = 2f,STEP_VALUE = 0.3f;
+
+
 
     @Override
     public void show() {
@@ -43,21 +44,34 @@ public class FirstScreen implements Screen {
         // Инициализация Stage
         stage = new Stage(viewport, batch);
         Gdx.input.setInputProcessor(stage); // Передача ввода Stage
+        BG_image = new Texture(Gdx.files.internal("menu/menu_background.png"));
+        logoTexture = new Texture(Gdx.files.internal("menu/goblin_cards_logo.png"));
 
         // Создание кнопок
-        Texture startButtonTexture = new Texture(Gdx.files.internal("menu/NG.png"));
-        Texture continueButtonTexture = new Texture(Gdx.files.internal("menu/CT.png"));
+        Texture startButtonTexture = new Texture(Gdx.files.internal("menu/new_game_button.png"));
+        Texture continueButtonTexture = new Texture(Gdx.files.internal("menu/continue_button_unavailable.png"));
+        Texture tutorialButtonTexture = new Texture(Gdx.files.internal("menu/tutorial_button.png"));
 
         ImageButton startButton = new ImageButton(new TextureRegionDrawable(startButtonTexture));
         ImageButton continueButton = new ImageButton(new TextureRegionDrawable(continueButtonTexture));
+        ImageButton tutorialButton = new ImageButton(new TextureRegionDrawable(tutorialButtonTexture));
+
+
+        startButton.setSize(startButtonTexture.getWidth() * NEW_GAME_BUTTON_SCALING, startButtonTexture.getHeight() * NEW_GAME_BUTTON_SCALING);
+        continueButton.setSize(continueButtonTexture.getWidth() * CONTINUE_GAME_BUTTON_SCALING, continueButtonTexture.getHeight() * CONTINUE_GAME_BUTTON_SCALING);
+        tutorialButton.setSize(tutorialButtonTexture.getWidth()*TUTORIAL_BUTTON_SCALING,tutorialButtonTexture.getHeight()*TUTORIAL_BUTTON_SCALING);
+
+
+
 
         // Позиционирование кнопок
-        startButton.setPosition(800, 350);
-        continueButton.setPosition(800, 100); // Изменено, чтобы кнопки не пересекались
+
+        continueButton.setPosition(INDENT_BUTTONS, STARTING_POSITION);
+        tutorialButton.setPosition(INDENT_BUTTONS,continueButton.getY()+continueButton.getHeight());
+        startButton.setPosition(INDENT_BUTTONS, tutorialButton.getY()+tutorialButton.getHeight());
 
         // Масштабирование кнопок (если нужно уменьшить размер)
-        startButton.setSize(startButton.getWidth() * 0.9f, startButton.getHeight() * 0.9f);
-        continueButton.setSize(continueButton.getWidth() * 0.9f, continueButton.getHeight() * 0.9f);
+
 
         // Обработчики событий для кнопок
         startButton.addListener(new ClickListener() {
@@ -70,11 +84,17 @@ public class FirstScreen implements Screen {
                 CellMap[][] map = CellMap.generateAct1(player);
                 MapScreen act1 = new MapScreen(player, map);
                 DialogueScreen dialogueScreen = new DialogueScreen("intro", act1);
-                ((Main) Gdx.app.getApplicationListener()).setScreen(act1);
+                ((Main) Gdx.app.getApplicationListener()).setScreen(dialogueScreen);
             }
         });
 
         continueButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {//TODO: сделать продолжение игры
+            }
+        });
+
+        tutorialButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Continue button pressed!");
@@ -90,6 +110,7 @@ public class FirstScreen implements Screen {
         // Добавление кнопок на сцену
         stage.addActor(startButton);
         stage.addActor(continueButton);
+        stage.addActor(tutorialButton);
 
         // Инициализация музыки
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/mainMenuMusic.mp3"));
@@ -108,27 +129,28 @@ public class FirstScreen implements Screen {
         ScreenUtils.clear(0, 0, 0, 1);
 
         // Обновление позиций фона
-        float speed = 1f;
-        backgroundX1 -= speed;
-        backgroundX2 -= speed;
-
-        if (backgroundX1 <= -BG_image.getWidth()) {
-            backgroundX1 = BG_image.getWidth();
-        }
-        if (backgroundX2 <= -BG_image.getWidth()) {
-            backgroundX2 = BG_image.getWidth();
-        }
 
         // Рендеринг фона
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
-        batch.draw(BG_image, backgroundX1, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
-        batch.draw(BG_image, backgroundX2, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        batch.draw(BG_image, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        logoDraw(delta);
         batch.end();
 
         // Обновление и рендеринг Stage
         stage.act(delta);
         stage.draw();
+    }
+    private void logoDraw(float delta){
+        batch.draw(logoTexture, (viewport.getWorldWidth()/2)+10- (float) logoTexture.getWidth() /2, 600-logoShakingDelta*AMPLITUDE_SHAKING,
+            logoTexture.getWidth()*LOGO_SCALING,logoTexture.getHeight()*LOGO_SCALING);
+        logoStep += (delta)*SPEED_SHAKING;
+        if(logoStep >= STEP_VALUE){
+            logoELapsedTime += logoStep;
+            logoShakingDelta = (float) Math.abs(Math.sin(logoELapsedTime));
+            logoStep = 0;
+        }
+
     }
 
     @Override

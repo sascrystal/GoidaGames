@@ -12,10 +12,12 @@ import com.badlogic.gdx.math.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.some_example_name.Main;
 import io.github.some_example_name.buffs.Buff;
 import io.github.some_example_name.buffs.modifier_buffs.ModifierBuff;
 import io.github.some_example_name.enemy_classes.enemy_moves.MoveEnemy;
 import io.github.some_example_name.player.Player;
+import io.github.some_example_name.screens.GameScreen;
 
 public abstract class Enemy {
     protected static final Texture heart = new Texture(Gdx.files.internal("HUD/heart.png"));
@@ -29,6 +31,15 @@ public abstract class Enemy {
     protected MoveEnemy[] moveList;
     protected float stateTime;// Время для анимации
     protected int indexMoveList;
+    protected boolean enemyShaking = false;
+    protected float enemyShakingDelta = 0, enemyShakingTimer = 0,enemyStep = 0;
+    protected float enemyAttackingDelta = 0, enemyAttackingTimer = 0,enemyAttackingStep = 0;
+
+    public static float ENEMY_ELAPSED_TIME = 0;
+    protected static final float SPEED_SHAKING = 6f,SPEED_ATTACKING = 6F;
+    protected static final float AMPLITUDE_SHAKING = 100,AMPLITUDE_ATTACKING = 100;
+    protected static final float STEP_VALUE = 0.3f,STEP_VALUE_ATTACKING=0.3f;
+    protected boolean isAttacking, notUseAttack;
 
 
     protected Sound takingDamageSoundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/takingDamageGamblerSoundEffect.wav"));
@@ -41,21 +52,74 @@ public abstract class Enemy {
         return indexMoveList;
     }
 
+    public boolean isAttacking() {
+        return isAttacking;
+    }
 
-    public void draw(SpriteBatch batch, BitmapFont font, float elapsedTime, Player player) {
-        TextureRegion currentFrame = animation.getKeyFrame(elapsedTime, true);
+    public void setAttacking(boolean attacking) {
+        isAttacking = attacking;
+        notUseAttack = attacking;
+    }
+
+
+
+    public void draw(SpriteBatch batch, BitmapFont font, float delta, Player player) {
+        ENEMY_ELAPSED_TIME += delta;
+        TextureRegion currentFrame = animation.getKeyFrame(ENEMY_ELAPSED_TIME, true);
         batch.draw(currentFrame,
-            bounds.x,
+            bounds.x + enemyShakingDelta*AMPLITUDE_SHAKING-enemyAttackingDelta*AMPLITUDE_ATTACKING,
             bounds.y,
-            bounds.width,
-            bounds.height);// Получаем текущий кадр анимации
+            bounds.width+enemyAttackingDelta*AMPLITUDE_ATTACKING,
+            bounds.height+enemyAttackingDelta*AMPLITUDE_ATTACKING);// Получаем текущий кадр анимации
 
-        font.draw(batch, "Health: " + health, bounds.getX(), bounds.getY() + bounds.getHeight() + 100);
+        font.draw(batch, "Health: " + health, bounds.getX()-100, bounds.getY() + bounds.getHeight() + 100);
         // кто читает эту заметку тот лох
 
 
-        moveList[getIndexMoveList()].draw(batch, font, elapsedTime, this, player);
+        moveList[getIndexMoveList()].draw(batch, font, ENEMY_ELAPSED_TIME, this, player);
+        enemyShakingDeltaChanging(delta);
+        enemyAttacking(delta,player);
 
+
+
+
+    }
+    private void enemyAttacking(float delta,Player player){
+        if(isAttacking){
+            enemyAttackingStep += (delta)*SPEED_ATTACKING;
+            enemyAttackingTimer += (delta)*SPEED_ATTACKING;
+            if(enemyAttackingStep >= STEP_VALUE_ATTACKING){
+                enemyAttackingDelta = (float) Math.sin(enemyAttackingTimer);
+                enemyAttackingStep = 0;
+            }
+        }else {
+            enemyAttackingDelta = 0;
+        }
+        if(notUseAttack&&enemyAttackingTimer>=Math.PI/2 ){
+            notUseAttack = false;
+            endTurn(player);
+        }
+        if(enemyAttackingTimer >= Math.PI){
+            enemyAttackingTimer = 0;
+            isAttacking = false;
+        }
+    }
+    private void enemyShakingDeltaChanging(float delta){
+
+        if(enemyShaking){
+            enemyStep += (delta)*SPEED_SHAKING;
+            enemyShakingTimer += (delta)*SPEED_SHAKING;
+            if(enemyStep >= STEP_VALUE){
+                enemyShakingDelta = (float) Math.sin(enemyShakingTimer);
+                enemyStep = 0;
+            }
+        }else {
+            enemyShakingDelta = 0;
+        }
+        if(enemyShakingTimer >= 2*Math.PI){
+            enemyShakingTimer = 0;
+            enemyShaking = false;
+        }
 
     }
 
@@ -85,6 +149,8 @@ public abstract class Enemy {
         if (health <= 0) {
             health = 0; // Убедитесь, что здоровье не становится отрицательным
         }
+        enemyShaking = true;
+
     }
 
     public void endTurn(Player y) {
@@ -169,6 +235,9 @@ public abstract class Enemy {
                 buffs.get(i).buffAction(this);
             }
         }
+    }
+    protected float  centerOfGameScreen(float width, float scale){
+        return (float) GameScreen.viewport.getWorldWidth() / 2 - ((width*scale)/2);
     }
 }
 
