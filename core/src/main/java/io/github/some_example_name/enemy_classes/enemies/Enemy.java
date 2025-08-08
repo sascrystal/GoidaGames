@@ -77,7 +77,7 @@ public abstract class Enemy {
 
 
         moveList[getIndexMoveList()].draw(batch, font, ENEMY_ELAPSED_TIME, this, player);
-        enemyShakingDeltaChanging(delta);
+        enemyShaking(delta);
         enemyAttacking(delta,player);
 
 
@@ -85,15 +85,13 @@ public abstract class Enemy {
 
     }
     private void enemyAttacking(float delta,Player player){
-        if(isAttacking){
-            enemyAttackingStep += (delta)*SPEED_ATTACKING;
-            enemyAttackingTimer += (delta)*SPEED_ATTACKING;
-            if(enemyAttackingStep >= STEP_VALUE_ATTACKING){
+        if(isAttacking) {
+            enemyAttackingStep += (delta) * SPEED_ATTACKING;
+            enemyAttackingTimer += (delta) * SPEED_ATTACKING;
+            if (enemyAttackingStep >= STEP_VALUE_ATTACKING) {
                 enemyAttackingDelta = (float) Math.sin(enemyAttackingTimer);
                 enemyAttackingStep = 0;
             }
-        }else {
-            enemyAttackingDelta = 0;
         }
         if(notUseAttack&&enemyAttackingTimer>=Math.PI/2 ){
             notUseAttack = false;
@@ -101,11 +99,11 @@ public abstract class Enemy {
         }
         if(enemyAttackingTimer >= Math.PI){
             enemyAttackingTimer = 0;
+            enemyAttackingDelta = 0;
             isAttacking = false;
         }
     }
-    private void enemyShakingDeltaChanging(float delta){
-
+    private void enemyShaking(float delta){
         if(enemyShaking){
             enemyStep += (delta)*SPEED_SHAKING;
             enemyShakingTimer += (delta)*SPEED_SHAKING;
@@ -113,14 +111,12 @@ public abstract class Enemy {
                 enemyShakingDelta = (float) Math.sin(enemyShakingTimer);
                 enemyStep = 0;
             }
-        }else {
-            enemyShakingDelta = 0;
         }
         if(enemyShakingTimer >= 2*Math.PI){
             enemyShakingTimer = 0;
+            enemyShakingDelta = 0;
             enemyShaking = false;
         }
-
     }
 
 

@@ -2,6 +2,7 @@ package io.github.some_example_name.player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -14,6 +15,7 @@ import io.github.some_example_name.buffs.Buff;
 import io.github.some_example_name.buffs.modifier_buffs.ModifierBuff;
 import io.github.some_example_name.cards.PlayingCard;
 import io.github.some_example_name.cards.target_cards.attack_cards.ComboAttack;
+import io.github.some_example_name.cell_map_classes.cell_maps.CellMap;
 import io.github.some_example_name.cell_map_classes.events.DialogEvent;
 import io.github.some_example_name.cell_map_classes.stage.Stage;
 import io.github.some_example_name.enemy_classes.enemies.Enemy;
@@ -22,17 +24,24 @@ import io.github.some_example_name.screens.GameScreen;
 public abstract class Player {
     protected List<Buff> buffs = new ArrayList<>();
     protected int cellX, cellY;
+    protected float xOnScreen,yOnScreen;
     protected int health, maxHealth;
+    protected float walkAnimationRotateTimer = 0;
     protected int draftCount;
     protected int manaPool;
     protected int manaPoolMax;
     protected int score;
+    protected float walkAnimationCompressionValue;
     protected int shield;// Здоровье игрока
-    protected Texture texture = new Texture(Gdx.files.internal("enemies/enemy_1.png"));
+    protected Texture texture = new Texture(Gdx.files.internal("characters/character_peasant.png"));
+    protected Sprite sprite = new Sprite(texture);
+    static {
+    }
 
     protected List<PlayingCard> dropDeck = new ArrayList<>();
     protected List<PlayingCard> deck = new ArrayList<>();
     protected List<PlayingCard> draftDeck = new ArrayList<>();
+    protected static final float CHARACTER_SCALE_ON_MAP = 0.1f;
 
     protected PlayingCard[] hand = new PlayingCard[GameScreen.HAND_META];
 
@@ -71,6 +80,34 @@ public abstract class Player {
 
     public PlayingCard[] getHand() {
         return hand;
+    }
+    private static final float SPEED_WALKING_COMPRESSION = 2f,WALKING_COMPRESSION_AMPLITUDE = 20F;
+    private static final float SPEED_WALKING_ROTATE = 10f, WALKING_ROTATE_AMPLITUDE = 10;
+    private float walkAnimationTimer = 0;
+
+    public float getXOnScreen() {
+        return xOnScreen;
+    }
+    public float getWidth(){
+        return texture.getWidth()*CHARACTER_SCALE_ON_MAP;
+    }
+
+    public void setxOnScreen(float xOnScreen) {
+        this.xOnScreen = xOnScreen;
+    }
+    public void setxOnScreen(CellMap cellMap){
+        xOnScreen = cellMap.getBounds().getX()+cellMap.getBounds().getWidth()/2 - (float) texture.getWidth()*CHARACTER_SCALE_ON_MAP /2;
+    }
+
+    public float getyOnScreen() {
+        return yOnScreen;
+    }
+
+    public void setyOnScreen(float yOnScreen) {
+        this.yOnScreen = yOnScreen;
+    }
+    public void setyOnScreen(CellMap cellMap) {
+        this.yOnScreen = cellMap.getBounds().getY()+15 ;
     }
 
     public void beginFight() {
@@ -283,9 +320,53 @@ public abstract class Player {
         }
 
     }
+    public boolean notRotated(){
+       return walkAnimationRotateTimer == 0;
+    }
+    public void walkAnimation(float delta){
+        walkAnimationTimer += delta*SPEED_WALKING_COMPRESSION;
+        walkAnimationCompressionValue = (float) (Math.abs(Math.sin(walkAnimationTimer)*WALKING_COMPRESSION_AMPLITUDE));
+        if(walkAnimationTimer  >= Math.PI){
+            walkAnimationTimer = 0;
+            walkAnimationCompressionValue= 0;
+        }
+        sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
+    }
+    private static final int RIGHT_SIDE_ROTATION = -1;
+    private static final int LEFT_SIDE_ROTATION = 1;
+    private int side = 1;
+    public void rotateAnimation(float delta){
+        walkAnimationRotateTimer += delta*SPEED_WALKING_ROTATE;
+        float walkAnimationRotateValue;
+        if(walkAnimationRotateTimer>=2*Math.PI){
+            walkAnimationRotateTimer = 0;
+
+
+            walkAnimationRotateValue = 0;
+            side *=-1;
+
+
+
+
+        }
+
+
+        walkAnimationRotateValue = (float) Math.sin(walkAnimationTimer)*WALKING_ROTATE_AMPLITUDE;
+
+
+        sprite.setRotation(walkAnimationRotateValue);
+
+    }
+    public boolean inStatic(){
+        return walkAnimationCompressionValue == 0;
+    }
 
     public void drawMap(SpriteBatch batch, Rectangle cell) {
-        batch.draw(texture, cell.getX(), cell.getY(), cell.getWidth(), cell.getHeight());
+
+        sprite.setX(xOnScreen);
+        sprite.setY(yOnScreen);
+        sprite.setSize(texture.getWidth()*CHARACTER_SCALE_ON_MAP, texture.getHeight()*CHARACTER_SCALE_ON_MAP-walkAnimationCompressionValue);
+        sprite.draw(batch);
     }
 
     public void draftDeckClear() {
