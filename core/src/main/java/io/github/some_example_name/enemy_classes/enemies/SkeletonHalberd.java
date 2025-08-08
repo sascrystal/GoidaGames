@@ -21,14 +21,14 @@ public class SkeletonHalberd extends Enemy {
         stateTime = 0f;
         Texture texture = new Texture(Gdx.files.internal("enemies/skeleton.png"));
 
-        int countFrames  = 12;
-        float width = (float) texture.getWidth() /countFrames;
+        int countFrames = 12;
+        float width = (float) texture.getWidth() / countFrames;
         float height = texture.getHeight();
         float scale = 7;
-        bounds = new Rectangle(centerOfGameScreen(width,scale),
+        bounds = new Rectangle(centerOfGameScreen(width, scale),
             GameScreen.viewport.getWorldHeight() / 3,
-            width*scale,
-            height*scale);
+            width * scale,
+            height * scale);
 
         health = 30; // Установка здоровья
         moveList = new MoveEnemy[3];// Установка массива возможностей enemy

@@ -12,7 +12,6 @@ import com.badlogic.gdx.math.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.some_example_name.Main;
 import io.github.some_example_name.buffs.Buff;
 import io.github.some_example_name.buffs.modifier_buffs.ModifierBuff;
 import io.github.some_example_name.enemy_classes.enemy_moves.MoveEnemy;
@@ -21,24 +20,21 @@ import io.github.some_example_name.screens.GameScreen;
 
 public abstract class Enemy {
     protected static final Texture heart = new Texture(Gdx.files.internal("HUD/heart.png"));
+    protected static final float SPEED_SHAKING = 6f, SPEED_ATTACKING = 6F;
+    protected static final float AMPLITUDE_SHAKING = 100, AMPLITUDE_ATTACKING = 100;
+    protected static final float STEP_VALUE = 0.3f, STEP_VALUE_ATTACKING = 0.3f;
+    public static float ENEMY_ELAPSED_TIME = 0;
     protected Texture texture; // Текстура противника
     protected Rectangle bounds; // Границы для проверки коллизий
     protected Animation<TextureRegion> animation; // Анимация для противника
     protected int health; // Здоровье противника
-
     protected List<Buff> buffs = new ArrayList<>();
-
     protected MoveEnemy[] moveList;
     protected float stateTime;// Время для анимации
     protected int indexMoveList;
     protected boolean enemyShaking = false;
-    protected float enemyShakingDelta = 0, enemyShakingTimer = 0,enemyStep = 0;
-    protected float enemyAttackingDelta = 0, enemyAttackingTimer = 0,enemyAttackingStep = 0;
-
-    public static float ENEMY_ELAPSED_TIME = 0;
-    protected static final float SPEED_SHAKING = 6f,SPEED_ATTACKING = 6F;
-    protected static final float AMPLITUDE_SHAKING = 100,AMPLITUDE_ATTACKING = 100;
-    protected static final float STEP_VALUE = 0.3f,STEP_VALUE_ATTACKING=0.3f;
+    protected float enemyShakingDelta = 0, enemyShakingTimer = 0, enemyStep = 0;
+    protected float enemyAttackingDelta = 0, enemyAttackingTimer = 0, enemyAttackingStep = 0;
     protected boolean isAttacking, notUseAttack;
 
 
@@ -62,30 +58,28 @@ public abstract class Enemy {
     }
 
 
-
     public void draw(SpriteBatch batch, BitmapFont font, float delta, Player player) {
         ENEMY_ELAPSED_TIME += delta;
         TextureRegion currentFrame = animation.getKeyFrame(ENEMY_ELAPSED_TIME, true);
         batch.draw(currentFrame,
-            bounds.x + enemyShakingDelta*AMPLITUDE_SHAKING-enemyAttackingDelta*AMPLITUDE_ATTACKING,
+            bounds.x + enemyShakingDelta * AMPLITUDE_SHAKING - enemyAttackingDelta * AMPLITUDE_ATTACKING,
             bounds.y,
-            bounds.width+enemyAttackingDelta*AMPLITUDE_ATTACKING,
-            bounds.height+enemyAttackingDelta*AMPLITUDE_ATTACKING);// Получаем текущий кадр анимации
+            bounds.width + enemyAttackingDelta * AMPLITUDE_ATTACKING,
+            bounds.height + enemyAttackingDelta * AMPLITUDE_ATTACKING);// Получаем текущий кадр анимации
 
-        font.draw(batch, "Health: " + health, bounds.getX()-100, bounds.getY() + bounds.getHeight() + 100);
+        font.draw(batch, "Health: " + health, bounds.getX() - 100, bounds.getY() + bounds.getHeight() + 100);
         // кто читает эту заметку тот лох
 
 
         moveList[getIndexMoveList()].draw(batch, font, ENEMY_ELAPSED_TIME, this, player);
         enemyShaking(delta);
-        enemyAttacking(delta,player);
-
-
+        enemyAttacking(delta, player);
 
 
     }
-    private void enemyAttacking(float delta,Player player){
-        if(isAttacking) {
+
+    private void enemyAttacking(float delta, Player player) {
+        if (isAttacking) {
             enemyAttackingStep += (delta) * SPEED_ATTACKING;
             enemyAttackingTimer += (delta) * SPEED_ATTACKING;
             if (enemyAttackingStep >= STEP_VALUE_ATTACKING) {
@@ -93,26 +87,27 @@ public abstract class Enemy {
                 enemyAttackingStep = 0;
             }
         }
-        if(notUseAttack&&enemyAttackingTimer>=Math.PI/2 ){
+        if (notUseAttack && enemyAttackingTimer >= Math.PI / 2) {
             notUseAttack = false;
             endTurn(player);
         }
-        if(enemyAttackingTimer >= Math.PI){
+        if (enemyAttackingTimer >= Math.PI) {
             enemyAttackingTimer = 0;
             enemyAttackingDelta = 0;
             isAttacking = false;
         }
     }
-    private void enemyShaking(float delta){
-        if(enemyShaking){
-            enemyStep += (delta)*SPEED_SHAKING;
-            enemyShakingTimer += (delta)*SPEED_SHAKING;
-            if(enemyStep >= STEP_VALUE){
+
+    private void enemyShaking(float delta) {
+        if (enemyShaking) {
+            enemyStep += (delta) * SPEED_SHAKING;
+            enemyShakingTimer += (delta) * SPEED_SHAKING;
+            if (enemyStep >= STEP_VALUE) {
                 enemyShakingDelta = (float) Math.sin(enemyShakingTimer);
                 enemyStep = 0;
             }
         }
-        if(enemyShakingTimer >= 2*Math.PI){
+        if (enemyShakingTimer >= 2 * Math.PI) {
             enemyShakingTimer = 0;
             enemyShakingDelta = 0;
             enemyShaking = false;
@@ -232,8 +227,9 @@ public abstract class Enemy {
             }
         }
     }
-    protected float  centerOfGameScreen(float width, float scale){
-        return (float) GameScreen.viewport.getWorldWidth() / 2 - ((width*scale)/2);
+
+    protected float centerOfGameScreen(float width, float scale) {
+        return GameScreen.viewport.getWorldWidth() / 2 - ((width * scale) / 2);
     }
 }
 

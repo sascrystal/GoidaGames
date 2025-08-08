@@ -22,9 +22,18 @@ import io.github.some_example_name.enemy_classes.enemies.Enemy;
 import io.github.some_example_name.screens.GameScreen;
 
 public abstract class Player {
+    protected static final float CHARACTER_SCALE_ON_MAP = 0.1f;
+    private static final float SPEED_WALKING_COMPRESSION = 2f, WALKING_COMPRESSION_AMPLITUDE = 20F;
+    private static final float SPEED_WALKING_ROTATE = 8f, WALKING_ROTATE_AMPLITUDE = 20;
+    private static final int RIGHT_SIDE_ROTATION = -1;
+    private static final int LEFT_SIDE_ROTATION = 1;
+
+    static {
+    }
+
     protected List<Buff> buffs = new ArrayList<>();
     protected int cellX, cellY;
-    protected float xOnScreen,yOnScreen;
+    protected float xOnScreen, yOnScreen;
     protected int health, maxHealth;
     protected float walkAnimationRotateTimer = 0;
     protected int draftCount;
@@ -35,15 +44,12 @@ public abstract class Player {
     protected int shield;// Здоровье игрока
     protected Texture texture = new Texture(Gdx.files.internal("characters/character_peasant.png"));
     protected Sprite sprite = new Sprite(texture);
-    static {
-    }
-
     protected List<PlayingCard> dropDeck = new ArrayList<>();
     protected List<PlayingCard> deck = new ArrayList<>();
     protected List<PlayingCard> draftDeck = new ArrayList<>();
-    protected static final float CHARACTER_SCALE_ON_MAP = 0.1f;
-
     protected PlayingCard[] hand = new PlayingCard[GameScreen.HAND_META];
+    private float walkAnimationTimer = 0;
+    private int side = 1;
 
     public void takeScore(Stage stage) {
         score += stage.getScore();
@@ -73,7 +79,6 @@ public abstract class Player {
         return manaPool;
     }
 
-
     public List<PlayingCard> getDeck() {
         return deck;
     }
@@ -81,22 +86,21 @@ public abstract class Player {
     public PlayingCard[] getHand() {
         return hand;
     }
-    private static final float SPEED_WALKING_COMPRESSION = 2f,WALKING_COMPRESSION_AMPLITUDE = 20F;
-    private static final float SPEED_WALKING_ROTATE = 10f, WALKING_ROTATE_AMPLITUDE = 10;
-    private float walkAnimationTimer = 0;
 
     public float getXOnScreen() {
         return xOnScreen;
     }
-    public float getWidth(){
-        return texture.getWidth()*CHARACTER_SCALE_ON_MAP;
+
+    public float getWidth() {
+        return texture.getWidth() * CHARACTER_SCALE_ON_MAP;
     }
 
     public void setxOnScreen(float xOnScreen) {
         this.xOnScreen = xOnScreen;
     }
-    public void setxOnScreen(CellMap cellMap){
-        xOnScreen = cellMap.getBounds().getX()+cellMap.getBounds().getWidth()/2 - (float) texture.getWidth()*CHARACTER_SCALE_ON_MAP /2;
+
+    public void setxOnScreen(CellMap cellMap) {
+        xOnScreen = cellMap.getBounds().getX() + cellMap.getBounds().getWidth() / 2 - (float) texture.getWidth() * CHARACTER_SCALE_ON_MAP / 2;
     }
 
     public float getyOnScreen() {
@@ -106,8 +110,9 @@ public abstract class Player {
     public void setyOnScreen(float yOnScreen) {
         this.yOnScreen = yOnScreen;
     }
+
     public void setyOnScreen(CellMap cellMap) {
-        this.yOnScreen = cellMap.getBounds().getY()+15 ;
+        this.yOnScreen = cellMap.getBounds().getY() + 15;
     }
 
     public void beginFight() {
@@ -205,7 +210,6 @@ public abstract class Player {
         return index;
     }
 
-
     public void giveTheCard(PlayingCard x) {
         int i = findFreeSpaceIndex();
         if (i != -1) {
@@ -302,7 +306,6 @@ public abstract class Player {
         }
     }
 
-
     public void giveShield(int plusShield) {
         shield += plusShield;
     }
@@ -320,44 +323,31 @@ public abstract class Player {
         }
 
     }
-    public boolean notRotated(){
-       return walkAnimationRotateTimer == 0;
+
+    public boolean notRotated() {
+        return walkAnimationRotateTimer == 0;
     }
-    public void walkAnimation(float delta){
-        walkAnimationTimer += delta*SPEED_WALKING_COMPRESSION;
-        walkAnimationCompressionValue = (float) (Math.abs(Math.sin(walkAnimationTimer)*WALKING_COMPRESSION_AMPLITUDE));
-        if(walkAnimationTimer  >= Math.PI){
+
+    public void walkAnimation(float delta) {
+        walkAnimationTimer += delta * SPEED_WALKING_COMPRESSION;
+        walkAnimationCompressionValue = (float) (Math.abs(Math.sin(walkAnimationTimer) * WALKING_COMPRESSION_AMPLITUDE));
+        if (walkAnimationTimer >= Math.PI) {
             walkAnimationTimer = 0;
-            walkAnimationCompressionValue= 0;
+            walkAnimationCompressionValue = 0;
         }
+    }
+
+    public void rotateAnimation(float delta) {
         sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
-    }
-    private static final int RIGHT_SIDE_ROTATION = -1;
-    private static final int LEFT_SIDE_ROTATION = 1;
-    private int side = 1;
-    public void rotateAnimation(float delta){
-        walkAnimationRotateTimer += delta*SPEED_WALKING_ROTATE;
-        float walkAnimationRotateValue;
-        if(walkAnimationRotateTimer>=2*Math.PI){
-            walkAnimationRotateTimer = 0;
-
-
-            walkAnimationRotateValue = 0;
-            side *=-1;
-
-
-
-
-        }
-
-
-        walkAnimationRotateValue = (float) Math.sin(walkAnimationTimer)*WALKING_ROTATE_AMPLITUDE;
-
-
+        walkAnimationRotateTimer += delta * SPEED_WALKING_ROTATE;
+        float walkAnimationRotateValue = (float) Math.sin(walkAnimationRotateTimer) * WALKING_ROTATE_AMPLITUDE;
         sprite.setRotation(walkAnimationRotateValue);
-
+        if(walkAnimationRotateTimer >= 2*Math.PI){
+            walkAnimationRotateTimer = 0;
+        }
     }
-    public boolean inStatic(){
+
+    public boolean inStatic() {
         return walkAnimationCompressionValue == 0;
     }
 
@@ -365,7 +355,7 @@ public abstract class Player {
 
         sprite.setX(xOnScreen);
         sprite.setY(yOnScreen);
-        sprite.setSize(texture.getWidth()*CHARACTER_SCALE_ON_MAP, texture.getHeight()*CHARACTER_SCALE_ON_MAP-walkAnimationCompressionValue);
+        sprite.setSize(texture.getWidth() * CHARACTER_SCALE_ON_MAP, texture.getHeight() * CHARACTER_SCALE_ON_MAP - walkAnimationCompressionValue);
         sprite.draw(batch);
     }
 
