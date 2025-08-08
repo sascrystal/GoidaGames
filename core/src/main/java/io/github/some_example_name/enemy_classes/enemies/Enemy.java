@@ -33,10 +33,13 @@ public abstract class Enemy {
     protected int indexMoveList;
     protected boolean enemyShaking = false;
     protected float enemyShakingDelta = 0, enemyShakingTimer = 0,enemyStep = 0;
+    protected float enemyAttackingDelta = 0, enemyAttackingTimer = 0,enemyAttackingStep = 0;
+
     public static float ENEMY_ELAPSED_TIME = 0;
-    protected static final float SPEED_SHAKING = 6f;
-    protected static final float AMPLITUDE_SHAKING = 100;
-    protected static final float STEP_VALUE = 0.3f;
+    protected static final float SPEED_SHAKING = 6f,SPEED_ATTACKING = 6F;
+    protected static final float AMPLITUDE_SHAKING = 100,AMPLITUDE_ATTACKING = 100;
+    protected static final float STEP_VALUE = 0.3f,STEP_VALUE_ATTACKING=0.3f;
+    protected boolean isAttacking, notUseAttack;
 
 
     protected Sound takingDamageSoundEffect = Gdx.audio.newSound(Gdx.files.internal("sounds/takingDamageGamblerSoundEffect.wav"));
@@ -49,15 +52,25 @@ public abstract class Enemy {
         return indexMoveList;
     }
 
+    public boolean isAttacking() {
+        return isAttacking;
+    }
+
+    public void setAttacking(boolean attacking) {
+        isAttacking = attacking;
+        notUseAttack = attacking;
+    }
+
+
 
     public void draw(SpriteBatch batch, BitmapFont font, float delta, Player player) {
         ENEMY_ELAPSED_TIME += delta;
         TextureRegion currentFrame = animation.getKeyFrame(ENEMY_ELAPSED_TIME, true);
         batch.draw(currentFrame,
-            bounds.x + enemyShakingDelta*AMPLITUDE_SHAKING,
+            bounds.x + enemyShakingDelta*AMPLITUDE_SHAKING-enemyAttackingDelta*AMPLITUDE_ATTACKING,
             bounds.y,
-            bounds.width,
-            bounds.height);// Получаем текущий кадр анимации
+            bounds.width+enemyAttackingDelta*AMPLITUDE_ATTACKING,
+            bounds.height+enemyAttackingDelta*AMPLITUDE_ATTACKING);// Получаем текущий кадр анимации
 
         font.draw(batch, "Health: " + health, bounds.getX()-100, bounds.getY() + bounds.getHeight() + 100);
         // кто читает эту заметку тот лох
@@ -65,10 +78,31 @@ public abstract class Enemy {
 
         moveList[getIndexMoveList()].draw(batch, font, ENEMY_ELAPSED_TIME, this, player);
         enemyShakingDeltaChanging(delta);
+        enemyAttacking(delta,player);
 
 
 
 
+    }
+    private void enemyAttacking(float delta,Player player){
+        if(isAttacking){
+            enemyAttackingStep += (delta)*SPEED_ATTACKING;
+            enemyAttackingTimer += (delta)*SPEED_ATTACKING;
+            if(enemyAttackingStep >= STEP_VALUE_ATTACKING){
+                enemyAttackingDelta = (float) Math.sin(enemyAttackingTimer);
+                enemyAttackingStep = 0;
+            }
+        }else {
+            enemyAttackingDelta = 0;
+        }
+        if(notUseAttack&&enemyAttackingTimer>=Math.PI/2 ){
+            notUseAttack = false;
+            endTurn(player);
+        }
+        if(enemyAttackingTimer >= Math.PI){
+            enemyAttackingTimer = 0;
+            isAttacking = false;
+        }
     }
     private void enemyShakingDeltaChanging(float delta){
 

@@ -33,6 +33,7 @@ public class FirstScreen implements Screen {
     private static final float AMPLITUDE_SHAKING = 30, SPEED_SHAKING = 2f,STEP_VALUE = 0.3f;
 
 
+
     @Override
     public void show() {
         batch = new SpriteBatch();
@@ -50,7 +51,6 @@ public class FirstScreen implements Screen {
         Texture startButtonTexture = new Texture(Gdx.files.internal("menu/new_game_button.png"));
         Texture continueButtonTexture = new Texture(Gdx.files.internal("menu/continue_button_unavailable.png"));
         Texture tutorialButtonTexture = new Texture(Gdx.files.internal("menu/tutorial_button.png"));
-        TextureRegionDrawable gay = new TextureRegionDrawable(startButtonTexture);
 
         ImageButton startButton = new ImageButton(new TextureRegionDrawable(startButtonTexture));
         ImageButton continueButton = new ImageButton(new TextureRegionDrawable(continueButtonTexture));

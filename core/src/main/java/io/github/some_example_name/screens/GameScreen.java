@@ -31,6 +31,7 @@ public class GameScreen implements Screen {
     public static StretchViewport viewport = new StretchViewport(2400, 1080);
     // Добавляем противника и игрока
     private final Enemy[] enemies;
+    private int attackingEnemyIndex;
     private final Player player;
     private final List<PlayingCard> animationCardQueue = new ArrayList<>();
     private final List<Integer> animationCardQueueIndex = new ArrayList<>();
@@ -209,6 +210,22 @@ public class GameScreen implements Screen {
     private void logic() {
         if (isPlayerWin()) {
             choosingCardLogic();
+        }
+        attackingLogic();
+    }
+    private void attackingLogic(){
+        if(!playerTurn){
+            if(!enemies[attackingEnemyIndex].isAttacking()){
+                for(int i = attackingEnemyIndex+1; i<enemies.length; i++){
+                    if(enemies[i] != null && enemies[i].isAlive()){
+                        attackingEnemyIndex = i;
+                        enemies[attackingEnemyIndex].setAttacking(true);
+                        return;
+                    }
+                }
+                playerTurn = true;
+                player.beginTurn();
+            }
         }
     }
 
@@ -399,27 +416,23 @@ public class GameScreen implements Screen {
 
     private void endTurn() {
         playerTurn = false;// Завершаем ход игрока
-        for (int i = 0; i < 3; i++) {
-            if (enemies[i] != null && enemies[i].isAlive()) {
-                enemies[i].endTurn(player);
-            }
-        }
-
-        // Проверка здоровья игрока
         if (player.getHealth() <= 0) {
             backgroundMusic.stop();
             this.dispose();
             ((Main) Gdx.app.getApplicationListener()).setScreen(new FirstScreen());
         }
-
         player.endTurn();
-
-        playerTurn = true; // Ход переходит обратно к игроку
-        player.beginTurn(); // Обновляем карты в руке игрока
-
-        // Обновляем видимость карт
-        // делаем все карты видимыми (или можете настроить по вашему усмотрению)
+        attackingEnemyIndex = findFirstAliveEnemy();
+        enemies[attackingEnemyIndex].setAttacking(true);
         Arrays.fill(isCardVisible, true);
+    }
+    private int findFirstAliveEnemy(){
+        for(int i = 0;i<enemies.length;i++){
+            if(enemies[i] != null && enemies[i].isAlive()){
+                return i;
+            }
+        }
+        return 0;
     }
 
     @Override
