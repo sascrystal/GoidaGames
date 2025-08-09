@@ -20,7 +20,7 @@ import io.github.some_example_name.player.Player;
 
 public class MapScreen implements Screen {
     private static final short DIRECTION_UP = 0, DIRECTION_RIGHT = 1, DIRECTION_DOWN = 2, DIRECTION_LEFT = 3;
-    private static final float CHARACTER_SPEED = 100f;
+    private static final float CHARACTER_SPEED = 200f;
     private final Player player;
     private final CellMap[][] map;
     private SpriteBatch batch;
@@ -94,7 +94,7 @@ public class MapScreen implements Screen {
     private void showDeckDemonstrationButton() {
         deckButtonDemonstrationRectangle = new Rectangle(viewport.getWorldWidth() - 200, viewport.getWorldHeight() - 600,
             100, 100);
-        deckButtonDemonstrationTexture = new Texture(Gdx.files.internal("cards/cardDefence.png"));
+        deckButtonDemonstrationTexture = new Texture(Gdx.files.internal("map_screen/deck.png"));
     }
 
     private void showFont() {
@@ -157,7 +157,7 @@ public class MapScreen implements Screen {
 
     private void playerDraw(float delta) {
         moveCharacter(delta);
-        player.drawMap(batch, map[player.getCellY()][player.getCellX()].getBounds());
+        player.drawMap(batch);
     }
 
     private void moveCharacter(float delta) {

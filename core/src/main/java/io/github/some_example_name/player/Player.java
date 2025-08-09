@@ -25,11 +25,7 @@ public abstract class Player {
     protected static final float CHARACTER_SCALE_ON_MAP = 0.1f;
     private static final float SPEED_WALKING_COMPRESSION = 2f, WALKING_COMPRESSION_AMPLITUDE = 20F;
     private static final float SPEED_WALKING_ROTATE = 8f, WALKING_ROTATE_AMPLITUDE = 20;
-    private static final int RIGHT_SIDE_ROTATION = -1;
-    private static final int LEFT_SIDE_ROTATION = 1;
 
-    static {
-    }
 
     protected List<Buff> buffs = new ArrayList<>();
     protected int cellX, cellY;
@@ -49,7 +45,6 @@ public abstract class Player {
     protected List<PlayingCard> draftDeck = new ArrayList<>();
     protected PlayingCard[] hand = new PlayingCard[GameScreen.HAND_META];
     private float walkAnimationTimer = 0;
-    private int side = 1;
 
     public void takeScore(Stage stage) {
         score += stage.getScore();
@@ -351,8 +346,7 @@ public abstract class Player {
         return walkAnimationCompressionValue == 0;
     }
 
-    public void drawMap(SpriteBatch batch, Rectangle cell) {
-
+    public void drawMap(SpriteBatch batch) {
         sprite.setX(xOnScreen);
         sprite.setY(yOnScreen);
         sprite.setSize(texture.getWidth() * CHARACTER_SCALE_ON_MAP, texture.getHeight() * CHARACTER_SCALE_ON_MAP - walkAnimationCompressionValue);
