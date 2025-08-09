@@ -8,10 +8,16 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 import io.github.some_example_name.Main;
+import io.github.some_example_name.SettingsGame;
 import io.github.some_example_name.cell_map_classes.cell_maps.CellMap;
 import io.github.some_example_name.cell_map_classes.cell_maps.EventCell;
 import io.github.some_example_name.cell_map_classes.cell_maps.FightCell;
@@ -20,23 +26,24 @@ import io.github.some_example_name.player.Player;
 
 public class MapScreen implements Screen {
     private static final short DIRECTION_UP = 0, DIRECTION_RIGHT = 1, DIRECTION_DOWN = 2, DIRECTION_LEFT = 3;
-    private static final float CHARACTER_SPEED = 200f;
+    private static final float CHARACTER_SPEED = 300f;
+    private static final float SIZE_MOVEMENT_BUTTONS = 200;
+    private static final  float SCALE_BUTTON_DECK_DEMONSTRATION =  0.2F;
     private final Player player;
+    private Stage stage;
     private final CellMap[][] map;
     private SpriteBatch batch;
     private StretchViewport viewport;
-    private Rectangle upButtonRectangle, downButtonRectangle, leftButtonRectangle, rightButtonRectangle;
-    private Texture upButtonTexture, downButtonTexture, leftButtonTexture, rightButtonTexture;
     private Texture heathBarTexture, healthLineTexture;
     private Texture background;
-    private Rectangle deckButtonDemonstrationRectangle;
+
     private Music backgroundMusic;
-    private Texture deckButtonDemonstrationTexture;
+
     private BitmapFont font;
     private float elapsedTime;
-    private boolean wasTouched;
+    public boolean wasTouched;
     private short characterDirection;
-    private boolean playerIsMoving;
+    public boolean playerIsMoving;
 
 
     public MapScreen(Player player, CellMap[][] map) {
@@ -50,12 +57,16 @@ public class MapScreen implements Screen {
         batch = new SpriteBatch();
         elapsedTime = 0;
         wasTouched = false;
+        playerIsMoving = false;
         viewportConfiguration();
-        showButtons();
+        stage = new Stage(viewport,batch);
+
         showHeathPointBar();
         showDeckDemonstrationButton();
         showFont();
         showBackground();
+        showButtons();
+        Gdx.input.setInputProcessor(stage);
         if (backgroundMusic == null || !backgroundMusic.isPlaying()) {
             showMusic();
 
@@ -68,22 +79,76 @@ public class MapScreen implements Screen {
     }
 
     private void viewportConfiguration() {
-        viewport = new StretchViewport(2400, 1080);
+        viewport = new StretchViewport(SettingsGame.SCREEN_WIDTH, SettingsGame.SCREEN_HEIGHT);
         viewport.getCamera().position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
         viewport.getCamera().update();
         viewport.apply();
     }
 
     private void showButtons() {
-        upButtonTexture = new Texture(Gdx.files.internal("buttons/upButton.png"));
-        downButtonTexture = new Texture(Gdx.files.internal("buttons/downButton.png"));
-        leftButtonTexture = new Texture(Gdx.files.internal("buttons/leftButton.png"));
-        rightButtonTexture = new Texture(Gdx.files.internal("buttons/rightButton.png"));
+        Texture rightButtonTexture = new Texture(Gdx.files.internal("buttons/right_button.png"));
+        ImageButton rightButton = new ImageButton(new TextureRegionDrawable(rightButtonTexture));
+        rightButton.setSize(SIZE_MOVEMENT_BUTTONS,SIZE_MOVEMENT_BUTTONS);
+        rightButton.setPosition(viewport.getWorldWidth()-SIZE_MOVEMENT_BUTTONS,0);
+        rightButton.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if(!playerIsMoving){
+                    movePlayer("right");
+                    player.changeSight("right");
+                }
+                return super.touchDown(event, x, y, pointer, button);
+            }
+        });
+        stage.addActor(rightButton);
 
-        rightButtonRectangle = new Rectangle(viewport.getWorldWidth() - 200, 0, 200, 200);
-        downButtonRectangle = new Rectangle(rightButtonRectangle.getX() - 200, 0, 200, 200);
-        leftButtonRectangle = new Rectangle(downButtonRectangle.getX() - 200, 0, 200, 200);
-        upButtonRectangle = new Rectangle(rightButtonRectangle.getX() - 200, 200, 200, 200);
+
+        Texture downButtonTexture = new Texture(Gdx.files.internal("buttons/down_button.png"));
+        ImageButton downButton = new ImageButton(new TextureRegionDrawable(downButtonTexture));
+        downButton.setSize(SIZE_MOVEMENT_BUTTONS,SIZE_MOVEMENT_BUTTONS);
+        downButton.setPosition(rightButton.getX() - SIZE_MOVEMENT_BUTTONS,0);
+        downButton.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if(!playerIsMoving){
+                    movePlayer("down");
+                }
+                return super.touchDown(event, x, y, pointer, button);
+            }
+        });
+        stage.addActor(downButton);
+
+        Texture leftButtonTexture = new Texture(Gdx.files.internal("buttons/left_button.png"));
+        ImageButton leftButton = new ImageButton(new TextureRegionDrawable(leftButtonTexture));
+        leftButton.setSize(SIZE_MOVEMENT_BUTTONS,SIZE_MOVEMENT_BUTTONS);
+        leftButton.setPosition(downButton.getX()-SIZE_MOVEMENT_BUTTONS,0);
+        leftButton.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if(!playerIsMoving){
+                    movePlayer("left");
+                    player.changeSight("left");
+                }
+                return super.touchDown(event, x, y, pointer, button);
+            }
+        });
+        stage.addActor(leftButton);
+
+        Texture upButtonTexture = new Texture(Gdx.files.internal("buttons/up_button.png"));
+        ImageButton upButton = new ImageButton(new TextureRegionDrawable(upButtonTexture));
+        upButton.setSize(SIZE_MOVEMENT_BUTTONS,SIZE_MOVEMENT_BUTTONS);
+        upButton.setPosition(downButton.getX(), SIZE_MOVEMENT_BUTTONS);
+        upButton.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if(!playerIsMoving){
+                    movePlayer("up");
+
+                }
+                return super.touchDown(event, x, y, pointer, button);
+            }
+        });
+        stage.addActor(upButton);
     }
 
     private void showHeathPointBar() {
@@ -92,9 +157,21 @@ public class MapScreen implements Screen {
     }
 
     private void showDeckDemonstrationButton() {
-        deckButtonDemonstrationRectangle = new Rectangle(viewport.getWorldWidth() - 200, viewport.getWorldHeight() - 600,
-            100, 100);
-        deckButtonDemonstrationTexture = new Texture(Gdx.files.internal("map_screen/deck.png"));
+        Texture deckButtonDemonstrationTexture = new Texture(Gdx.files.internal("map_screen/deck.png"));
+        ImageButton buttonDeckDemonstration = new ImageButton(new TextureRegionDrawable(deckButtonDemonstrationTexture));
+        MapScreen mapScreen = this;
+        buttonDeckDemonstration.setPosition(viewport.getWorldWidth() - 200,viewport.getWorldHeight() - 600);
+        buttonDeckDemonstration.setSize(deckButtonDemonstrationTexture.getWidth()*SCALE_BUTTON_DECK_DEMONSTRATION,deckButtonDemonstrationTexture.getHeight()*SCALE_BUTTON_DECK_DEMONSTRATION);
+        buttonDeckDemonstration.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Main) Gdx.app.getApplicationListener()).setScreen(new ShowDeckScreen(player.getDeck(),mapScreen));
+                super.clicked(event, x, y);
+            }
+        });
+        stage.addActor(buttonDeckDemonstration);
+
+
     }
 
     private void showFont() {
@@ -112,7 +189,7 @@ public class MapScreen implements Screen {
     @Override
     public void render(float delta) {
         draw(delta);
-        logic();
+        logic(delta);
         input();
     }
 
@@ -120,19 +197,16 @@ public class MapScreen implements Screen {
         batch.setProjectionMatrix(viewport.getCamera().combined);
         ScreenUtils.clear(0, 0, 0, 1);
         elapsedTime += delta;
+        stage.draw();
         batch.begin();
-
         backgroundDraw();
         mapDraw(elapsedTime);
-        deckButtonDemonstrationDraw();
+
         playerDraw(delta);
-        buttonsDraw();
         healthBarDraw();
         scoreDraw();
-
-
-
         batch.end();
+        stage.draw();
     }
 
     private void backgroundDraw() {
@@ -149,11 +223,6 @@ public class MapScreen implements Screen {
         }
     }
 
-    private void deckButtonDemonstrationDraw() {
-        batch.draw(deckButtonDemonstrationTexture,
-            deckButtonDemonstrationRectangle.x, deckButtonDemonstrationRectangle.y,
-            deckButtonDemonstrationRectangle.getWidth(), deckButtonDemonstrationRectangle.getHeight());
-    }
 
     private void playerDraw(float delta) {
         moveCharacter(delta);
@@ -216,12 +285,7 @@ public class MapScreen implements Screen {
 
     }
 
-    private void buttonsDraw() {
-        batch.draw(upButtonTexture, upButtonRectangle.getX(), upButtonRectangle.getY());
-        batch.draw(downButtonTexture, downButtonRectangle.getX(), downButtonRectangle.getY());
-        batch.draw(leftButtonTexture, leftButtonRectangle.getX(), leftButtonRectangle.getY());
-        batch.draw(rightButtonTexture, rightButtonRectangle.getX(), rightButtonRectangle.getY());
-    }
+
 
     private void healthBarDraw() {
         float width = 800;
@@ -249,7 +313,8 @@ public class MapScreen implements Screen {
 
     }
 
-    private void logic() {
+    private void logic(float delta) {
+        stage.act(delta);
         cellAction();
     }
 
@@ -266,45 +331,8 @@ public class MapScreen implements Screen {
         if (Gdx.input.isTouched()) {
             Vector2 touchPosition = new Vector2(Gdx.input.getX(), Gdx.input.getY());
             viewport.unproject(touchPosition);
-            moveButtonsInput(touchPosition);
 
-            deckButtonDemonstrationInput(touchPosition);
-        } else {
-            wasTouched = false;
         }
-
-
-    }
-
-    private void moveButtonsInput(Vector2 touchPosition) {
-        if (!wasTouched && !playerIsMoving) {
-            if (rightButtonRectangle.contains(touchPosition.x, touchPosition.y)) {
-                movePlayer("right");
-                player.changeSight("right");
-            }
-
-            if (leftButtonRectangle.contains(touchPosition.x, touchPosition.y)) {
-                movePlayer("left");
-                player.changeSight("left");
-            }
-
-            if (upButtonRectangle.contains(touchPosition.x, touchPosition.y)) {
-                movePlayer("up");
-            }
-            if (downButtonRectangle.contains(touchPosition.x, touchPosition.y)) {
-                movePlayer("down");
-            }
-            wasTouched = Gdx.input.isTouched();
-        }
-
-    }
-
-    private void deckButtonDemonstrationInput(Vector2 touchPosition) {
-        if (deckButtonDemonstrationRectangle.contains(touchPosition)) {
-            ((Main) Gdx.app.getApplicationListener()).setScreen(new ShowDeckScreen(player.getDeck(),
-                this));
-        }
-
     }
 
     private void movePlayer(String direction) {
@@ -351,6 +379,7 @@ public class MapScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+        stage.getViewport().update(width,height);
     }
 
     @Override
