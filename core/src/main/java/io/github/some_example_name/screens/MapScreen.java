@@ -280,10 +280,12 @@ public class MapScreen implements Screen {
         if (!wasTouched && !playerIsMoving) {
             if (rightButtonRectangle.contains(touchPosition.x, touchPosition.y)) {
                 movePlayer("right");
+                player.changeSight("right");
             }
 
             if (leftButtonRectangle.contains(touchPosition.x, touchPosition.y)) {
                 movePlayer("left");
+                player.changeSight("left");
             }
 
             if (upButtonRectangle.contains(touchPosition.x, touchPosition.y)) {

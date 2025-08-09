@@ -38,8 +38,10 @@ public abstract class Player {
     protected int score;
     protected float walkAnimationCompressionValue;
     protected int shield;// Здоровье игрока
-    protected Texture texture = new Texture(Gdx.files.internal("characters/character_peasant.png"));
-    protected Sprite sprite = new Sprite(texture);
+    protected Texture textureRightSight = new Texture(Gdx.files.internal("characters/character_peasant_right_sight.png"));
+    protected Texture textureLeftSight = new Texture(Gdx.files.internal("characters/character_peasant_left_sight.png"));
+
+    protected Sprite sprite = new Sprite(textureRightSight);
     protected List<PlayingCard> dropDeck = new ArrayList<>();
     protected List<PlayingCard> deck = new ArrayList<>();
     protected List<PlayingCard> draftDeck = new ArrayList<>();
@@ -87,7 +89,7 @@ public abstract class Player {
     }
 
     public float getWidth() {
-        return texture.getWidth() * CHARACTER_SCALE_ON_MAP;
+        return textureRightSight.getWidth() * CHARACTER_SCALE_ON_MAP;
     }
 
     public void setxOnScreen(float xOnScreen) {
@@ -95,7 +97,7 @@ public abstract class Player {
     }
 
     public void setxOnScreen(CellMap cellMap) {
-        xOnScreen = cellMap.getBounds().getX() + cellMap.getBounds().getWidth() / 2 - (float) texture.getWidth() * CHARACTER_SCALE_ON_MAP / 2;
+        xOnScreen = cellMap.getBounds().getX() + cellMap.getBounds().getWidth() / 2 - (float) textureRightSight.getWidth() * CHARACTER_SCALE_ON_MAP / 2;
     }
 
     public float getyOnScreen() {
@@ -318,6 +320,16 @@ public abstract class Player {
         }
 
     }
+    public void changeSight(String direction){
+        switch (direction){
+            case "left":
+                sprite.setTexture(textureLeftSight);
+                break;
+            case"right":
+                sprite.setTexture(textureRightSight);
+                break;
+        }
+    }
 
     public boolean notRotated() {
         return walkAnimationRotateTimer == 0;
@@ -349,7 +361,7 @@ public abstract class Player {
     public void drawMap(SpriteBatch batch) {
         sprite.setX(xOnScreen);
         sprite.setY(yOnScreen);
-        sprite.setSize(texture.getWidth() * CHARACTER_SCALE_ON_MAP, texture.getHeight() * CHARACTER_SCALE_ON_MAP - walkAnimationCompressionValue);
+        sprite.setSize(textureRightSight.getWidth() * CHARACTER_SCALE_ON_MAP, textureRightSight.getHeight() * CHARACTER_SCALE_ON_MAP - walkAnimationCompressionValue);
         sprite.draw(batch);
     }
 
