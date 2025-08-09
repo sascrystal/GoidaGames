@@ -12,6 +12,7 @@ import io.github.some_example_name.screens.MapScreen;
 
 public class EventCell extends CellMap {
     private static final Animation<TextureRegion> ANIMATION_MARK;
+    private static final float MARK_SCALE = 0.8f;
 
     static {
         TextureAtlas frames = new TextureAtlas(Gdx.files.internal("cell/questionMark.atlas"));
@@ -31,12 +32,15 @@ public class EventCell extends CellMap {
     @Override
     public void draw(SpriteBatch batch, float elapsedTime) {
         int cellWight = 150;
+        int cellHeight = 150;
         super.draw(batch, elapsedTime);
         if (isAvailable) {
             TextureRegion currentFrame = ANIMATION_MARK.getKeyFrame(elapsedTime, true);
             batch.draw(currentFrame,
-                bounds.getX() + (float) cellWight / 2 - 32,
-                bounds.getY());
+                bounds.getX() + (float) cellWight / 2 - (float) currentFrame.getRegionWidth()*MARK_SCALE /2,
+                bounds.getY()+(float) cellHeight / 2 - (float) currentFrame.getRegionHeight()*MARK_SCALE /2,
+                currentFrame.getRegionWidth()*MARK_SCALE,
+                currentFrame.getRegionHeight()*MARK_SCALE);
         }
     }
 

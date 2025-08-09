@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import io.github.some_example_name.Main;
 import io.github.some_example_name.cards.PlayingCard;
@@ -93,7 +95,22 @@ public class GameScreen implements Screen {
     }
 
     private void showBackGround() {
-        background = new Texture("backgrounds/background.jpg");
+        FileHandle dirHandle = Gdx.files.internal("background_act1");
+        if (!dirHandle.exists()) {
+            Gdx.app.error("Background", "Directory not found: " + dirHandle.path());
+            return;
+        }
+
+        FileHandle[] files = dirHandle.list();
+        if (files == null || files.length == 0) {
+            Gdx.app.error("Background", "No files in directory: " + dirHandle.path());
+            return;
+        }
+
+        Random random = new Random();
+        int typeOfBackground = random.nextInt(files.length);
+        background = new Texture(files[typeOfBackground]);
+
     }
 
     private void showChooseCard() {
@@ -198,7 +215,6 @@ public class GameScreen implements Screen {
         if (needChooseCard) {
             choosingCardDraw();
         }
-
         batch.end();
 
     }

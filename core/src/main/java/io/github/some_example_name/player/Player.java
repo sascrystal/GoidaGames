@@ -25,11 +25,7 @@ public abstract class Player {
     protected static final float CHARACTER_SCALE_ON_MAP = 0.1f;
     private static final float SPEED_WALKING_COMPRESSION = 2f, WALKING_COMPRESSION_AMPLITUDE = 20F;
     private static final float SPEED_WALKING_ROTATE = 8f, WALKING_ROTATE_AMPLITUDE = 20;
-    private static final int RIGHT_SIDE_ROTATION = -1;
-    private static final int LEFT_SIDE_ROTATION = 1;
 
-    static {
-    }
 
     protected List<Buff> buffs = new ArrayList<>();
     protected int cellX, cellY;
@@ -42,14 +38,15 @@ public abstract class Player {
     protected int score;
     protected float walkAnimationCompressionValue;
     protected int shield;// Здоровье игрока
-    protected Texture texture = new Texture(Gdx.files.internal("characters/character_peasant.png"));
-    protected Sprite sprite = new Sprite(texture);
+    protected Texture textureRightSight = new Texture(Gdx.files.internal("characters/character_peasant_right_sight.png"));
+    protected Texture textureLeftSight = new Texture(Gdx.files.internal("characters/character_peasant_left_sight.png"));
+
+    protected Sprite sprite = new Sprite(textureRightSight);
     protected List<PlayingCard> dropDeck = new ArrayList<>();
     protected List<PlayingCard> deck = new ArrayList<>();
     protected List<PlayingCard> draftDeck = new ArrayList<>();
     protected PlayingCard[] hand = new PlayingCard[GameScreen.HAND_META];
     private float walkAnimationTimer = 0;
-    private int side = 1;
 
     public void takeScore(Stage stage) {
         score += stage.getScore();
@@ -92,7 +89,7 @@ public abstract class Player {
     }
 
     public float getWidth() {
-        return texture.getWidth() * CHARACTER_SCALE_ON_MAP;
+        return textureRightSight.getWidth() * CHARACTER_SCALE_ON_MAP;
     }
 
     public void setxOnScreen(float xOnScreen) {
@@ -100,7 +97,7 @@ public abstract class Player {
     }
 
     public void setxOnScreen(CellMap cellMap) {
-        xOnScreen = cellMap.getBounds().getX() + cellMap.getBounds().getWidth() / 2 - (float) texture.getWidth() * CHARACTER_SCALE_ON_MAP / 2;
+        xOnScreen = cellMap.getBounds().getX() + cellMap.getBounds().getWidth() / 2 - (float) textureRightSight.getWidth() * CHARACTER_SCALE_ON_MAP / 2;
     }
 
     public float getyOnScreen() {
@@ -323,6 +320,16 @@ public abstract class Player {
         }
 
     }
+    public void changeSight(String direction){
+        switch (direction){
+            case "left":
+                sprite.setTexture(textureLeftSight);
+                break;
+            case"right":
+                sprite.setTexture(textureRightSight);
+                break;
+        }
+    }
 
     public boolean notRotated() {
         return walkAnimationRotateTimer == 0;
@@ -351,11 +358,10 @@ public abstract class Player {
         return walkAnimationCompressionValue == 0;
     }
 
-    public void drawMap(SpriteBatch batch, Rectangle cell) {
-
+    public void drawMap(SpriteBatch batch) {
         sprite.setX(xOnScreen);
         sprite.setY(yOnScreen);
-        sprite.setSize(texture.getWidth() * CHARACTER_SCALE_ON_MAP, texture.getHeight() * CHARACTER_SCALE_ON_MAP - walkAnimationCompressionValue);
+        sprite.setSize(textureRightSight.getWidth() * CHARACTER_SCALE_ON_MAP, textureRightSight.getHeight() * CHARACTER_SCALE_ON_MAP - walkAnimationCompressionValue);
         sprite.draw(batch);
     }
 
