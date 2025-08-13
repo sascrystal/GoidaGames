@@ -100,6 +100,7 @@ public class FirstScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 menuCondition = MenuCondition.MAIN;
+                Gdx.input.setInputProcessor(mainStage);
                 super.clicked(event, x, y);
             }
         });
