@@ -3,6 +3,7 @@ package io.github.some_example_name.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -13,62 +14,186 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
+import java.util.ArrayList;
+
+import io.github.some_example_name.utils.Account;
 import io.github.some_example_name.Main;
 import io.github.some_example_name.cell_map_classes.cell_maps.CellMap;
 import io.github.some_example_name.player.CharacterKnight;
 import io.github.some_example_name.player.Player;
+import io.github.some_example_name.utils.ShopSkin;
 
 public class FirstScreen implements Screen {
     private static final float NEW_GAME_BUTTON_SCALING = 0.48f, CONTINUE_GAME_BUTTON_SCALING = 0.5f,
-        TUTORIAL_BUTTON_SCALING = 0.5f, LOGO_SCALING = 0.8f;
-    private static final float INDENT_BUTTONS = 10, STARTING_POSITION = 200;
+        TUTORIAL_BUTTON_SCALING = 0.5f, LOGO_SCALING = 0.8f,SHOP_BUTTON_SCALING = 0.5F,
+        LOGO_SHOP_SCALING = 0.6F, SHOP_SCALE = 1.2f, MOVEMENT_BUTTONS_SCALE = 0.30F;
+    private static final float INDENT_BUTTONS = 10, STARTING_POSITION = 200,INDENT_MOVEMENTS_BUTTONS = 60,BUTTON_BUY_SCALE = 0.2F;
+    private static final float POSITION_FOR_MOVEMENT_BUTTONS= 400;
+    private static final float STARTING_POSITION_FOR_FIRST_BUY_BUTTON = 700,BETWEEN_SPACE = 250,Y_POSITION_FOR_BUY_BUTTONS = 100;
     private static final float AMPLITUDE_SHAKING = 30, SPEED_SHAKING = 2f, STEP_VALUE = 0.3f;
+    private static final float START_POSITION_FOR_SHOP_SKINS,INDENT_FOR_SHOP_SKINS,Y_POSITION_FOR_SHOP_SKINS;
+    private static final String NAME_FOR_BUY_BUTTONS = "buy_button";
+    static {
+        Texture buyButtonTexture = new Texture(Gdx.files.internal("menu/buy_button.png"));
+        START_POSITION_FOR_SHOP_SKINS = STARTING_POSITION_FOR_FIRST_BUY_BUTTON+buyButtonTexture.getWidth()*BUTTON_BUY_SCALE/2;
+        INDENT_FOR_SHOP_SKINS = BETWEEN_SPACE+buyButtonTexture.getWidth()*BUTTON_BUY_SCALE;
+        Y_POSITION_FOR_SHOP_SKINS = Y_POSITION_FOR_BUY_BUTTONS + 100;
+    }
+
+    private MenuCondition menuCondition;
+    private ArrayList<ShopSkin> lockedSkins;
+    private ShopSkin[] allSkins;
+    private int indexOfFirstSkin;
+    private Sound shopBellSound;
+    private Account account;
     private Texture BG_image;
-    private Texture logoTexture;
+    private Texture logoTexture, logoShopTexture;
+    private Texture buyButtonTexture, buyButtonUnavaibleTexture;
+    private  Texture shopTexture;
     private SpriteBatch batch;
     private StretchViewport viewport;
-    private Stage stage;
+    private Stage mainStage,shopStage;
     private Music backgroundMusic, backgroundNoiseMenu;
     private float logoStep = 0, logoShakingDelta = 0, logoELapsedTime = 0;
 
     @Override
     public void show() {
+        menuCondition = MenuCondition.MAIN;
+        account = new Account();
         batch = new SpriteBatch();
         viewport = new StretchViewport(2400, 1080);
         viewport.getCamera().position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
         viewport.apply();
-
-        // Инициализация Stage
-        stage = new Stage(viewport, batch);
-        Gdx.input.setInputProcessor(stage); // Передача ввода Stage
+        showMainStage();
+        showShopStage();
+        showMusic();
         BG_image = new Texture(Gdx.files.internal("menu/menu_background.png"));
         logoTexture = new Texture(Gdx.files.internal("menu/goblin_cards_logo.png"));
+        logoShopTexture = new Texture(Gdx.files.internal("menu/shop_logo.png"));
+    }
+    private void showMusic(){
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/mainMenuMusic.mp3"));
+        backgroundMusic.setLooping(true);
+        backgroundMusic.setVolume(0.7f);
+        backgroundMusic.play();
 
-        // Создание кнопок
+        backgroundNoiseMenu = Gdx.audio.newMusic(Gdx.files.internal("music/backgroundNoiseMenu.mp3"));
+        backgroundNoiseMenu.setLooping(true);
+        backgroundNoiseMenu.setVolume(0.5f);
+        backgroundNoiseMenu.play();
+
+        shopBellSound = Gdx.audio.newSound(Gdx.files.internal("music/shop_bell.wav"));
+
+    }
+    private void showShopStage(){
+        shopStage = new Stage(viewport,batch);
+        shopTexture = new Texture(Gdx.files.internal("menu/shop.png"));
+
+        Texture textureLeftShop = new Texture(Gdx.files.internal("buttons/left_button.png"));
+        Texture textureRightShop = new Texture(Gdx.files.internal("buttons/right_button.png"));
+
+        ImageButton leftShopButton = new ImageButton(new TextureRegionDrawable(textureLeftShop));
+        ImageButton returnButton = new ImageButton(new TextureRegionDrawable(textureLeftShop));
+        ImageButton rightShopButton = new ImageButton(new TextureRegionDrawable(textureRightShop));
+
+        returnButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                menuCondition = MenuCondition.MAIN;
+                super.clicked(event, x, y);
+            }
+        });
+
+
+        leftShopButton.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if(indexOfFirstSkin-3>= 0){
+                    indexOfFirstSkin-=3;
+                }
+                return super.touchDown(event, x, y, pointer, button);
+            }
+        });
+        rightShopButton.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if(indexOfFirstSkin+3< lockedSkins.size()){
+                    indexOfFirstSkin+=3;
+                }
+                return super.touchDown(event, x, y, pointer, button);
+            }
+        });
+        leftShopButton.setSize(textureLeftShop.getWidth()*MOVEMENT_BUTTONS_SCALE,textureLeftShop.getHeight()*MOVEMENT_BUTTONS_SCALE);
+        rightShopButton.setSize(textureRightShop.getWidth()*MOVEMENT_BUTTONS_SCALE,textureRightShop.getHeight()*MOVEMENT_BUTTONS_SCALE);
+        returnButton.setSize(textureLeftShop.getWidth()*MOVEMENT_BUTTONS_SCALE,textureLeftShop.getHeight()*MOVEMENT_BUTTONS_SCALE);
+
+        leftShopButton.setPosition(POSITION_FOR_MOVEMENT_BUTTONS,INDENT_MOVEMENTS_BUTTONS);
+        rightShopButton.setPosition(viewport.getWorldWidth()-POSITION_FOR_MOVEMENT_BUTTONS-textureRightShop.getWidth()*MOVEMENT_BUTTONS_SCALE,INDENT_MOVEMENTS_BUTTONS);
+        returnButton.setPosition(viewport.getWorldWidth() /2 - (float) shopTexture.getWidth() *SHOP_SCALE/2, shopTexture.getHeight() *SHOP_SCALE-returnButton.getHeight());
+
+        shopStage.addActor(leftShopButton);
+        shopStage.addActor(rightShopButton);
+        shopStage.addActor(returnButton);
+
+        Texture buyButtonTexture = new Texture(Gdx.files.internal("menu/buy_button.png"));
+        buyButtonUnavaibleTexture = new Texture(Gdx.files.internal("menu/buy_button_unavailable.png"));
+        ImageButton[] buttonsBuy = new ImageButton[3];
+        for (int i = 0; i<buttonsBuy.length; i++) {
+            buttonsBuy[i] = new ImageButton(new TextureRegionDrawable(buyButtonTexture));
+            buttonsBuy[i].setName(NAME_FOR_BUY_BUTTONS+i);
+            final int index = i;
+            buttonsBuy[i].setSize(buyButtonTexture.getWidth()*BUTTON_BUY_SCALE,buyButtonTexture.getHeight()*BUTTON_BUY_SCALE);
+            buttonsBuy[i].setPosition(STARTING_POSITION_FOR_FIRST_BUY_BUTTON+i*(BETWEEN_SPACE+buyButtonTexture.getWidth()*BUTTON_BUY_SCALE),Y_POSITION_FOR_BUY_BUTTONS);
+            buttonsBuy[i].addListener(new ClickListener(){
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if(indexOfFirstSkin+index <lockedSkins.size() &&lockedSkins.get(indexOfFirstSkin+index)!= null){
+                        if (lockedSkins.get(indexOfFirstSkin+index).getPrice() <= account.getMoney()){
+                            lockedSkins.get(indexOfFirstSkin+index).setUnlocked(true);
+                            account.setMoney(account.getMoney()-lockedSkins.get(indexOfFirstSkin+index).getPrice());
+
+                        }
+                    }
+                    super.clicked(event, x, y);
+                }
+            });
+        }
+        for (ImageButton buttonBuy : buttonsBuy) {
+            shopStage.addActor(buttonBuy);
+        }
+        indexOfFirstSkin = 0;
+        allSkins = ShopSkin.getAllSkins();
+
+
+
+    }
+    private void showMainStage(){
+        mainStage = new Stage(viewport, batch);
+        Gdx.input.setInputProcessor(mainStage);
         Texture startButtonTexture = new Texture(Gdx.files.internal("menu/new_game_button.png"));
         Texture continueButtonTexture = new Texture(Gdx.files.internal("menu/continue_button_unavailable.png"));
         Texture tutorialButtonTexture = new Texture(Gdx.files.internal("menu/tutorial_button.png"));
+        Texture shopButtonTexture = new Texture(Gdx.files.internal("menu/shop_button.png"));
+
 
         ImageButton startButton = new ImageButton(new TextureRegionDrawable(startButtonTexture));
         ImageButton continueButton = new ImageButton(new TextureRegionDrawable(continueButtonTexture));
         ImageButton tutorialButton = new ImageButton(new TextureRegionDrawable(tutorialButtonTexture));
+        ImageButton shopButton = new ImageButton(new TextureRegionDrawable(shopButtonTexture));
 
 
         startButton.setSize(startButtonTexture.getWidth() * NEW_GAME_BUTTON_SCALING, startButtonTexture.getHeight() * NEW_GAME_BUTTON_SCALING);
         continueButton.setSize(continueButtonTexture.getWidth() * CONTINUE_GAME_BUTTON_SCALING, continueButtonTexture.getHeight() * CONTINUE_GAME_BUTTON_SCALING);
         tutorialButton.setSize(tutorialButtonTexture.getWidth() * TUTORIAL_BUTTON_SCALING, tutorialButtonTexture.getHeight() * TUTORIAL_BUTTON_SCALING);
+        shopButton.setSize(shopButtonTexture.getWidth()*SHOP_BUTTON_SCALING, shopButtonTexture.getHeight()*SHOP_BUTTON_SCALING);
 
-
-        // Позиционирование кнопок
 
         continueButton.setPosition(INDENT_BUTTONS, STARTING_POSITION);
         tutorialButton.setPosition(INDENT_BUTTONS, continueButton.getY() + continueButton.getHeight());
         startButton.setPosition(INDENT_BUTTONS, tutorialButton.getY() + tutorialButton.getHeight());
+        shopButton.setPosition(viewport.getScreenWidth()-shopButton.getWidth(),0);
 
-        // Масштабирование кнопок (если нужно уменьшить размер)
 
-
-        // Обработчики событий для кнопок
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -83,11 +208,13 @@ public class FirstScreen implements Screen {
             }
         });
 
+
         continueButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {//TODO: сделать продолжение игры
             }
         });
+
 
         tutorialButton.addListener(new ClickListener() {
             @Override
@@ -102,61 +229,97 @@ public class FirstScreen implements Screen {
             }
         });
 
-        // Добавление кнопок на сцену
-        stage.addActor(startButton);
-        stage.addActor(continueButton);
-        stage.addActor(tutorialButton);
 
-        // Инициализация музыки
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/mainMenuMusic.mp3"));
-        backgroundMusic.setLooping(true);
-        backgroundMusic.setVolume(0.7f);
-        backgroundMusic.play();
+        shopButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                lockedSkins = ShopSkin.takeOnlyLockedSkins(allSkins);
+                menuCondition = MenuCondition.SHOP;
+                Gdx.input.setInputProcessor(shopStage);
+                shopBellSound.play(0.5f);
+                super.clicked(event, x, y);
+            }
+        });
 
-        backgroundNoiseMenu = Gdx.audio.newMusic(Gdx.files.internal("music/backgroundNoiseMenu.mp3"));
-        backgroundNoiseMenu.setLooping(true);
-        backgroundNoiseMenu.setVolume(0.5f);
-        backgroundNoiseMenu.play();
+
+        mainStage.addActor(startButton);
+        mainStage.addActor(continueButton);
+        mainStage.addActor(tutorialButton);
+        mainStage.addActor(shopButton);
+
     }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
-
-        // Обновление позиций фона
-
-        // Рендеринг фона
         batch.setProjectionMatrix(viewport.getCamera().combined);
+        logoPositionCalculate(delta);
         batch.begin();
         batch.draw(BG_image, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
-        logoDraw(delta);
+        if(menuCondition == MenuCondition.MAIN){
+            logoDraw();
+        }
         batch.end();
+        mainStage.draw();
+        mainStage.act(delta);
+        batch.begin();
+        if(menuCondition ==  MenuCondition.SHOP){
+            drawShop(delta);
+        }
+        batch.end();
+        if(menuCondition ==  MenuCondition.SHOP){
+            shopStage.draw();
+        }
+        shopStage.act(delta);
 
-        // Обновление и рендеринг Stage
-        stage.act(delta);
-        stage.draw();
     }
-
-    private void logoDraw(float delta) {
-        batch.draw(logoTexture, (viewport.getWorldWidth() / 2) + 10 - (float) logoTexture.getWidth() / 2, 600 - logoShakingDelta * AMPLITUDE_SHAKING,
-            logoTexture.getWidth() * LOGO_SCALING, logoTexture.getHeight() * LOGO_SCALING);
+    private void logoPositionCalculate(float delta){
         logoStep += (delta) * SPEED_SHAKING;
         if (logoStep >= STEP_VALUE) {
             logoELapsedTime += logoStep;
             logoShakingDelta = (float) Math.abs(Math.sin(logoELapsedTime));
             logoStep = 0;
         }
+    }
 
+    private void drawShop(float delta){
+        batch.draw(shopTexture,  viewport.getWorldWidth() /2 - (float) shopTexture.getWidth() *SHOP_SCALE/2,0,shopTexture.getWidth()*SHOP_SCALE,shopTexture.getHeight()*SHOP_SCALE);
+        drawShopLogo();
+        drawShopSkins();
+    }
+    private void drawShopSkins(){
+        for(int i=0;i<3;i++){
+            if(lockedSkins.size()>indexOfFirstSkin+i && lockedSkins.get(indexOfFirstSkin+i) != null ){
+                lockedSkins.get(indexOfFirstSkin+i).draw(batch,START_POSITION_FOR_SHOP_SKINS+INDENT_FOR_SHOP_SKINS*i,Y_POSITION_FOR_SHOP_SKINS);
+            }
+        }
+    }
+
+    private void drawShopLogo(){
+        batch.draw(logoShopTexture, (viewport.getWorldWidth() / 2) -  (logoShopTexture.getWidth()*LOGO_SHOP_SCALING) / 2,
+            950 - logoShakingDelta * AMPLITUDE_SHAKING,
+            logoShopTexture.getWidth() * LOGO_SHOP_SCALING,
+            logoShopTexture.getHeight() * LOGO_SHOP_SCALING);
+    }
+
+    private void logoDraw() {
+        batch.draw(logoTexture, (viewport.getWorldWidth() / 2)  - (logoTexture.getWidth()*LOGO_SCALING) / 2,
+            600 - logoShakingDelta * AMPLITUDE_SHAKING,
+            logoTexture.getWidth() * LOGO_SCALING,
+            logoTexture.getHeight() * LOGO_SCALING);
     }
 
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        stage.getViewport().update(width, height, true);
+        mainStage.getViewport().update(width, height, true);
+        shopStage.getViewport().update(width, height, true);
     }
 
     @Override
     public void pause() {
+        ShopSkin.saveSkins(allSkins);
+        account.saveMoney();
     }
 
     @Override
@@ -171,7 +334,8 @@ public class FirstScreen implements Screen {
     public void dispose() {
         batch.dispose();
         BG_image.dispose();
-        stage.dispose();
+        mainStage.dispose();
+        shopStage.dispose();
         if (backgroundMusic != null) {
             backgroundMusic.stop();
             backgroundMusic.dispose();
@@ -181,4 +345,10 @@ public class FirstScreen implements Screen {
             backgroundNoiseMenu.dispose();
         }
     }
+    private enum MenuCondition{
+        MAIN,
+        SHOP,
+        INVENTORY
+    }
 }
+

@@ -41,7 +41,6 @@ public class MapScreen implements Screen {
 
     private BitmapFont font;
     private float elapsedTime;
-    public boolean wasTouched;
     private short characterDirection;
     public boolean playerIsMoving;
 
@@ -56,11 +55,9 @@ public class MapScreen implements Screen {
     public void show() {
         batch = new SpriteBatch();
         elapsedTime = 0;
-        wasTouched = false;
         playerIsMoving = false;
         viewportConfiguration();
         stage = new Stage(viewport,batch);
-
         showHeathPointBar();
         showDeckDemonstrationButton();
         showFont();
@@ -69,9 +66,7 @@ public class MapScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
         if (backgroundMusic == null || !backgroundMusic.isPlaying()) {
             showMusic();
-
         }
-
     }
 
     private void showBackground() {
@@ -143,7 +138,6 @@ public class MapScreen implements Screen {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if(!playerIsMoving){
                     movePlayer("up");
-
                 }
                 return super.touchDown(event, x, y, pointer, button);
             }
