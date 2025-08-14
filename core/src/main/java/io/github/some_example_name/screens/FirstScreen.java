@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -31,8 +32,13 @@ public class FirstScreen implements Screen {
     private static final float POSITION_FOR_MOVEMENT_BUTTONS= 400;
     private static final float STARTING_POSITION_FOR_FIRST_BUY_BUTTON = 700,BETWEEN_SPACE = 250,Y_POSITION_FOR_BUY_BUTTONS = 100;
     private static final float AMPLITUDE_SHAKING = 30, SPEED_SHAKING = 2f, STEP_VALUE = 0.3f;
+    private static final float INVENTORY_BUTTON_SCALE = 0.5f;
+    private static final float SCALE_FOR_SKINS_INVENTORY = 0.3f,Y_POSITION_FOR_INVENTORY_SKINS = 300;
     private static final float START_POSITION_FOR_SHOP_SKINS,INDENT_FOR_SHOP_SKINS,Y_POSITION_FOR_SHOP_SKINS;
+    private static final float SELECT_BUTTON_SCALE = 0.4f;
+
     private static final String NAME_FOR_BUY_BUTTONS = "buy_button";
+
     static {
         Texture buyButtonTexture = new Texture(Gdx.files.internal("menu/buy_button.png"));
         START_POSITION_FOR_SHOP_SKINS = STARTING_POSITION_FOR_FIRST_BUY_BUTTON+buyButtonTexture.getWidth()*BUTTON_BUY_SCALE/2;
@@ -41,24 +47,28 @@ public class FirstScreen implements Screen {
     }
 
     private MenuCondition menuCondition;
-    private ArrayList<ShopSkin> lockedSkins;
+    private ArrayList<ShopSkin> lockedSkins, unlockedSkins;
+    private Sprite inventoryWindow;
     private ShopSkin[] allSkins;
+
     private int indexOfFirstSkin;
     private Sound shopBellSound;
     private Account account;
     private Texture BG_image;
     private Texture logoTexture, logoShopTexture;
     private Texture buyButtonTexture, buyButtonUnavaibleTexture;
+
     private  Texture shopTexture;
     private SpriteBatch batch;
     private StretchViewport viewport;
-    private Stage mainStage,shopStage;
+    private Stage mainStage,shopStage,inventoryStage;
     private Music backgroundMusic, backgroundNoiseMenu;
     private float logoStep = 0, logoShakingDelta = 0, logoELapsedTime = 0;
 
     @Override
     public void show() {
         menuCondition = MenuCondition.MAIN;
+        allSkins = ShopSkin.getAllSkins();
         account = new Account();
         batch = new SpriteBatch();
         viewport = new StretchViewport(2400, 1080);
@@ -66,6 +76,7 @@ public class FirstScreen implements Screen {
         viewport.apply();
         showMainStage();
         showShopStage();
+        showInventoryStage();
         showMusic();
         BG_image = new Texture(Gdx.files.internal("menu/menu_background.png"));
         logoTexture = new Texture(Gdx.files.internal("menu/goblin_cards_logo.png"));
@@ -152,7 +163,7 @@ public class FirstScreen implements Screen {
                         if (lockedSkins.get(indexOfFirstSkin+index).getPrice() <= account.getMoney()){
                             lockedSkins.get(indexOfFirstSkin+index).setUnlocked(true);
                             account.setMoney(account.getMoney()-lockedSkins.get(indexOfFirstSkin+index).getPrice());
-
+                            lockedSkins = ShopSkin.takeOnlyLockedSkins(allSkins);
                         }
                     }
                     super.clicked(event, x, y);
@@ -162,10 +173,94 @@ public class FirstScreen implements Screen {
         for (ImageButton buttonBuy : buttonsBuy) {
             shopStage.addActor(buttonBuy);
         }
-        indexOfFirstSkin = 0;
-        allSkins = ShopSkin.getAllSkins();
 
 
+
+    }
+    private void showInventoryStage(){
+        inventoryStage = new Stage(viewport,batch);
+        showInventoryWindow();
+        showInventoryReturnButton();
+        showSwapButtonSkin();
+        showSelectButton();
+
+    }
+    private void showSelectButton(){
+        Texture selectButtonTexture = new Texture(Gdx.files.internal("menu/select_button.png"));
+        ImageButton selectButton = new ImageButton(new TextureRegionDrawable(selectButtonTexture));
+        selectButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                account.setIndexOfSelectedSkin(indexOfFirstSkin);
+                menuCondition = MenuCondition.MAIN;
+                Gdx.input.setInputProcessor(mainStage);
+                super.clicked(event, x, y);
+            }
+        });
+        selectButton.setSize(selectButtonTexture.getWidth()*SELECT_BUTTON_SCALE,selectButtonTexture.getHeight()*SELECT_BUTTON_SCALE);
+        selectButton.setPosition(viewport.getWorldWidth()/2-selectButton.getWidth()/2,INDENT_MOVEMENTS_BUTTONS);
+        inventoryStage.addActor(selectButton);
+
+    }
+    private void showSwapButtonSkin(){
+        Texture textureLeftShop = new Texture(Gdx.files.internal("buttons/left_button.png"));
+        Texture textureRightShop = new Texture(Gdx.files.internal("buttons/right_button.png"));
+
+        ImageButton leftShopButton = new ImageButton(new TextureRegionDrawable(textureLeftShop));
+        ImageButton rightShopButton = new ImageButton(new TextureRegionDrawable(textureRightShop));
+
+        leftShopButton.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if(indexOfFirstSkin-1>= 0){
+                    indexOfFirstSkin-=1;
+                }
+                return super.touchDown(event, x, y, pointer, button);
+            }
+        });
+        rightShopButton.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if(indexOfFirstSkin+1< unlockedSkins.size()){
+                    indexOfFirstSkin+=1;
+                }
+                return super.touchDown(event, x, y, pointer, button);
+            }
+        });
+        leftShopButton.setSize(textureLeftShop.getWidth()*MOVEMENT_BUTTONS_SCALE,textureLeftShop.getHeight()*MOVEMENT_BUTTONS_SCALE);
+        rightShopButton.setSize(textureRightShop.getWidth()*MOVEMENT_BUTTONS_SCALE,textureRightShop.getHeight()*MOVEMENT_BUTTONS_SCALE);
+
+        leftShopButton.setPosition(inventoryWindow.getX(),INDENT_MOVEMENTS_BUTTONS);
+        rightShopButton.setPosition(inventoryWindow.getX()+inventoryWindow.getWidth()-rightShopButton.getWidth(),INDENT_MOVEMENTS_BUTTONS);
+
+        inventoryStage.addActor(leftShopButton);
+        inventoryStage.addActor(rightShopButton);
+
+
+    }
+    public void showInventoryReturnButton(){
+        Texture returnButtonTexture = new Texture(Gdx.files.internal("buttons/left_button.png"));
+        ImageButton returnButton = new ImageButton(new TextureRegionDrawable(returnButtonTexture));
+        returnButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                menuCondition = MenuCondition.MAIN;
+                Gdx.input.setInputProcessor(mainStage);
+                super.clicked(event, x, y);
+            }
+        });
+        returnButton.setSize(returnButtonTexture.getWidth()*MOVEMENT_BUTTONS_SCALE,returnButtonTexture.getHeight()*MOVEMENT_BUTTONS_SCALE);
+        returnButton.setPosition(viewport.getWorldWidth() /2 - inventoryWindow.getWidth()/2-returnButton.getWidth(), viewport.getWorldHeight()-returnButton.getHeight());
+        inventoryStage.addActor(returnButton);
+
+    }
+
+    public void showInventoryWindow(){
+        Texture inventoryWindowTexture = new Texture(Gdx.files.internal("menu/inventory_window.png"));
+        inventoryWindow = new Sprite(inventoryWindowTexture);
+        inventoryWindow.setSize(inventoryWindowTexture.getWidth()*(viewport.getWorldHeight()/inventoryWindowTexture.getHeight()),
+            viewport.getWorldHeight());
+        inventoryWindow.setPosition(viewport.getWorldWidth()/2 - inventoryWindow.getWidth()/2,0);
 
     }
     private void showMainStage(){
@@ -175,24 +270,40 @@ public class FirstScreen implements Screen {
         Texture continueButtonTexture = new Texture(Gdx.files.internal("menu/continue_button_unavailable.png"));
         Texture tutorialButtonTexture = new Texture(Gdx.files.internal("menu/tutorial_button.png"));
         Texture shopButtonTexture = new Texture(Gdx.files.internal("menu/shop_button.png"));
+        Texture inventoryButtonTexture = new Texture(Gdx.files.internal("menu/inventory_button.png"));
 
 
         ImageButton startButton = new ImageButton(new TextureRegionDrawable(startButtonTexture));
         ImageButton continueButton = new ImageButton(new TextureRegionDrawable(continueButtonTexture));
         ImageButton tutorialButton = new ImageButton(new TextureRegionDrawable(tutorialButtonTexture));
         ImageButton shopButton = new ImageButton(new TextureRegionDrawable(shopButtonTexture));
+        ImageButton inventoryButton = new ImageButton(new TextureRegionDrawable(inventoryButtonTexture));
 
 
         startButton.setSize(startButtonTexture.getWidth() * NEW_GAME_BUTTON_SCALING, startButtonTexture.getHeight() * NEW_GAME_BUTTON_SCALING);
         continueButton.setSize(continueButtonTexture.getWidth() * CONTINUE_GAME_BUTTON_SCALING, continueButtonTexture.getHeight() * CONTINUE_GAME_BUTTON_SCALING);
         tutorialButton.setSize(tutorialButtonTexture.getWidth() * TUTORIAL_BUTTON_SCALING, tutorialButtonTexture.getHeight() * TUTORIAL_BUTTON_SCALING);
         shopButton.setSize(shopButtonTexture.getWidth()*SHOP_BUTTON_SCALING, shopButtonTexture.getHeight()*SHOP_BUTTON_SCALING);
+        inventoryButton.setSize(inventoryButtonTexture.getWidth()*INVENTORY_BUTTON_SCALE,inventoryButtonTexture.getHeight()*INVENTORY_BUTTON_SCALE);
 
 
         continueButton.setPosition(INDENT_BUTTONS, STARTING_POSITION);
         tutorialButton.setPosition(INDENT_BUTTONS, continueButton.getY() + continueButton.getHeight());
         startButton.setPosition(INDENT_BUTTONS, tutorialButton.getY() + tutorialButton.getHeight());
-        shopButton.setPosition(viewport.getScreenWidth()-shopButton.getWidth(),0);
+        inventoryButton.setPosition(viewport.getWorldWidth()-inventoryButton.getWidth(),STARTING_POSITION);
+        shopButton.setPosition(viewport.getWorldWidth()-shopButton.getWidth(),inventoryButton.getY()+inventoryButton.getHeight());
+
+
+        inventoryButton.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                menuCondition = MenuCondition.INVENTORY;
+                unlockedSkins = ShopSkin.takeOnlyUnlockedSkins(allSkins);
+                Gdx.input.setInputProcessor(inventoryStage);
+                indexOfFirstSkin =account.getIndexOfSelectedSkin();
+                return super.touchDown(event, x, y, pointer, button);
+            }
+        });
 
 
         startButton.addListener(new ClickListener() {
@@ -236,6 +347,7 @@ public class FirstScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 lockedSkins = ShopSkin.takeOnlyLockedSkins(allSkins);
                 menuCondition = MenuCondition.SHOP;
+                indexOfFirstSkin = 0;
                 Gdx.input.setInputProcessor(shopStage);
                 shopBellSound.play(0.5f);
                 super.clicked(event, x, y);
@@ -247,6 +359,7 @@ public class FirstScreen implements Screen {
         mainStage.addActor(continueButton);
         mainStage.addActor(tutorialButton);
         mainStage.addActor(shopButton);
+        mainStage.addActor(inventoryButton);
 
     }
 
@@ -265,13 +378,24 @@ public class FirstScreen implements Screen {
         mainStage.act(delta);
         batch.begin();
         if(menuCondition ==  MenuCondition.SHOP){
-            drawShop(delta);
+            drawShop();
+        }
+        if (menuCondition == MenuCondition.INVENTORY){
+            drawInventory();
         }
         batch.end();
         if(menuCondition ==  MenuCondition.SHOP){
             shopStage.draw();
         }
+        if(menuCondition == MenuCondition.INVENTORY){
+            inventoryStage.draw();
+        }
         shopStage.act(delta);
+
+    }
+    private void drawInventory(){
+        inventoryWindow.draw(batch);
+        drawInventorySkin();
 
     }
     private void logoPositionCalculate(float delta){
@@ -283,10 +407,17 @@ public class FirstScreen implements Screen {
         }
     }
 
-    private void drawShop(float delta){
+    private void drawShop(){
         batch.draw(shopTexture,  viewport.getWorldWidth() /2 - (float) shopTexture.getWidth() *SHOP_SCALE/2,0,shopTexture.getWidth()*SHOP_SCALE,shopTexture.getHeight()*SHOP_SCALE);
         drawShopLogo();
         drawShopSkins();
+    }
+    private void drawInventorySkin(){
+        if(unlockedSkins.size()>indexOfFirstSkin&& unlockedSkins.get(indexOfFirstSkin) != null ){
+            unlockedSkins.get(indexOfFirstSkin).draw(batch,viewport.getWorldWidth()/2,Y_POSITION_FOR_INVENTORY_SKINS,SCALE_FOR_SKINS_INVENTORY);
+        }
+
+
     }
     private void drawShopSkins(){
         for(int i=0;i<3;i++){
@@ -321,6 +452,7 @@ public class FirstScreen implements Screen {
     public void pause() {
         ShopSkin.saveSkins(allSkins);
         account.saveMoney();
+        account.saveIndexOfSelectedSkin();
     }
 
     @Override
@@ -333,6 +465,9 @@ public class FirstScreen implements Screen {
 
     @Override
     public void dispose() {
+        ShopSkin.saveSkins(allSkins);
+        account.saveMoney();
+        account.saveIndexOfSelectedSkin();
         batch.dispose();
         BG_image.dispose();
         mainStage.dispose();

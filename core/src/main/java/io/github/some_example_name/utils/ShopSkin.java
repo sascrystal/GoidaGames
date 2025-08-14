@@ -18,29 +18,17 @@ public class ShopSkin {
     private boolean isUnlocked;
     private String path;
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
-    public void setPrice(int price) {
-        this.price = price;
-    }
 
-    public boolean isUnlocked() {
-        return isUnlocked;
-    }
+
+
 
     public String getPath() {
         return path;
     }
 
-    public void setPath(String path) {
-        this.path = path;
-    }
 
-    public int getId() {
-        return id;
-    }
+
 
     public int getPrice() {
         return price;
@@ -59,13 +47,7 @@ public class ShopSkin {
 
     }
 
-    public ShopSkin(String path, int index, int price, boolean isUnlocked) {
-        this.path = path;
-        this.texture = new Texture(Gdx.files.internal(this.path+"/right_sight.png"));
-        this.id = index;
-        this.price = price;
-        this.isUnlocked = isUnlocked;
-    }
+
     private void addTexture(){
         texture = new Texture(Gdx.files.internal(path+"/right_sight.png"));
     }
@@ -78,6 +60,7 @@ public class ShopSkin {
         }
         return skinData;
     }
+
     public static ArrayList<ShopSkin> takeOnlyLockedSkins( ShopSkin[] skins){
         ArrayList<ShopSkin> lockedSkins = new ArrayList<>();
         for (ShopSkin skin : skins){
@@ -87,8 +70,21 @@ public class ShopSkin {
         }
         return lockedSkins;
     }
+    public static ArrayList<ShopSkin> takeOnlyUnlockedSkins( ShopSkin[] skins){
+        ArrayList<ShopSkin> lockedSkins = new ArrayList<>();
+        for (ShopSkin skin : skins){
+            if(skin.isUnlocked){
+                lockedSkins.add(skin);
+            }
+        }
+        return lockedSkins;
+    }
     public void draw(SpriteBatch batch,float x,float y){
         batch.draw(texture,x-texture.getWidth()*SCALE_FOR_SKIN/2,y,texture.getWidth()*SCALE_FOR_SKIN,texture.getHeight()*SCALE_FOR_SKIN);
+
+    }
+    public void draw(SpriteBatch batch,float x,float y,float scale){
+        batch.draw(texture,x-texture.getWidth()*scale/2,y,texture.getWidth()*scale,texture.getHeight()*scale);
 
     }
     public void dispose(){
