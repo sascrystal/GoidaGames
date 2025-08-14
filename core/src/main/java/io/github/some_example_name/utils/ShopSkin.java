@@ -78,6 +78,7 @@ public class ShopSkin {
         }
         return skinData;
     }
+
     public static ArrayList<ShopSkin> takeOnlyLockedSkins( ShopSkin[] skins){
         ArrayList<ShopSkin> lockedSkins = new ArrayList<>();
         for (ShopSkin skin : skins){
@@ -87,8 +88,21 @@ public class ShopSkin {
         }
         return lockedSkins;
     }
+    public static ArrayList<ShopSkin> takeOnlyUnlockedSkins( ShopSkin[] skins){
+        ArrayList<ShopSkin> lockedSkins = new ArrayList<>();
+        for (ShopSkin skin : skins){
+            if(skin.isUnlocked){
+                lockedSkins.add(skin);
+            }
+        }
+        return lockedSkins;
+    }
     public void draw(SpriteBatch batch,float x,float y){
         batch.draw(texture,x-texture.getWidth()*SCALE_FOR_SKIN/2,y,texture.getWidth()*SCALE_FOR_SKIN,texture.getHeight()*SCALE_FOR_SKIN);
+
+    }
+    public void draw(SpriteBatch batch,float x,float y,float scale){
+        batch.draw(texture,x-texture.getWidth()*scale/2,y,texture.getWidth()*scale,texture.getHeight()*scale);
 
     }
     public void dispose(){

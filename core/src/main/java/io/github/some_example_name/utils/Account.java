@@ -7,16 +7,30 @@ import com.badlogic.gdx.Preferences;
 public class Account {
     private static final int BASE_MONEY = 100;
     private static final String PREFS_NAME = "EconomicPref";
-    private int indexOfSkin;
+    private int indexOfSelectedSkin;
+
+    public int getIndexOfSelectedSkin() {
+        return indexOfSelectedSkin;
+    }
+
+    public void setIndexOfSelectedSkin(int indexOfSelectedSkin) {
+        this.indexOfSelectedSkin = indexOfSelectedSkin;
+    }
 
     private int money;
     public Account() {
         Preferences preferences = Gdx.app.getPreferences(PREFS_NAME);
         money = preferences.getInteger("money", BASE_MONEY);
+        indexOfSelectedSkin = preferences.getInteger("index_selected_Skin",0);
     }
     public void saveMoney(){
         Preferences preferences = Gdx.app.getPreferences(PREFS_NAME);
         preferences.putInteger("money",money);
+        preferences.flush();
+    }
+    public void saveIndexOfSelectedSkin(){
+        Preferences preferences = Gdx.app.getPreferences(PREFS_NAME);
+        preferences.putInteger("index_selected_Skin",indexOfSelectedSkin);
         preferences.flush();
     }
 

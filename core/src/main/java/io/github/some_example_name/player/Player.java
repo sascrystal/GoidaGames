@@ -38,10 +38,10 @@ public abstract class Player {
     protected int score;
     protected float walkAnimationCompressionValue;
     protected int shield;// Здоровье игрока
-    protected Texture textureRightSight = new Texture(Gdx.files.internal("characters/character_peasant_right_sight.png"));
-    protected Texture textureLeftSight = new Texture(Gdx.files.internal("characters/character_peasant_left_sight.png"));
+    protected Texture textureRightSight;
+    protected Texture textureLeftSight ;
 
-    protected Sprite sprite = new Sprite(textureRightSight);
+    protected Sprite sprite;
     protected List<PlayingCard> dropDeck = new ArrayList<>();
     protected List<PlayingCard> deck = new ArrayList<>();
     protected List<PlayingCard> draftDeck = new ArrayList<>();
