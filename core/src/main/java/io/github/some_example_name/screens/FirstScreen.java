@@ -378,10 +378,10 @@ public class FirstScreen implements Screen {
         mainStage.act(delta);
         batch.begin();
         if(menuCondition ==  MenuCondition.SHOP){
-            drawShop(delta);
+            drawShop();
         }
         if (menuCondition == MenuCondition.INVENTORY){
-            drawInventory(delta);
+            drawInventory();
         }
         batch.end();
         if(menuCondition ==  MenuCondition.SHOP){
@@ -393,7 +393,7 @@ public class FirstScreen implements Screen {
         shopStage.act(delta);
 
     }
-    private void drawInventory(float delta){
+    private void drawInventory(){
         inventoryWindow.draw(batch);
         drawInventorySkin();
 
@@ -407,7 +407,7 @@ public class FirstScreen implements Screen {
         }
     }
 
-    private void drawShop(float delta){
+    private void drawShop(){
         batch.draw(shopTexture,  viewport.getWorldWidth() /2 - (float) shopTexture.getWidth() *SHOP_SCALE/2,0,shopTexture.getWidth()*SHOP_SCALE,shopTexture.getHeight()*SHOP_SCALE);
         drawShopLogo();
         drawShopSkins();

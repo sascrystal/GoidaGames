@@ -1,10 +1,10 @@
 package io.github.some_example_name.player;
 
-import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -351,6 +351,8 @@ public abstract class Player {
         sprite.setRotation(walkAnimationRotateValue);
         if(walkAnimationRotateTimer >= 2*Math.PI){
             walkAnimationRotateTimer = 0;
+            walkAnimationRotateValue = (float) Math.sin(walkAnimationRotateTimer) * WALKING_ROTATE_AMPLITUDE;
+            sprite.setRotation(walkAnimationRotateValue);
         }
     }
 

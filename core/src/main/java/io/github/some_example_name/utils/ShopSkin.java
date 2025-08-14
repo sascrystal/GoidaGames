@@ -18,29 +18,17 @@ public class ShopSkin {
     private boolean isUnlocked;
     private String path;
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
-    public void setPrice(int price) {
-        this.price = price;
-    }
 
-    public boolean isUnlocked() {
-        return isUnlocked;
-    }
+
+
 
     public String getPath() {
         return path;
     }
 
-    public void setPath(String path) {
-        this.path = path;
-    }
 
-    public int getId() {
-        return id;
-    }
+
 
     public int getPrice() {
         return price;
@@ -59,13 +47,7 @@ public class ShopSkin {
 
     }
 
-    public ShopSkin(String path, int index, int price, boolean isUnlocked) {
-        this.path = path;
-        this.texture = new Texture(Gdx.files.internal(this.path+"/right_sight.png"));
-        this.id = index;
-        this.price = price;
-        this.isUnlocked = isUnlocked;
-    }
+
     private void addTexture(){
         texture = new Texture(Gdx.files.internal(path+"/right_sight.png"));
     }
