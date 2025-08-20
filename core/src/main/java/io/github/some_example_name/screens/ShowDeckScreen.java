@@ -2,12 +2,16 @@ package io.github.some_example_name.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
@@ -23,6 +27,10 @@ public class ShowDeckScreen implements Screen, GestureDetector.GestureListener {
     private Rectangle buttonBackRectangle;
     private StretchViewport viewport;
     private SpriteBatch batch;
+    private BitmapFont font;
+    private static final float MODIFIER_FOR_CARD_NANE = 0.61f,MODIFIER_FOR_CARD_DESCRIPTION=0.75F;
+    private static final float LAYOUT_HEIGHT_FOR_NAME_CARDS = (float) 10 /225;
+
 
     private float maxX, minX;
 
@@ -39,6 +47,11 @@ public class ShowDeckScreen implements Screen, GestureDetector.GestureListener {
         gestureDetectorConfiguration();
         showButtonBack();
         showBackground();
+        showFont();
+    }
+    private void showFont(){
+        font = new BitmapFont(Gdx.files.internal("fonts/font.fnt"), Gdx.files.internal("fonts/font.png"), false);
+
     }
 
     private void showBackground() {
@@ -115,10 +128,51 @@ public class ShowDeckScreen implements Screen, GestureDetector.GestureListener {
         int indent = 0;
         float beginPositionRowX = 0;
         float beginPositionRowY = 0;
-        float width = viewport.getWorldHeight() * ((float) deck.get(0).getTexture().getHeight() / deck.get(0).getTexture().getWidth()) + 100;
+        float width = viewport.getWorldHeight() * ((float) deck.get(0).getTexture().getHeight() / deck.get(0).getTexture().getWidth());
         for (int i = 0; i < deck.size(); i++) {
-            deck.get(i).draw(batch, beginPositionRowX + (indent + width) * i, beginPositionRowY,
-                width, viewport.getWorldHeight());
+            float x = beginPositionRowX + (indent + width) * i;
+            batch.draw(
+                deck.get(i).getTexture(),
+                x,
+                beginPositionRowY,
+                width,
+                viewport.getWorldHeight());
+            font.setColor(Color.WHITE);
+
+            font.getData().setScale(1.0f);
+            font.draw(
+                batch,
+                String.valueOf(deck.get(i).getCost()),
+                x + 70,
+                beginPositionRowY + viewport.getWorldHeight() - 10);
+
+            font.getData().setScale(2.0f);
+            font.setColor(Color.WHITE);
+
+            float widthText = width* MODIFIER_FOR_CARD_NANE;
+            GlyphLayout layout = new GlyphLayout(font,deck.get(i).getName(),Color.WHITE,widthText, Align.center,true);
+            float xText = x +width/2 - widthText/2;
+            float y = beginPositionRowY+viewport.getWorldHeight()*0.52f;
+            while (layout.height >viewport.getWorldHeight()*LAYOUT_HEIGHT_FOR_NAME_CARDS){
+                font.getData().setScale(font.getScaleX()*0.999f);
+                layout.setText(font,deck.get(i).getName(),Color.WHITE,widthText,Align.center,true);
+            }
+            font.draw(batch,layout,xText,y);
+            font.setColor(Color.WHITE);
+            font.getData().setScale(0.7f);
+
+            widthText = width*MODIFIER_FOR_CARD_DESCRIPTION;
+            xText = x+width/2 - widthText/2;
+            y = beginPositionRowY+viewport.getWorldHeight()*0.40f;
+            layout.setText(font,deck.get(i).getDescription(),Color.WHITE,widthText,Align.center,true);
+            while (layout.height >viewport.getWorldHeight()*0.32f){
+                font.getData().setScale(font.getScaleX()*0.999f);
+                layout.setText(font,deck.get(i).getDescription(),Color.WHITE,widthText,Align.center,true);
+            }
+            font.draw(batch,layout,xText,y);
+            font.setColor(Color.WHITE);
+            font.getData().setScale(1.0f);
+
         }
     }
 

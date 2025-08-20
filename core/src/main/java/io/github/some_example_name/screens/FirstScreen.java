@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -13,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
@@ -40,7 +43,9 @@ public class FirstScreen implements Screen {
     private static final float MONEY_SHOP_BUTTON_SCALE = 0.1f;
     private static final float SCALE_FOR_FIRST_ICON_MONEY=0.2F,SCALE_FOR_SECOND_ICON_MONEY=0.2F,SCALE_FOR_THIRD_ICON_MONEY=0.4F;
     private static final float Y_POSITION_FOR_FIRST_AND_SECOND_ICON_MONEY = 650,Y_POSITION_FOR_THIRD_ICON_MONEY =200;
-
+    private static final float MONEY_SPRITE_SCALE = 0.1f;
+    private static final float MONEY_SPRITE_X = 2000;
+    private static final float MONEY_COUNT_HEIGHT = 40;
     private static final String NAME_FOR_BUY_BUTTONS = "buy_button";
 
     static {
@@ -54,9 +59,9 @@ public class FirstScreen implements Screen {
     private ArrayList<ShopSkin> lockedSkins, unlockedSkins;
     private Sprite inventoryWindow;
     private ShopSkin[] allSkins;
-    private Texture  moneyTexture;
     private Sprite moneyShopWindow;
     private BitmapFont font;
+    private GlyphLayout glyphLayout;
     private int indexOfFirstSkin;
     private Sound shopBellSound;
     private Account account;
@@ -64,13 +69,14 @@ public class FirstScreen implements Screen {
     private Texture logoTexture, logoShopTexture;
     private Texture buyButtonTexture, buyButtonUnavaibleTexture;
     private Sprite firstIconForMoney, secondIconForMoney, thirdIconForMoney;
-
+    private Sprite moneySprite;
     private  Texture shopTexture;
     private SpriteBatch batch;
     private StretchViewport viewport;
     private Stage mainStage,shopStage,inventoryStage,shopMoneyStage;
     private Music backgroundMusic, backgroundNoiseMenu;
     private float logoStep = 0, logoShakingDelta = 0, logoELapsedTime = 0;
+
 
     @Override
     public void show() {
@@ -81,6 +87,8 @@ public class FirstScreen implements Screen {
         viewport = new StretchViewport(2400, 1080);
         viewport.getCamera().position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
         viewport.apply();
+        font = new BitmapFont(Gdx.files.internal("fonts/font.fnt"), Gdx.files.internal("fonts/font.png"), false);
+        glyphLayout = new GlyphLayout();
         showMainStage();
         showShopStage();
         showInventoryStage();
@@ -138,13 +146,47 @@ public class FirstScreen implements Screen {
         Texture buyTexture = new Texture("menu/buy_button.png");
 
         ImageButton[] buyButtons = new ImageButton[3];
-        for(ImageButton buyButton : buyButtons){
-            buyButton = new ImageButton(new TextureRegionDrawable(buyTexture));
-            buyButton.setSize(
+        for(int i = 0; i<buyButtons.length;i++){
+            buyButtons[i] =new ImageButton(new TextureRegionDrawable(buyTexture));
+            buyButtons[i].setSize(
                 buyTexture.getWidth()*BUTTON_BUY_SCALE,
                 buyTexture.getHeight()*BUTTON_BUY_SCALE
             );
         }
+        buyButtons[0].addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                account.setMoney(account.getMoney()+99);
+                super.clicked(event, x, y);
+            }
+        });
+        buyButtons[1].addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                account.setMoney(account.getMoney()+999);
+                super.clicked(event, x, y);
+            }
+        });
+        buyButtons[2].addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                account.setMoney(account.getMoney()+9999);
+                super.clicked(event, x, y);
+            }
+        });
+        buyButtons[0].setPosition(
+            firstIconForMoney.getX()+firstIconForMoney.getWidth()/2-buyButtons[0].getWidth()/2,
+            firstIconForMoney.getY()-buyButtons[0].getHeight());
+        buyButtons[1].setPosition(
+            secondIconForMoney.getX()+secondIconForMoney.getWidth()/2-buyButtons[1].getWidth()/2,
+            secondIconForMoney.getY()-buyButtons[1].getHeight());
+        buyButtons[2].setPosition(
+            thirdIconForMoney.getX()+thirdIconForMoney.getWidth()/2-buyButtons[2].getWidth()/2,
+            thirdIconForMoney.getY()-buyButtons[2].getHeight());
+        for (ImageButton buyButton :buyButtons){
+            shopMoneyStage.addActor(buyButton);
+        }
+
 
 
 
@@ -174,7 +216,10 @@ public class FirstScreen implements Screen {
         moneyShopWindow.setPosition(viewport.getWorldWidth()/2 - moneyShopWindow.getWidth()/2,0);
     }
     private void showMoneySprite(){
-        moneyTexture = new Texture("menu/coin.png");
+        Texture moneyTexture = new Texture("menu/coin.png");
+        moneySprite = new Sprite(moneyTexture);
+        moneySprite.setSize(moneyTexture.getWidth()*MONEY_SPRITE_SCALE, moneyTexture.getHeight()*MONEY_SPRITE_SCALE);
+        moneySprite.setPosition(MONEY_SPRITE_X, viewport.getWorldHeight()-moneySprite.getHeight());
     }
     private void showMusic(){
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/mainMenuMusic.mp3"));
@@ -487,6 +532,7 @@ public class FirstScreen implements Screen {
             viewport.getWorldWidth()-moneyShopButton.getWidth(),
             viewport.getWorldHeight()-moneyShopButton.getHeight()
         );
+        moneyShopButton.setName("money_shop_button");
         mainStage.addActor(moneyShopButton);
     }
 
@@ -500,13 +546,15 @@ public class FirstScreen implements Screen {
         if(menuCondition == MenuCondition.MAIN){
             logoDraw();
         }
+        moneySprite.draw(batch);
+        drawMoneyCount();
         batch.end();
         mainStage.draw();
         mainStage.act(delta);
         batch.begin();
         if(menuCondition ==  MenuCondition.SHOP){
             drawShop();
-            //drawCoin();
+
         }
         if (menuCondition == MenuCondition.INVENTORY){
             drawInventory();
@@ -528,6 +576,18 @@ public class FirstScreen implements Screen {
         }
         shopStage.act(delta);
 
+    }
+    private void drawMoneyCount(){
+        float x = moneySprite.getX()+moneySprite.getWidth()+15;
+        float y = moneySprite.getY()+moneySprite.getHeight()/2 +MONEY_COUNT_HEIGHT/2;
+        float width = 2200-x;
+        font.getData().setScale(3f);
+        glyphLayout.setText(font,String.valueOf(account.getMoney()), Color.WHITE,width, Align.left,true);
+        while (glyphLayout.height>MONEY_COUNT_HEIGHT){
+            font.getData().setScale(font.getScaleX()*0.9f);
+            glyphLayout.setText(font,String.valueOf(account.getMoney()), Color.WHITE,width, Align.left,true);
+        }
+        font.draw(batch,glyphLayout,x,y);
     }
     private void drawIconMoney(){
         firstIconForMoney.draw(batch);
