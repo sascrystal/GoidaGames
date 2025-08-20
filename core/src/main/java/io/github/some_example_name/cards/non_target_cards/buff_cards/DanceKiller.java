@@ -9,7 +9,7 @@ import io.github.some_example_name.player.Player;
 public class DanceKiller extends NonTargetCard {
     public DanceKiller() {
         name = "Убийца";
-        description = "Тип: способность. дает одну силу и одно укрепление. Она точно была монстром?";
+        description = "Тип: способность. дает одну силу и одно укрепление";
         cost = 1;
     }
 

@@ -8,7 +8,7 @@ import io.github.some_example_name.player.Player;
 public class SugarSplash extends CardAttack {
     public SugarSplash() {
         name = "Сахарный взрыв";
-        description = "Тип: атака. Наносит 5 урона и добавляет 1 слабость. Слишком сладко!";
+        description = "Тип: атака. Наносит 5 урона и добавляет 1 слабость.";
         damage = 5;
         cost = 0;
     }
