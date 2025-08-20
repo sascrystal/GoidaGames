@@ -489,7 +489,8 @@ public class FirstScreen implements Screen {
                 Player player = new CharacterKnight();
                 CellMap[][] map = CellMap.createTrainingAct(player);
                 MapScreen training = new MapScreen(player, map);
-                ((Main) Gdx.app.getApplicationListener()).setScreen(training);
+                TutorialScreen tutorialScreen = new TutorialScreen(training,training,"dialogues/tutorial_dialog_box_MapScreen.json");
+                ((Main) Gdx.app.getApplicationListener()).setScreen(tutorialScreen);
             }
         });
 
@@ -651,6 +652,8 @@ public class FirstScreen implements Screen {
         viewport.update(width, height);
         mainStage.getViewport().update(width, height, true);
         shopStage.getViewport().update(width, height, true);
+        inventoryStage.getViewport().update(width, height, true);
+        shopMoneyStage.getViewport().update(width, height, true);
     }
 
     @Override

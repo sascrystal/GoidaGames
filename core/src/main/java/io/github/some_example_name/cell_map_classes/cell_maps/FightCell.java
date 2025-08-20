@@ -21,7 +21,7 @@ public class FightCell extends CellMap {
             Animation.PlayMode.LOOP);
     }
 
-    private final Stage stage;
+    public final Stage stage;
 
     public FightCell(Stage stage, CellMap cell) {
         this.stage = stage;
@@ -33,6 +33,7 @@ public class FightCell extends CellMap {
     public void action(MapScreen map) {
         isAvailable = false;
         stage.stageAction(map);
+
     }
 
     @Override

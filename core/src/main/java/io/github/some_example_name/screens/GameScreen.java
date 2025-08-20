@@ -32,7 +32,7 @@ import io.github.some_example_name.enemy_classes.enemies.Enemy;
 import io.github.some_example_name.player.Player;
 
 
-public class GameScreen implements Screen {
+public class GameScreen implements Screen,DrawableScreen {
     public static final int HAND_META = 10;
     private static final float MODIFICATOR_FOR_CARD_NAME = 0.61f,MODIFIER_FOR_CARD_DESCRIPTION=0.75F;
     private static final float MAX_SCALE_FOR_DRAGGED_CARD  = 2f;
@@ -81,6 +81,11 @@ public class GameScreen implements Screen {
     private Rectangle invisibleCardArea;
     private float scaleForDraggedCard;
 
+    @Override
+    public StretchViewport getViewport() {
+        return viewport;
+    }
+
     public GameScreen(Enemy[] enemies, MapScreen map) {
         this.enemies = enemies;
         this.map = map.getMap();
@@ -93,6 +98,7 @@ public class GameScreen implements Screen {
     public void show() {
         // Инициализация StretchViewport
         batch = new SpriteBatch();
+        viewportConfiguration();
         showBackGround();
         showChooseCard();
         showInterface();
@@ -105,6 +111,14 @@ public class GameScreen implements Screen {
         playerTurn = true; // Начинаем с хода игрока
         cardAnimationTime = 0F;
     }
+    private void viewportConfiguration(){
+        viewport = new StretchViewport(2400, 1080);
+        viewport.getCamera().position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+        viewport.getCamera().update();
+        viewport.apply();
+    }
+
+
 
     private void showBackGround() {
         FileHandle dirHandle = Gdx.files.internal("background_act1");
@@ -182,7 +196,6 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         viewport.apply();
-        batch.setProjectionMatrix(viewport.getCamera().combined);
         elapsedTime += delta;
         cardAnimationUpdate(delta);
         music();
@@ -209,9 +222,10 @@ public class GameScreen implements Screen {
         backgroundMusic.setVolume(0.3f);
         backgroundMusic.play();
     }
-
-    private void draw(float delta) {
+@Override
+    public void draw(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
+        batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
         backgroundDraw();
         interfaceDraw();

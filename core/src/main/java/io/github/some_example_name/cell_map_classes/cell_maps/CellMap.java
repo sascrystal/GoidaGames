@@ -125,7 +125,7 @@ public abstract class CellMap {
         int cellWight = 150;
         float center = (viewport.getWorldHeight() / 2) - (float) cellWight / 2;
         trainingMap[1][0] = new EmptyCell(0, center);
-        trainingMap[1][1] = new FightCell(Stage.generateFightAct1(), new EmptyCell(trainingMap[1][0], "Right"));
+        trainingMap[1][1] = new FightCellTutorial(Stage.generateFightAct1(), new EmptyCell(trainingMap[1][0], "Right"),"dialogues/tutorial_dialog_box_GameScreen.json");
         trainingMap[1][2] = new EmptyCell(trainingMap[1][1], "Right");
         trainingMap[1][3] = new FightCell(Stage.generateFightAct1(), new EmptyCell(trainingMap[1][2], "Right"));
         trainingMap[1][4] = new EmptyCell(trainingMap[1][3], "Right");

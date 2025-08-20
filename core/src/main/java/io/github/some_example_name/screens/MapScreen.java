@@ -24,7 +24,7 @@ import io.github.some_example_name.cell_map_classes.cell_maps.FightCell;
 import io.github.some_example_name.player.Player;
 
 
-public class MapScreen implements Screen {
+public class MapScreen implements Screen,DrawableScreen {
     private static final short DIRECTION_UP = 0, DIRECTION_RIGHT = 1, DIRECTION_DOWN = 2, DIRECTION_LEFT = 3;
     private static final float CHARACTER_SPEED = 300f;
     private static final float SIZE_MOVEMENT_BUTTONS = 200;
@@ -36,14 +36,16 @@ public class MapScreen implements Screen {
     private StretchViewport viewport;
     private Texture heathBarTexture, healthLineTexture;
     private Texture background;
-
     private Music backgroundMusic;
-
     private BitmapFont font;
     private float elapsedTime;
     private short characterDirection;
     public boolean playerIsMoving;
 
+    @Override
+    public StretchViewport getViewport() {
+        return viewport;
+    }
 
     public MapScreen(Player player, CellMap[][] map) {
         this.player = player;
@@ -187,7 +189,8 @@ public class MapScreen implements Screen {
         input();
     }
 
-    private void draw(float delta) {
+    @Override
+    public void draw(float delta) {
         batch.setProjectionMatrix(viewport.getCamera().combined);
         ScreenUtils.clear(0, 0, 0, 1);
         elapsedTime += delta;
@@ -202,6 +205,8 @@ public class MapScreen implements Screen {
         batch.end();
         stage.draw();
     }
+
+
 
     private void backgroundDraw() {
         batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getScreenHeight());
