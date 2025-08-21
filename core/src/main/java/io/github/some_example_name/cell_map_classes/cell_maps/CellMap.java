@@ -47,6 +47,13 @@ public abstract class CellMap {
         player.setyOnScreen(map[center][0]);
         map[center][0].setPlayerIn(true);
     }
+    private static void setPlayer(CellMap cellMap, Player player,int x, int y) {
+        player.setCellX(x);
+        player.setCellY(y);
+        player.setxOnScreen(cellMap);
+        player.setyOnScreen(cellMap);
+        cellMap.setPlayerIn(true);
+    }
 
     private static void generateMainLine(CellMap[][] map) {
         int center = map.length / 2;
@@ -150,6 +157,7 @@ public abstract class CellMap {
         trainingMap[1][10] = new EmptyCell(trainingMap[2][10], "Up");
         trainingMap[1][11] = new EmptyCell(trainingMap[1][10], "Right");
         trainingMap[1][12] = new FightCell(Stage.generateFightAct1(), new EmptyCell(trainingMap[1][11], "Right"));
+        setPlayer(trainingMap[1][0], player,0,1);
         return trainingMap;
     }
 

@@ -31,6 +31,11 @@ public class TutorialScreen implements Screen {
     private DrawableScreen screen;
     private Screen nextScreen;
     private SpriteBatch batch;
+    private float visibleTextTimer;
+    private String visibleText;
+    private int indexOfNextChar;
+    private float spriteHeight,spriteWidth;
+    private static final float SPEED_TEXT_APPEARANCE = 11F, MAX_VISIBLE_TEXT_TIMER = 0.5f;
 
     public TutorialScreen(DrawableScreen screen, Screen nextScreen,String dialogPath) {
         this.screen = screen;
@@ -40,6 +45,9 @@ public class TutorialScreen implements Screen {
 
     @Override
     public void show() {
+        visibleTextTimer = 0;
+        indexOfNextChar = 0;
+        visibleText = "";
         batch = new SpriteBatch();
         font = new BitmapFont(Gdx.files.internal("fonts/font.fnt"), Gdx.files.internal("fonts/font.png"), false);
         screen.show();
@@ -51,13 +59,29 @@ public class TutorialScreen implements Screen {
 
         showWindowBox();
         showInput();
+        calculateTextWidthAndHeight();
+
 
     }
     private void showInput(){
         stage.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                indexOfBox ++;
+                if(visibleText.equals(dialogBoxes[indexOfBox].getText())){
+                    indexOfBox ++;
+                    if(indexOfBox >= dialogBoxes.length) {
+                        dispose();
+                        ((Main) Gdx.app.getApplicationListener()).setScreen(nextScreen);
+                    }else {
+                        calculateTextWidthAndHeight();
+                        visibleText = "";
+                        indexOfNextChar = 0;
+                    }
+
+                }else {
+                    visibleText = dialogBoxes[indexOfBox].getText();
+                }
+
                 super.clicked(event, x, y);
             }
         });
@@ -84,34 +108,46 @@ public class TutorialScreen implements Screen {
         draw(delta);
     }
     private void draw(float delta){
-        if(indexOfBox >= dialogBoxes.length){
-            dispose();
-            ((Main) Gdx.app.getApplicationListener()).setScreen(nextScreen);
-        }else {
-            screen.draw(delta);
-            calculateTextWidthAndHeight(delta);
-            batch.begin();
-            drawSprite();
-            drawText();
+        batch.setProjectionMatrix(viewport.getCamera().combined);
+        screen.draw(delta);
 
-            batch.end();
-        }
+        addInVisibleTextChar(delta);
+        batch.begin();
+        drawSprite();
+        drawText();
+        batch.end();
 
     }
-    private void calculateTextWidthAndHeight(float delta){
-        float targetWidth = 100;
-        glyphLayout.setText(font,dialogBoxes[indexOfBox].getText(), Color.WHITE,targetWidth, Align.left,true);
-        while (glyphLayout.height - glyphLayout.width > -100){
-            targetWidth += delta;
-            glyphLayout.setText(font,dialogBoxes[indexOfBox].getText(), Color.WHITE,targetWidth, Align.left,true);
+    private void addInVisibleTextChar(float delta){
+        if(!visibleText.equals(dialogBoxes[indexOfBox].getText())){
+
+            visibleTextTimer += delta*SPEED_TEXT_APPEARANCE;
+            if(visibleTextTimer >= MAX_VISIBLE_TEXT_TIMER){
+                visibleTextTimer = 0;
+                visibleText += dialogBoxes[indexOfBox].getText().charAt(indexOfNextChar);
+                indexOfNextChar ++;
+            }
         }
+    }
+    private void calculateTextWidthAndHeight(){
+        float targetWidth = 100;
+        glyphLayout.setText(font,dialogBoxes[indexOfBox].getText(), Color.WHITE,targetWidth, Align.topLeft,true);
+        while (glyphLayout.height - glyphLayout.width > -100){
+            targetWidth += 0.5F;
+            glyphLayout.setText(font,dialogBoxes[indexOfBox].getText(), Color.WHITE,targetWidth, Align.topLeft,true);
+        }
+        spriteHeight = glyphLayout.height;
+        spriteWidth = glyphLayout.width;
+
+
     }
 
     private void drawText(){
-        font.draw(batch,glyphLayout,dialogBoxes[indexOfBox].getX()-glyphLayout.width/2,dialogBoxes[indexOfBox].getY()+glyphLayout.height/2);
+        glyphLayout.setText(font,visibleText, Color.WHITE,spriteWidth, Align.topLeft,true);
+        font.draw(batch,glyphLayout,dialogBoxes[indexOfBox].getX()-spriteWidth/2,dialogBoxes[indexOfBox].getY()+spriteHeight/2);
     }
     private void drawSprite(){
-        dialogWindow.setSize(glyphLayout.width+50,glyphLayout.height+50);
+        dialogWindow.setSize(spriteWidth+100,spriteHeight+50);
         dialogWindow.setPosition(dialogBoxes[indexOfBox].getX()-dialogWindow.getWidth()/2,dialogBoxes[indexOfBox].getY()- dialogWindow.getHeight()/2);
 
         dialogWindow.draw(batch);
