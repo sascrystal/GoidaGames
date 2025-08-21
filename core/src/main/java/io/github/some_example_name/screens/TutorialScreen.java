@@ -16,9 +16,8 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 import io.github.some_example_name.Main;
-import io.github.some_example_name.SettingsGame;
 import io.github.some_example_name.utils.DialogBox;
-import io.github.some_example_name.utils.ShopSkin;
+
 
 public class TutorialScreen implements Screen {
     private StretchViewport viewport;
@@ -28,8 +27,8 @@ public class TutorialScreen implements Screen {
     private DialogBox[] dialogBoxes;
     private int indexOfBox;
     private Stage stage;
-    private DrawableScreen screen;
-    private Screen nextScreen;
+    private final DrawableScreen screen;
+    private final Screen nextScreen;
     private SpriteBatch batch;
     private float visibleTextTimer;
     private String visibleText;
@@ -177,7 +176,33 @@ public class TutorialScreen implements Screen {
     }
 
     @Override
-    public void dispose() {
+    public void dispose()  {
+        if (font != null) {
+            font.dispose();
+            font = null;
+        }
 
+        if (batch != null) {
+            batch.dispose();
+            batch = null;
+        }
+
+        if (stage != null) {
+            stage.dispose();
+            stage = null;
+        }
+
+        if (dialogWindow != null && dialogWindow.getTexture() != null) {
+            dialogWindow.getTexture().dispose();
+            dialogWindow = null;
+        }
+
+
+        if (dialogBoxes != null) {
+            dialogBoxes = null;
+        }
+
+        glyphLayout = null;
+        visibleText = null;
     }
 }
