@@ -598,31 +598,124 @@ public class GameScreen implements Screen,DrawableScreen {
 
     @Override
     public void dispose() {
-        cardInfoTexture.dispose();
-        batch.dispose();
-        interfaceImage.dispose();
-        endTurnButtonTexture.dispose();
-        for (int i = 0; i < 3; i++) {
-            if (enemies[i] != null) {
-                enemies[i].dispose();
+        try {
+            // Освобождаем текстуры
+            if (background != null) {
+                background.dispose();
+                background = null;
             }
-        }
-        font.dispose();
 
-        for (int i = 0; i < player.getHand().length - 1 && player.getHand()[i] != null; i++) {
-            player.getHand()[i].getTexture().dispose();
-        }
+            if (cardInfoTexture != null) {
+                cardInfoTexture.dispose();
+                cardInfoTexture = null;
+            }
 
-        if (backgroundMusic != null) {
-            backgroundMusic.stop();
-            backgroundMusic.dispose();
-        }
+            if (interfaceImage != null) {
+                interfaceImage.dispose();
+                interfaceImage = null;
+            }
 
-        soundEffectEndTurn.dispose();
-        soundEffectCardTaking.dispose();
-        soundEffectNotEnoughMana.dispose();
-        soundEffectPlaceCard.dispose();
-        animationCardQueue.clear();
+            if (endTurnButtonTexture != null) {
+                endTurnButtonTexture.dispose();
+                endTurnButtonTexture = null;
+            }
+
+            // Освобождаем шрифты
+            if (font != null) {
+                font.dispose();
+                font = null;
+            }
+
+            if (fontForDraggedCard != null) {
+                fontForDraggedCard.dispose();
+                fontForDraggedCard = null;
+            }
+
+            if (fontForCardInHand != null) {
+                fontForCardInHand.dispose();
+                fontForCardInHand = null;
+            }
+
+            // Освобождаем SpriteBatch
+            if (batch != null) {
+                batch.dispose();
+                batch = null;
+            }
+
+            // Освобождаем аудио ресурсы
+            if (backgroundMusic != null) {
+                backgroundMusic.stop();
+                backgroundMusic.dispose();
+                backgroundMusic = null;
+            }
+
+            if (soundEffectCardTaking != null) {
+                soundEffectCardTaking.dispose();
+                soundEffectCardTaking = null;
+            }
+
+            if (soundEffectPlaceCard != null) {
+                soundEffectPlaceCard.dispose();
+                soundEffectPlaceCard = null;
+            }
+
+            if (soundEffectEndTurn != null) {
+                soundEffectEndTurn.dispose();
+                soundEffectEndTurn = null;
+            }
+
+            if (soundEffectNotEnoughMana != null) {
+                soundEffectNotEnoughMana.dispose();
+                soundEffectNotEnoughMana = null;
+            }
+
+            // Освобождаем врагов
+            if (enemies != null) {
+                for (int i = 0; i < enemies.length; i++) {
+                    if (enemies[i] != null) {
+                        enemies[i].dispose();
+                        enemies[i] = null;
+                    }
+                }
+            }
+
+            // Освобождаем карты выбора
+            choosingCardsDispose();
+
+            // Очищаем очереди анимаций
+            animationCardQueue.clear();
+            animationCardQueueIndex.clear();
+
+            // Очищаем массивы и коллекции
+            if (cardBounds != null) {
+                cardBounds = null;
+            }
+
+            if (isCardVisible != null) {
+                isCardVisible = null;
+            }
+
+            if (initialCardPositionsX != null) {
+                initialCardPositionsX = null;
+            }
+
+            if (initialCardPositionsY != null) {
+                initialCardPositionsY = null;
+            }
+
+            if (choosingCardsRectangle != null) {
+                choosingCardsRectangle = null;
+            }
+
+            // Освобождаем draggedCard
+            if (draggedCard != null) {
+                draggedCard.getTexture().dispose();
+                draggedCard = null;
+            }
+
+        } catch (Exception e) {
+            Gdx.app.error("GameScreen", "Error during dispose", e);
+        }
     }
 
     private void choosingCardsDispose() {

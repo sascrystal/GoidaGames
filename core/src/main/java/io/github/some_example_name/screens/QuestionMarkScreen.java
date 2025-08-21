@@ -158,9 +158,31 @@ public class QuestionMarkScreen implements Screen {
 
     @Override
     public void dispose() {
-        textField.dispose();
-        dialogBox.dispose();
-        font.dispose();
-        batch.dispose();
+        if (textField != null) {
+            textField.dispose();
+            textField = null;
+        }
+
+        if (dialogBox != null) {
+            dialogBox.dispose();
+            dialogBox = null;
+        }
+
+        if (font != null) {
+            font.dispose();
+            font = null;
+        }
+
+        if (batch != null) {
+            batch.dispose();
+            batch = null;
+        }
+
+        if (dialogBoxBounds != null) {
+            dialogBoxBounds = null;
+        }
+
+
     }
 }
+
