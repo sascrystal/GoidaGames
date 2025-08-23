@@ -33,7 +33,6 @@ public class FightCell extends CellMap {
     public void action(MapScreen map) {
         isAvailable = false;
         stage.stageAction(map);
-
     }
 
     @Override
