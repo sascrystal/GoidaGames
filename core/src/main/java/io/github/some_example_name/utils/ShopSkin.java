@@ -25,6 +25,7 @@ public class ShopSkin {
     }
 
     public static ShopSkin[] getAllSkins() {
+        Gdx.app.log("GOIDA","GOIDA");
         Json json = new Json();
         ShopSkin[] skinData = json.fromJson(ShopSkin[].class, Gdx.files.local("skins_data.json"));
         for (ShopSkin skin : skinData) {
