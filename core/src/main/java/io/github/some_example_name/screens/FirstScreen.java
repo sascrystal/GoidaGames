@@ -350,7 +350,7 @@ public class FirstScreen implements Screen {
         selectButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                account.setIndexOfSelectedSkin(indexOfFirstSkin);
+                account.setIndexOfSelectedSkin(unlockedSkins.get(indexOfFirstSkin).getId());
                 menuCondition = MenuCondition.MAIN;
                 Gdx.input.setInputProcessor(mainStage);
                 super.clicked(event, x, y);

@@ -21,7 +21,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.some_example_name.Main;
 
 
-public class DialogueScreen implements Screen {
+public class  DialogueScreen implements Screen {
     // Конфигурация
     private static final Color BACKGROUND_COLOR = new Color(0f, 0f, 0f, 0.7f);
     private static final float PADDING = 20f;

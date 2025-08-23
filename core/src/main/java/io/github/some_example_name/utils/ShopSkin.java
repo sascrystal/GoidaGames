@@ -17,7 +17,11 @@ public class ShopSkin {
     private int price;
     private boolean isUnlocked;
     private String path;
+    
 
+    public int getId() {
+        return id;
+    }
 
     public ShopSkin() {
 
