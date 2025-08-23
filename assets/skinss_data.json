@@ -1,0 +1,5 @@
+[
+    {"id":0,"price":0,"isUnlocked":true,"path":"characters/peasant"},
+    {"id":1,"price":100,"isUnlocked":false,"path":"characters/knight"},
+    {"id":2,"price":1000,"isUnlocked":false,"path":"characters/clown"}
+]
