@@ -126,7 +126,7 @@ public class QuestionMarkScreen implements Screen {
             Vector2 touchPosition = new Vector2(Gdx.input.getX(), Gdx.input.getY());
             viewport.unproject(touchPosition);
             for (int i = 0; i < 3; i++) {
-                if (dialogBoxBounds[i].contains(touchPosition) && dialogEvent.getDialogOptions()[i] != null) {
+                if (dialogBoxBounds!= null && dialogBoxBounds[i].contains(touchPosition) && dialogEvent.getDialogOptions()[i] != null) {
                     dialogEvent.action(player, map, i);
                     dispose();
                 }
