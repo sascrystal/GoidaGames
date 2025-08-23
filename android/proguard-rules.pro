@@ -45,7 +45,10 @@
 -keep public class com.badlogic.gdx.graphics.g2d.BitmapFont { *; }
 # You will probably need this line in most cases:
 -keep public class com.badlogic.gdx.graphics.Color { *; }
--keep public class io.github.some_example_name.utils.ShopSkin
+# Сохранить класс ShopSkin и все его поля
+-keep class io.github.some_example_name.utils.ShopSkin { *; }
+-keepclassmembers class io.github.some_example_name.utils.ShopSkin { *; }
+
 
 # These two lines are used with mapping files; see https://developer.android.com/build/shrink-code#retracing
 -keepattributes LineNumberTable,SourceFile
