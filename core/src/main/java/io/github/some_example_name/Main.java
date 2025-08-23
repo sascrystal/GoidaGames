@@ -11,10 +11,10 @@ import io.github.some_example_name.screens.FirstScreen;
  */
 public class Main extends Game {
     private static void initDefaultSkins() {
-        FileHandle localFile = Gdx.files.local("characters/skins_data.json");
+        FileHandle localFile = Gdx.files.local("skins_data.json");
 
         if (!localFile.exists()) {
-            FileHandle internalFile = Gdx.files.internal("characters/skins_data.json");
+            FileHandle internalFile = Gdx.files.internal("skins_data.json");
 
             internalFile.copyTo(localFile);
 

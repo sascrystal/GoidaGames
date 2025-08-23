@@ -63,10 +63,10 @@ public class GameScreen implements Screen, DrawableScreen {
     private Music backgroundMusic;
     private Sound soundEffectCardTaking, soundEffectPlaceCard, soundEffectEndTurn,
         soundEffectNotEnoughMana;
-    private Texture cardInfoTexture, interfaceImage;// Текстура для отображения информации о карте
+    private Texture interfaceImage;// Текстура для отображения информации о карте
     private String cardName; // Название карты
     private String cardDescription; // Описание карты
-    private boolean isCardInfoVisible;
+
     private boolean playerTurn;
     private BitmapFont font;
     // Кнопка завершения хода
@@ -168,8 +168,7 @@ public class GameScreen implements Screen, DrawableScreen {
         initialCardPositionsX = new float[HAND_META];
         initialCardPositionsY = new float[HAND_META];
         invisibleCardArea = new Rectangle(0, 0, viewport.getWorldWidth(), 250); // Задаем ширину и высоту
-        cardInfoTexture = new Texture(Gdx.files.internal("HUD/card_info.png")); // Загружаем текстуру
-        isCardInfoVisible = false;
+
         cardAnimationTime = 0F;
         preRenderCards();
     }
@@ -538,7 +537,6 @@ public class GameScreen implements Screen, DrawableScreen {
         // Сохраняем информацию о карте
         cardName = player.getHand()[index].getName();
         cardDescription = player.getHand()[index].getDescription();
-        isCardInfoVisible = true; // Показываем информацию о карте
 
 
         // Сделаем карту невидимой сразу, как только она берется
@@ -548,7 +546,6 @@ public class GameScreen implements Screen, DrawableScreen {
     }
 
     private void moveCard() {
-        isCardInfoVisible = true; // Скрываем информацию о карте
         // Обновляем позицию перетаскиваемой карты
         draggedCardX = touchPos.x - (float) draggedCard.getRegionWidth() * scaleForDraggedCard / 2;
         draggedCardY = touchPos.y - (float) draggedCard.getRegionHeight() * scaleForDraggedCard / 2;
@@ -605,10 +602,6 @@ public class GameScreen implements Screen, DrawableScreen {
                 background = null;
             }
 
-            if (cardInfoTexture != null) {
-                cardInfoTexture.dispose();
-                cardInfoTexture = null;
-            }
 
             if (interfaceImage != null) {
                 interfaceImage.dispose();
@@ -793,7 +786,6 @@ public class GameScreen implements Screen, DrawableScreen {
         enemies[i].buffActionTrigger("CardAction");
 
         player.playCard(enemies[i], draggedCardIndex);
-        isCardInfoVisible = false; // Показываем информацию о карте
         preRenderCards();
     }
 
@@ -801,7 +793,6 @@ public class GameScreen implements Screen, DrawableScreen {
         animationCardQueue.add(player.getHand()[draggedCardIndex]);
         animationCardQueueIndex.add(0);
         player.playCard(enemies[0], draggedCardIndex);
-        isCardInfoVisible = false; // Показываем информацию о карте
         preRenderCards();
     }
 
@@ -811,7 +802,6 @@ public class GameScreen implements Screen, DrawableScreen {
 
 
         isCardVisible[draggedCardIndex] = true;
-        isCardInfoVisible = false;
     }
 
     private boolean manaPoolCheck() {
