@@ -6,8 +6,10 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Json;
 
 import io.github.some_example_name.screens.FirstScreen;
+import io.github.some_example_name.utils.ShopSkin;
 
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
@@ -20,12 +22,16 @@ public class Main extends Game {
 
 
         if (isFirstRun) {
+            Json json = new Json();
             FileHandle internalFile = Gdx.files.internal("skinss_data.json");
+            ShopSkin[] skins = json.fromJson(ShopSkin[].class, internalFile);
+            String jsonString = json.toJson(skins);
+            FileHandle localFile = Gdx.files.local("data/skins_data.json");
+            localFile.writeString(jsonString,false);
 
-            internalFile.copyTo(Gdx.files.local("skins_data.json"));
 
             isFirstRun = false;
-            prefs.getBoolean(FIRST_RUN_KEY,isFirstRun);
+            prefs.getBoolean(FIRST_RUN_KEY,false);
             prefs.flush();
         }
     }
