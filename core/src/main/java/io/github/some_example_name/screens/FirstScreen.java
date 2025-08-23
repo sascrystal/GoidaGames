@@ -474,6 +474,7 @@ public class FirstScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Start button pressed!");
+                pause();
                 dispose();
                 Player player = new CharacterKnight();
                 CellMap[][] map = CellMap.generateAct1(player);
@@ -493,6 +494,7 @@ public class FirstScreen implements Screen {
         tutorialButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                pause();
                 dispose();
                 Player player = new CharacterKnight();
                 CellMap[][] map = CellMap.createTrainingAct(player);

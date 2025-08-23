@@ -56,10 +56,10 @@ public class ShopSkin {
 
     public static void saveSkins(ShopSkin[] allSkins) {
         Json json = new Json();
-        json.setTypeName("skins");
-        json.setUsePrototypes(false);
+        //json.setTypeName("skins");
+        //json.setUsePrototypes(false);
 
-        String jsonData = json.prettyPrint(allSkins);
+        String jsonData = json.toJson(allSkins);
         FileHandle file = Gdx.files.local("data/skins_data.json");
         file.writeString(jsonData, false);
 

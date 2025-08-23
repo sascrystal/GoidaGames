@@ -17,22 +17,16 @@ import io.github.some_example_name.utils.ShopSkin;
 public class Main extends Game {
     private static final String PREFS_NAME = "game_pres",FIRST_RUN_KEY = "isFirstRun";
     private static void initDefaultSkins() {
-        Preferences prefs = Gdx.app.getPreferences(PREFS_NAME);
-        boolean isFirstRun = prefs.getBoolean(FIRST_RUN_KEY, true);
-
-
-        if (isFirstRun) {
+        FileHandle localFile = Gdx.files.local("data/skins_data.json");
+        if (!localFile.exists()) {
             Json json = new Json();
             FileHandle internalFile = Gdx.files.internal("skinss_data.json");
             ShopSkin[] skins = json.fromJson(ShopSkin[].class, internalFile);
             String jsonString = json.toJson(skins);
-            FileHandle localFile = Gdx.files.local("data/skins_data.json");
             localFile.writeString(jsonString,false);
 
 
-            isFirstRun = false;
-            prefs.getBoolean(FIRST_RUN_KEY,false);
-            prefs.flush();
+
         }
     }
 
