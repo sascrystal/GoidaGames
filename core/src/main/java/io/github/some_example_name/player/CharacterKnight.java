@@ -16,8 +16,8 @@ public class CharacterKnight extends Player {
         ShopSkin[] shopSkins = ShopSkin.getAllSkins();
         String path = shopSkins[account.getIndexOfSelectedSkin()].getPath();
 
-        textureRightSight = new Texture(Gdx.files.internal(path+"/right_sight.png"));
-        textureLeftSight = new Texture(Gdx.files.internal(path+"/left_sight.png"));
+        textureRightSight = new Texture(Gdx.files.internal(path + "/right_sight.png"));
+        textureLeftSight = new Texture(Gdx.files.internal(path + "/left_sight.png"));
 
         sprite = new Sprite(textureRightSight);
 

@@ -6,7 +6,6 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -24,26 +23,23 @@ import io.github.some_example_name.cell_map_classes.cell_maps.FightCell;
 import io.github.some_example_name.player.Player;
 
 
-public class MapScreen implements Screen {
+public class MapScreen implements Screen, DrawableScreen {
     private static final short DIRECTION_UP = 0, DIRECTION_RIGHT = 1, DIRECTION_DOWN = 2, DIRECTION_LEFT = 3;
     private static final float CHARACTER_SPEED = 300f;
     private static final float SIZE_MOVEMENT_BUTTONS = 200;
-    private static final  float SCALE_BUTTON_DECK_DEMONSTRATION =  0.2F;
+    private static final float SCALE_BUTTON_DECK_DEMONSTRATION = 0.2F;
     private final Player player;
-    private Stage stage;
     private final CellMap[][] map;
+    public boolean playerIsMoving;
+    private Stage stage;
     private SpriteBatch batch;
     private StretchViewport viewport;
     private Texture heathBarTexture, healthLineTexture;
     private Texture background;
-
     private Music backgroundMusic;
-
     private BitmapFont font;
     private float elapsedTime;
     private short characterDirection;
-    public boolean playerIsMoving;
-
 
     public MapScreen(Player player, CellMap[][] map) {
         this.player = player;
@@ -52,12 +48,17 @@ public class MapScreen implements Screen {
     }
 
     @Override
+    public StretchViewport getViewport() {
+        return viewport;
+    }
+
+    @Override
     public void show() {
         batch = new SpriteBatch();
         elapsedTime = 0;
         playerIsMoving = false;
         viewportConfiguration();
-        stage = new Stage(viewport,batch);
+        stage = new Stage(viewport, batch);
         showHeathPointBar();
         showDeckDemonstrationButton();
         showFont();
@@ -83,12 +84,12 @@ public class MapScreen implements Screen {
     private void showButtons() {
         Texture rightButtonTexture = new Texture(Gdx.files.internal("buttons/right_button.png"));
         ImageButton rightButton = new ImageButton(new TextureRegionDrawable(rightButtonTexture));
-        rightButton.setSize(SIZE_MOVEMENT_BUTTONS,SIZE_MOVEMENT_BUTTONS);
-        rightButton.setPosition(viewport.getWorldWidth()-SIZE_MOVEMENT_BUTTONS,0);
-        rightButton.addListener(new ClickListener(){
+        rightButton.setSize(SIZE_MOVEMENT_BUTTONS, SIZE_MOVEMENT_BUTTONS);
+        rightButton.setPosition(viewport.getWorldWidth() - SIZE_MOVEMENT_BUTTONS, 0);
+        rightButton.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if(!playerIsMoving){
+                if (!playerIsMoving) {
                     movePlayer("right");
                     player.changeSight("right");
                 }
@@ -100,12 +101,12 @@ public class MapScreen implements Screen {
 
         Texture downButtonTexture = new Texture(Gdx.files.internal("buttons/down_button.png"));
         ImageButton downButton = new ImageButton(new TextureRegionDrawable(downButtonTexture));
-        downButton.setSize(SIZE_MOVEMENT_BUTTONS,SIZE_MOVEMENT_BUTTONS);
-        downButton.setPosition(rightButton.getX() - SIZE_MOVEMENT_BUTTONS,0);
-        downButton.addListener(new ClickListener(){
+        downButton.setSize(SIZE_MOVEMENT_BUTTONS, SIZE_MOVEMENT_BUTTONS);
+        downButton.setPosition(rightButton.getX() - SIZE_MOVEMENT_BUTTONS, 0);
+        downButton.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if(!playerIsMoving){
+                if (!playerIsMoving) {
                     movePlayer("down");
                 }
                 return super.touchDown(event, x, y, pointer, button);
@@ -115,12 +116,12 @@ public class MapScreen implements Screen {
 
         Texture leftButtonTexture = new Texture(Gdx.files.internal("buttons/left_button.png"));
         ImageButton leftButton = new ImageButton(new TextureRegionDrawable(leftButtonTexture));
-        leftButton.setSize(SIZE_MOVEMENT_BUTTONS,SIZE_MOVEMENT_BUTTONS);
-        leftButton.setPosition(downButton.getX()-SIZE_MOVEMENT_BUTTONS,0);
-        leftButton.addListener(new ClickListener(){
+        leftButton.setSize(SIZE_MOVEMENT_BUTTONS, SIZE_MOVEMENT_BUTTONS);
+        leftButton.setPosition(downButton.getX() - SIZE_MOVEMENT_BUTTONS, 0);
+        leftButton.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if(!playerIsMoving){
+                if (!playerIsMoving) {
                     movePlayer("left");
                     player.changeSight("left");
                 }
@@ -131,12 +132,12 @@ public class MapScreen implements Screen {
 
         Texture upButtonTexture = new Texture(Gdx.files.internal("buttons/up_button.png"));
         ImageButton upButton = new ImageButton(new TextureRegionDrawable(upButtonTexture));
-        upButton.setSize(SIZE_MOVEMENT_BUTTONS,SIZE_MOVEMENT_BUTTONS);
+        upButton.setSize(SIZE_MOVEMENT_BUTTONS, SIZE_MOVEMENT_BUTTONS);
         upButton.setPosition(downButton.getX(), SIZE_MOVEMENT_BUTTONS);
-        upButton.addListener(new ClickListener(){
+        upButton.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if(!playerIsMoving){
+                if (!playerIsMoving) {
                     movePlayer("up");
                 }
                 return super.touchDown(event, x, y, pointer, button);
@@ -154,12 +155,12 @@ public class MapScreen implements Screen {
         Texture deckButtonDemonstrationTexture = new Texture(Gdx.files.internal("map_screen/deck.png"));
         ImageButton buttonDeckDemonstration = new ImageButton(new TextureRegionDrawable(deckButtonDemonstrationTexture));
         MapScreen mapScreen = this;
-        buttonDeckDemonstration.setPosition(viewport.getWorldWidth() - 200,viewport.getWorldHeight() - 600);
-        buttonDeckDemonstration.setSize(deckButtonDemonstrationTexture.getWidth()*SCALE_BUTTON_DECK_DEMONSTRATION,deckButtonDemonstrationTexture.getHeight()*SCALE_BUTTON_DECK_DEMONSTRATION);
-        buttonDeckDemonstration.addListener(new ClickListener(){
+        buttonDeckDemonstration.setPosition(viewport.getWorldWidth() - 200, viewport.getWorldHeight() - 600);
+        buttonDeckDemonstration.setSize(deckButtonDemonstrationTexture.getWidth() * SCALE_BUTTON_DECK_DEMONSTRATION, deckButtonDemonstrationTexture.getHeight() * SCALE_BUTTON_DECK_DEMONSTRATION);
+        buttonDeckDemonstration.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Main) Gdx.app.getApplicationListener()).setScreen(new ShowDeckScreen(player.getDeck(),mapScreen));
+                ((Main) Gdx.app.getApplicationListener()).setScreen(new ShowDeckScreen(player.getDeck(), mapScreen));
                 super.clicked(event, x, y);
             }
         });
@@ -187,7 +188,8 @@ public class MapScreen implements Screen {
         input();
     }
 
-    private void draw(float delta) {
+    @Override
+    public void draw(float delta) {
         batch.setProjectionMatrix(viewport.getCamera().combined);
         ScreenUtils.clear(0, 0, 0, 1);
         elapsedTime += delta;
@@ -202,6 +204,7 @@ public class MapScreen implements Screen {
         batch.end();
         stage.draw();
     }
+
 
     private void backgroundDraw() {
         batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getScreenHeight());
@@ -278,7 +281,6 @@ public class MapScreen implements Screen {
         }
 
     }
-
 
 
     private void healthBarDraw() {
@@ -373,7 +375,7 @@ public class MapScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        stage.getViewport().update(width,height);
+        stage.getViewport().update(width, height);
     }
 
     @Override

@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,7 +38,7 @@ public abstract class Player {
     protected float walkAnimationCompressionValue;
     protected int shield;// Здоровье игрока
     protected Texture textureRightSight;
-    protected Texture textureLeftSight ;
+    protected Texture textureLeftSight;
 
     protected Sprite sprite;
     protected List<PlayingCard> dropDeck = new ArrayList<>();
@@ -320,12 +319,13 @@ public abstract class Player {
         }
 
     }
-    public void changeSight(String direction){
-        switch (direction){
+
+    public void changeSight(String direction) {
+        switch (direction) {
             case "left":
                 sprite.setTexture(textureLeftSight);
                 break;
-            case"right":
+            case "right":
                 sprite.setTexture(textureRightSight);
                 break;
         }
@@ -349,7 +349,7 @@ public abstract class Player {
         walkAnimationRotateTimer += delta * SPEED_WALKING_ROTATE;
         float walkAnimationRotateValue = (float) Math.sin(walkAnimationRotateTimer) * WALKING_ROTATE_AMPLITUDE;
         sprite.setRotation(walkAnimationRotateValue);
-        if(walkAnimationRotateTimer >= 2*Math.PI){
+        if (walkAnimationRotateTimer >= 2 * Math.PI) {
             walkAnimationRotateTimer = 0;
             walkAnimationRotateValue = (float) Math.sin(walkAnimationRotateTimer) * WALKING_ROTATE_AMPLITUDE;
             sprite.setRotation(walkAnimationRotateValue);

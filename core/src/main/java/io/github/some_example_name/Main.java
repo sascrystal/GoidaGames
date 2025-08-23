@@ -10,12 +10,6 @@ import io.github.some_example_name.screens.FirstScreen;
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
  */
 public class Main extends Game {
-    @Override
-    public void create() {
-        //setScreen(new FirstScreen());
-        initDefaultSkins();
-        this.setScreen(new FirstScreen());
-    }
     private static void initDefaultSkins() {
         FileHandle localFile = Gdx.files.local("characters/skins_data.json");
 
@@ -26,6 +20,13 @@ public class Main extends Game {
 
             Gdx.app.log("Files", "Скопировано в: " + localFile.path());
         }
+    }
+
+    @Override
+    public void create() {
+        //setScreen(new FirstScreen());
+        initDefaultSkins();
+        this.setScreen(new FirstScreen());
     }
 
 }

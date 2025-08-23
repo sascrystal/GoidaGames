@@ -6,9 +6,4 @@ import com.badlogic.gdx.files.FileHandle;
 public class SettingsGame {
     public static final float SCREEN_WIDTH = 2400;
     public static final float SCREEN_HEIGHT = 1080;
-    public static int getCountOfSkins(){
-        FileHandle dirHandle = Gdx.files.internal("characters");
-        FileHandle[] directories = dirHandle.list();
-        return directories.length;
-    }
 }

@@ -9,6 +9,7 @@ import io.github.some_example_name.enemy_classes.enemies.EnemyHamster;
 import io.github.some_example_name.enemy_classes.enemies.SkeletonHalberd;
 import io.github.some_example_name.screens.GameScreen;
 import io.github.some_example_name.screens.MapScreen;
+import io.github.some_example_name.screens.TutorialScreen;
 
 public class Stage {
     private static final Stage[] STAGES;
@@ -77,6 +78,13 @@ public class Stage {
     public void stageAction(MapScreen map) {
         map.getPlayer().takeScore(this);
         ((Main) Gdx.app.getApplicationListener()).setScreen(new GameScreen(enemies, map));
+    }
+
+    public void stageActionTutorial(MapScreen map, String path) {
+        map.getPlayer().takeScore(this);
+        GameScreen gameScreen = new GameScreen(enemies, map);
+        TutorialScreen tutorialScreen = new TutorialScreen(gameScreen, gameScreen, path);
+        ((Main) Gdx.app.getApplicationListener()).setScreen(tutorialScreen);
     }
 
     public int getScore() {
