@@ -25,6 +25,9 @@ public class Main extends Game {
             internalFile.copyTo(Gdx.files.local("skins_data.json"));
 
             Gdx.app.log("Files", "Скопировано в: " + localFile.path());
+            isFirstRun = false;
+            prefs.getBoolean(FIRST_RUN_KEY,isFirstRun);
+            prefs.flush();
         }
     }
 
