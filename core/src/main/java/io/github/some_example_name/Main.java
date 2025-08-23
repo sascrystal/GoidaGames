@@ -20,9 +20,9 @@ public class Main extends Game {
 
 
         if (isFirstRun) {
-            FileHandle internalFile = Gdx.files.internal("skins_data.json");
+            FileHandle internalFile = Gdx.files.internal("skinss_data.json");
 
-            internalFile.copyTo(Gdx.files.local("skinss_data.json"));
+            internalFile.copyTo(Gdx.files.local("skins_data.json"));
 
             isFirstRun = false;
             prefs.getBoolean(FIRST_RUN_KEY,isFirstRun);
