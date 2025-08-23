@@ -27,7 +27,7 @@ public class ShopSkin {
     public static ShopSkin[] getAllSkins() {
         Gdx.app.log("GOIDA","GOIDA");
         Json json = new Json();
-        ShopSkin[] skinData = json.fromJson(ShopSkin[].class, Gdx.files.local("skins_data.json"));
+        ShopSkin[] skinData = json.fromJson(ShopSkin[].class, Gdx.files.local("data/skins_data.json"));
         for (ShopSkin skin : skinData) {
             skin.addTexture();
         }
@@ -60,7 +60,7 @@ public class ShopSkin {
         json.setUsePrototypes(false);
 
         String jsonData = json.prettyPrint(allSkins);
-        FileHandle file = Gdx.files.local("skins_data.json");
+        FileHandle file = Gdx.files.local("data/skins_data.json");
         file.writeString(jsonData, false);
 
     }
