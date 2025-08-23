@@ -20,7 +20,7 @@ public class Main extends Game {
 
 
         if (isFirstRun) {
-            FileHandle internalFile = Gdx.files.internal("skins_data.json");
+            FileHandle internalFile = Gdx.files.internal("assets/skins_data.json");
 
             internalFile.copyTo(Gdx.files.local("skins_data.json"));
 
