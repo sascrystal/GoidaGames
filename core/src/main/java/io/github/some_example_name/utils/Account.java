@@ -8,6 +8,13 @@ public class Account {
     private static final int BASE_MONEY = 100;
     private static final String PREFS_NAME = "EconomicPref";
     private int indexOfSelectedSkin;
+    private int money;
+
+    public Account() {
+        Preferences preferences = Gdx.app.getPreferences(PREFS_NAME);
+        money = preferences.getInteger("money", BASE_MONEY);
+        indexOfSelectedSkin = preferences.getInteger("index_selected_Skin", 0);
+    }
 
     public int getIndexOfSelectedSkin() {
         return indexOfSelectedSkin;
@@ -17,20 +24,15 @@ public class Account {
         this.indexOfSelectedSkin = indexOfSelectedSkin;
     }
 
-    private int money;
-    public Account() {
+    public void saveMoney() {
         Preferences preferences = Gdx.app.getPreferences(PREFS_NAME);
-        money = preferences.getInteger("money", BASE_MONEY);
-        indexOfSelectedSkin = preferences.getInteger("index_selected_Skin",0);
-    }
-    public void saveMoney(){
-        Preferences preferences = Gdx.app.getPreferences(PREFS_NAME);
-        preferences.putInteger("money",money);
+        preferences.putInteger("money", money);
         preferences.flush();
     }
-    public void saveIndexOfSelectedSkin(){
+
+    public void saveIndexOfSelectedSkin() {
         Preferences preferences = Gdx.app.getPreferences(PREFS_NAME);
-        preferences.putInteger("index_selected_Skin",indexOfSelectedSkin);
+        preferences.putInteger("index_selected_Skin", indexOfSelectedSkin);
         preferences.flush();
     }
 

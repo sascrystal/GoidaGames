@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -32,20 +31,20 @@ import io.github.some_example_name.enemy_classes.enemies.Enemy;
 import io.github.some_example_name.player.Player;
 
 
-public class GameScreen implements Screen,DrawableScreen {
+public class GameScreen implements Screen, DrawableScreen {
     public static final int HAND_META = 10;
-    private static final float MODIFICATOR_FOR_CARD_NAME = 0.61f,MODIFIER_FOR_CARD_DESCRIPTION=0.75F;
-    private static final float MAX_SCALE_FOR_DRAGGED_CARD  = 2f;
-    private static final float LAYOUT_HEIGHT_FOR_NAME_CARDS = (float) 10 /225;
+    private static final float MODIFICATOR_FOR_CARD_NAME = 0.61f, MODIFIER_FOR_CARD_DESCRIPTION = 0.75F;
+    private static final float MAX_SCALE_FOR_DRAGGED_CARD = 2f;
+    private static final float LAYOUT_HEIGHT_FOR_NAME_CARDS = (float) 10 / 225;
+    private static final float SPEED_SCALING_FOR_DRAGGED_CARD = 1.5f;
     public static StretchViewport viewport = new StretchViewport(2400, 1080);
-
     // Добавляем противника и игрока
     private final Enemy[] enemies;
-    private BitmapFont fontForDraggedCard,fontForCardInHand;
     private final Player player;
     private final List<PlayingCard> animationCardQueue = new ArrayList<>();
     private final List<Integer> animationCardQueueIndex = new ArrayList<>();
     private final CellMap[][] map;
+    private BitmapFont fontForDraggedCard, fontForCardInHand;
     private int attackingEnemyIndex;
     private Texture background;
     private boolean endTurnButtonPressed = false;
@@ -56,7 +55,6 @@ public class GameScreen implements Screen,DrawableScreen {
     private float draggedCardX, draggedCardY;
     private boolean isDragging;
     private Integer draggedCardIndex;
-    private static final float SPEED_SCALING_FOR_DRAGGED_CARD = 1.5f;
     private PlayingCard[] choosingCards;
     private PlayingCard chooseCard;
     private boolean needChooseCard;
@@ -81,17 +79,17 @@ public class GameScreen implements Screen,DrawableScreen {
     private Rectangle invisibleCardArea;
     private float scaleForDraggedCard;
 
-    @Override
-    public StretchViewport getViewport() {
-        return viewport;
-    }
-
     public GameScreen(Enemy[] enemies, MapScreen map) {
         this.enemies = enemies;
         this.map = map.getMap();
         this.player = map.getPlayer();
         player.beginFight();
         player.beginTurn();
+    }
+
+    @Override
+    public StretchViewport getViewport() {
+        return viewport;
     }
 
     @Override
@@ -111,13 +109,13 @@ public class GameScreen implements Screen,DrawableScreen {
         playerTurn = true; // Начинаем с хода игрока
         cardAnimationTime = 0F;
     }
-    private void viewportConfiguration(){
+
+    private void viewportConfiguration() {
         viewport = new StretchViewport(2400, 1080);
         viewport.getCamera().position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
         viewport.getCamera().update();
         viewport.apply();
     }
-
 
 
     private void showBackGround() {
@@ -222,7 +220,8 @@ public class GameScreen implements Screen,DrawableScreen {
         backgroundMusic.setVolume(0.3f);
         backgroundMusic.play();
     }
-@Override
+
+    @Override
     public void draw(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
         batch.setProjectionMatrix(viewport.getCamera().combined);
@@ -306,7 +305,7 @@ public class GameScreen implements Screen,DrawableScreen {
                     choosingCardsRectangle[i].height);
 
                 // --- Отрисовка стоимости карты ---
-                if(choosingCards[i].getCost() <= player.getManaPool()) {
+                if (choosingCards[i].getCost() <= player.getManaPool()) {
                     fontForCardInHand.setColor(Color.GREEN);
                 } else {
                     fontForCardInHand.setColor(Color.RED);
@@ -322,27 +321,27 @@ public class GameScreen implements Screen,DrawableScreen {
                 fontForCardInHand.getData().setScale(2.0f);
                 fontForCardInHand.setColor(Color.WHITE);
 
-                float width = choosingCardsRectangle[i].width*MODIFICATOR_FOR_CARD_NAME;
-                GlyphLayout layout = new GlyphLayout(fontForCardInHand,choosingCards[i].getName(),Color.WHITE,width,Align.center,true);
-                float x = choosingCardsRectangle[i].getX()+choosingCardsRectangle[i].getWidth()/2 - width/2;
-                float y = choosingCardsRectangle[i].getY()+choosingCardsRectangle[i].height*0.52f;
-                while (layout.height >choosingCardsRectangle[i].getHeight()*LAYOUT_HEIGHT_FOR_NAME_CARDS){
-                    fontForCardInHand.getData().setScale(fontForCardInHand.getScaleX()*0.99f);
-                    layout.setText(fontForCardInHand,choosingCards[i].getName(),Color.WHITE,width,Align.center,true);
+                float width = choosingCardsRectangle[i].width * MODIFICATOR_FOR_CARD_NAME;
+                GlyphLayout layout = new GlyphLayout(fontForCardInHand, choosingCards[i].getName(), Color.WHITE, width, Align.center, true);
+                float x = choosingCardsRectangle[i].getX() + choosingCardsRectangle[i].getWidth() / 2 - width / 2;
+                float y = choosingCardsRectangle[i].getY() + choosingCardsRectangle[i].height * 0.52f;
+                while (layout.height > choosingCardsRectangle[i].getHeight() * LAYOUT_HEIGHT_FOR_NAME_CARDS) {
+                    fontForCardInHand.getData().setScale(fontForCardInHand.getScaleX() * 0.99f);
+                    layout.setText(fontForCardInHand, choosingCards[i].getName(), Color.WHITE, width, Align.center, true);
                 }
-                fontForCardInHand.draw(batch,layout,x,y);
+                fontForCardInHand.draw(batch, layout, x, y);
                 fontForCardInHand.setColor(Color.WHITE);
                 fontForCardInHand.getData().setScale(2.0f);
 
-                width = choosingCardsRectangle[i].width*MODIFIER_FOR_CARD_DESCRIPTION;
-                x = choosingCardsRectangle[i].getX()+choosingCardsRectangle[i].getWidth()/2 - width/2;
-                y = choosingCardsRectangle[i].getY()+choosingCardsRectangle[i].height*0.40f;
-                layout.setText(fontForCardInHand,choosingCards[i].getDescription(),Color.WHITE,width,Align.center,true);
-                while (layout.height >choosingCardsRectangle[i].height*0.32f){
-                    fontForCardInHand.getData().setScale(fontForCardInHand.getScaleX()*0.99f);
-                    layout.setText(fontForCardInHand,choosingCards[i].getDescription(),Color.WHITE,width,Align.center,true);
+                width = choosingCardsRectangle[i].width * MODIFIER_FOR_CARD_DESCRIPTION;
+                x = choosingCardsRectangle[i].getX() + choosingCardsRectangle[i].getWidth() / 2 - width / 2;
+                y = choosingCardsRectangle[i].getY() + choosingCardsRectangle[i].height * 0.40f;
+                layout.setText(fontForCardInHand, choosingCards[i].getDescription(), Color.WHITE, width, Align.center, true);
+                while (layout.height > choosingCardsRectangle[i].height * 0.32f) {
+                    fontForCardInHand.getData().setScale(fontForCardInHand.getScaleX() * 0.99f);
+                    layout.setText(fontForCardInHand, choosingCards[i].getDescription(), Color.WHITE, width, Align.center, true);
                 }
-                fontForCardInHand.draw(batch,layout,x,y);
+                fontForCardInHand.draw(batch, layout, x, y);
                 fontForCardInHand.setColor(Color.WHITE);
                 fontForCardInHand.getData().setScale(1.0f);
             }
@@ -387,7 +386,7 @@ public class GameScreen implements Screen,DrawableScreen {
             }
 
             // Масштабируем шрифт стоимости пропорционально карте
-            fontForCardInHand.getData().setScale( scaleForDraggedCard);
+            fontForCardInHand.getData().setScale(scaleForDraggedCard);
             fontForCardInHand.draw(
                 batch,
                 String.valueOf(card.getCost()),
@@ -400,28 +399,28 @@ public class GameScreen implements Screen,DrawableScreen {
             fontForCardInHand.getData().setScale(2.0f);
 
 
-            float width = scaledWidth*MODIFICATOR_FOR_CARD_NAME;
+            float width = scaledWidth * MODIFICATOR_FOR_CARD_NAME;
 
-            GlyphLayout layout = new GlyphLayout(fontForCardInHand,player.getHand()[draggedCardIndex].getName(),Color.WHITE,width,Align.center,true);
-            float x = draggedCardX+scaledWidth/2 - width/2;
-            float y = draggedCardY+scaledHeight*0.52f;
-            while (layout.height >scaledHeight*LAYOUT_HEIGHT_FOR_NAME_CARDS){
-                fontForCardInHand.getData().setScale(fontForCardInHand.getScaleX()*0.99f);
-                layout.setText(fontForCardInHand,player.getHand()[draggedCardIndex].getName(),Color.WHITE,width,Align.center,true);
+            GlyphLayout layout = new GlyphLayout(fontForCardInHand, player.getHand()[draggedCardIndex].getName(), Color.WHITE, width, Align.center, true);
+            float x = draggedCardX + scaledWidth / 2 - width / 2;
+            float y = draggedCardY + scaledHeight * 0.52f;
+            while (layout.height > scaledHeight * LAYOUT_HEIGHT_FOR_NAME_CARDS) {
+                fontForCardInHand.getData().setScale(fontForCardInHand.getScaleX() * 0.99f);
+                layout.setText(fontForCardInHand, player.getHand()[draggedCardIndex].getName(), Color.WHITE, width, Align.center, true);
             }
-            fontForCardInHand.draw(batch,layout,x,y);
+            fontForCardInHand.draw(batch, layout, x, y);
             fontForCardInHand.setColor(Color.WHITE);
             fontForCardInHand.getData().setScale(2.0f);
 
-            width = scaledWidth*MODIFIER_FOR_CARD_DESCRIPTION;
-            x = draggedCardX+scaledWidth/2 - width/2;
-            y = draggedCardY+scaledHeight*0.40f;
-            layout.setText(fontForCardInHand,player.getHand()[draggedCardIndex].getDescription(),Color.WHITE,width,Align.center,true);
-            while (layout.height > scaledHeight*0.32f){
-                fontForCardInHand.getData().setScale(fontForCardInHand.getScaleX()*0.99f);
-                layout.setText(fontForCardInHand,player.getHand()[draggedCardIndex].getDescription(),Color.WHITE,width,Align.center,true);
+            width = scaledWidth * MODIFIER_FOR_CARD_DESCRIPTION;
+            x = draggedCardX + scaledWidth / 2 - width / 2;
+            y = draggedCardY + scaledHeight * 0.40f;
+            layout.setText(fontForCardInHand, player.getHand()[draggedCardIndex].getDescription(), Color.WHITE, width, Align.center, true);
+            while (layout.height > scaledHeight * 0.32f) {
+                fontForCardInHand.getData().setScale(fontForCardInHand.getScaleX() * 0.99f);
+                layout.setText(fontForCardInHand, player.getHand()[draggedCardIndex].getDescription(), Color.WHITE, width, Align.center, true);
             }
-            fontForCardInHand.draw(batch,layout,x,y);
+            fontForCardInHand.draw(batch, layout, x, y);
 
             fontForCardInHand.setColor(Color.WHITE);
             fontForCardInHand.getData().setScale(1.0f);
@@ -429,12 +428,13 @@ public class GameScreen implements Screen,DrawableScreen {
 
         }
     }
-    private void scalingDraggedCard(float delta){
-        if(draggedCard == null){
+
+    private void scalingDraggedCard(float delta) {
+        if (draggedCard == null) {
             scaleForDraggedCard = 1f;
-        }else {
-            if(scaleForDraggedCard <= MAX_SCALE_FOR_DRAGGED_CARD){
-                scaleForDraggedCard += delta*SPEED_SCALING_FOR_DRAGGED_CARD;
+        } else {
+            if (scaleForDraggedCard <= MAX_SCALE_FOR_DRAGGED_CARD) {
+                scaleForDraggedCard += delta * SPEED_SCALING_FOR_DRAGGED_CARD;
             }
         }
     }
@@ -531,8 +531,8 @@ public class GameScreen implements Screen,DrawableScreen {
     private void takeCard(int index) {
         isDragging = true;
         draggedCard = new TextureRegion(player.getHand()[index].getTexture());
-        draggedCardX = touchPos.x - cardBounds[index].width*scaleForDraggedCard / 2;
-        draggedCardY = touchPos.y - cardBounds[index].height*scaleForDraggedCard / 2;
+        draggedCardX = touchPos.x - cardBounds[index].width * scaleForDraggedCard / 2;
+        draggedCardY = touchPos.y - cardBounds[index].height * scaleForDraggedCard / 2;
 
 
         // Сохраняем информацию о карте
@@ -550,8 +550,8 @@ public class GameScreen implements Screen,DrawableScreen {
     private void moveCard() {
         isCardInfoVisible = true; // Скрываем информацию о карте
         // Обновляем позицию перетаскиваемой карты
-        draggedCardX = touchPos.x - (float) draggedCard.getRegionWidth()*scaleForDraggedCard / 2;
-        draggedCardY = touchPos.y - (float) draggedCard.getRegionHeight()*scaleForDraggedCard / 2;
+        draggedCardX = touchPos.x - (float) draggedCard.getRegionWidth() * scaleForDraggedCard / 2;
+        draggedCardY = touchPos.y - (float) draggedCard.getRegionHeight() * scaleForDraggedCard / 2;
     }
 
     private void endTurn() {
@@ -743,9 +743,9 @@ public class GameScreen implements Screen,DrawableScreen {
         for (int i = 0; i < player.getHand().length; i++) {
             if (isCardVisible[i] && player.getHand()[i] != null) {
                 batch.draw(player.getHand()[i].getTexture(), cardBounds[i].x, cardBounds[i].y, cardBounds[i].width, cardBounds[i].height);
-                if(player.getHand()[i].getCost()<= player.getManaPool()){
+                if (player.getHand()[i].getCost() <= player.getManaPool()) {
                     fontForCardInHand.setColor(Color.GREEN);
-                }else {
+                } else {
                     fontForCardInHand.setColor(Color.RED);
                 }
 
@@ -753,32 +753,32 @@ public class GameScreen implements Screen,DrawableScreen {
                 fontForCardInHand.draw(
                     batch,
                     String.valueOf(player.getHand()[i].getCost()),
-                    cardBounds[i].x+20,
-                    cardBounds[i].y+cardBounds[i].getHeight()-20);
+                    cardBounds[i].x + 20,
+                    cardBounds[i].y + cardBounds[i].getHeight() - 20);
                 fontForCardInHand.setColor(Color.WHITE);
                 fontForCardInHand.getData().setScale(2.0f);
 
-                float width = cardBounds[i].width*MODIFICATOR_FOR_CARD_NAME;
-                GlyphLayout layout = new GlyphLayout(fontForCardInHand,player.getHand()[i].getName(),Color.WHITE,width,Align.center,true);
-                float x = cardBounds[i].getX()+cardBounds[i].getWidth()/2 - width/2;
-                float y = cardBounds[i].getY()+cardBounds[i].height*0.52f;
-                while (layout.height >cardBounds[i].height*LAYOUT_HEIGHT_FOR_NAME_CARDS){
-                    fontForCardInHand.getData().setScale(fontForCardInHand.getScaleX()*0.99f);
-                    layout.setText(fontForCardInHand,player.getHand()[i].getName(),Color.WHITE,width,Align.center,true);
+                float width = cardBounds[i].width * MODIFICATOR_FOR_CARD_NAME;
+                GlyphLayout layout = new GlyphLayout(fontForCardInHand, player.getHand()[i].getName(), Color.WHITE, width, Align.center, true);
+                float x = cardBounds[i].getX() + cardBounds[i].getWidth() / 2 - width / 2;
+                float y = cardBounds[i].getY() + cardBounds[i].height * 0.52f;
+                while (layout.height > cardBounds[i].height * LAYOUT_HEIGHT_FOR_NAME_CARDS) {
+                    fontForCardInHand.getData().setScale(fontForCardInHand.getScaleX() * 0.99f);
+                    layout.setText(fontForCardInHand, player.getHand()[i].getName(), Color.WHITE, width, Align.center, true);
                 }
-                fontForCardInHand.draw(batch,layout,x,y);
+                fontForCardInHand.draw(batch, layout, x, y);
                 fontForCardInHand.setColor(Color.WHITE);
                 fontForCardInHand.getData().setScale(2.0f);
 
-                width = cardBounds[i].width*MODIFIER_FOR_CARD_DESCRIPTION;
-                x = cardBounds[i].getX()+cardBounds[i].getWidth()/2 - width/2;
-                y = cardBounds[i].getY()+cardBounds[i].height*0.40f;
-                layout.setText(fontForCardInHand,player.getHand()[i].getDescription(),Color.WHITE,width,Align.center,true);
-                while (layout.height >cardBounds[i].height*0.32f){
-                    fontForCardInHand.getData().setScale(fontForCardInHand.getScaleX()*0.99f);
-                    layout.setText(fontForCardInHand,player.getHand()[i].getDescription(),Color.WHITE,width,Align.center,true);
+                width = cardBounds[i].width * MODIFIER_FOR_CARD_DESCRIPTION;
+                x = cardBounds[i].getX() + cardBounds[i].getWidth() / 2 - width / 2;
+                y = cardBounds[i].getY() + cardBounds[i].height * 0.40f;
+                layout.setText(fontForCardInHand, player.getHand()[i].getDescription(), Color.WHITE, width, Align.center, true);
+                while (layout.height > cardBounds[i].height * 0.32f) {
+                    fontForCardInHand.getData().setScale(fontForCardInHand.getScaleX() * 0.99f);
+                    layout.setText(fontForCardInHand, player.getHand()[i].getDescription(), Color.WHITE, width, Align.center, true);
                 }
-                fontForCardInHand.draw(batch,layout,x,y);
+                fontForCardInHand.draw(batch, layout, x, y);
                 fontForCardInHand.setColor(Color.WHITE);
                 fontForCardInHand.getData().setScale(1.0f);
 

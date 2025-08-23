@@ -79,10 +79,11 @@ public class Stage {
         map.getPlayer().takeScore(this);
         ((Main) Gdx.app.getApplicationListener()).setScreen(new GameScreen(enemies, map));
     }
-    public void stageActionTutorial(MapScreen map,String path){
+
+    public void stageActionTutorial(MapScreen map, String path) {
         map.getPlayer().takeScore(this);
         GameScreen gameScreen = new GameScreen(enemies, map);
-        TutorialScreen tutorialScreen = new TutorialScreen(gameScreen,gameScreen,path);
+        TutorialScreen tutorialScreen = new TutorialScreen(gameScreen, gameScreen, path);
         ((Main) Gdx.app.getApplicationListener()).setScreen(tutorialScreen);
     }
 

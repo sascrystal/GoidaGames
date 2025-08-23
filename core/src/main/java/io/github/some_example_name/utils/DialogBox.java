@@ -1,6 +1,6 @@
 package io.github.some_example_name.utils;
 
-public class DialogBox{
+public class DialogBox {
     private String text;
     private float x;
     private float y;

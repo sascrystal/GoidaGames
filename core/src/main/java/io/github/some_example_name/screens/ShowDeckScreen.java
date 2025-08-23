@@ -21,6 +21,8 @@ import io.github.some_example_name.Main;
 import io.github.some_example_name.cards.PlayingCard;
 
 public class ShowDeckScreen implements Screen, GestureDetector.GestureListener {
+    private static final float MODIFIER_FOR_CARD_NANE = 0.61f, MODIFIER_FOR_CARD_DESCRIPTION = 0.75F;
+    private static final float LAYOUT_HEIGHT_FOR_NAME_CARDS = (float) 10 / 225;
     private final List<PlayingCard> deck;
     private final Screen nextScreen;
     private Texture buttonBackTexture, background;
@@ -28,10 +30,6 @@ public class ShowDeckScreen implements Screen, GestureDetector.GestureListener {
     private StretchViewport viewport;
     private SpriteBatch batch;
     private BitmapFont font;
-    private static final float MODIFIER_FOR_CARD_NANE = 0.61f,MODIFIER_FOR_CARD_DESCRIPTION=0.75F;
-    private static final float LAYOUT_HEIGHT_FOR_NAME_CARDS = (float) 10 /225;
-
-
     private float maxX, minX;
 
     public ShowDeckScreen(List<PlayingCard> deck, Screen nextScreen) {
@@ -49,7 +47,8 @@ public class ShowDeckScreen implements Screen, GestureDetector.GestureListener {
         showBackground();
         showFont();
     }
-    private void showFont(){
+
+    private void showFont() {
         font = new BitmapFont(Gdx.files.internal("fonts/font.fnt"), Gdx.files.internal("fonts/font.png"), false);
 
     }
@@ -149,27 +148,27 @@ public class ShowDeckScreen implements Screen, GestureDetector.GestureListener {
             font.getData().setScale(2.0f);
             font.setColor(Color.WHITE);
 
-            float widthText = width* MODIFIER_FOR_CARD_NANE;
-            GlyphLayout layout = new GlyphLayout(font,deck.get(i).getName(),Color.WHITE,widthText, Align.center,true);
-            float xText = x +width/2 - widthText/2;
-            float y = beginPositionRowY+viewport.getWorldHeight()*0.52f;
-            while (layout.height >viewport.getWorldHeight()*LAYOUT_HEIGHT_FOR_NAME_CARDS){
-                font.getData().setScale(font.getScaleX()*0.999f);
-                layout.setText(font,deck.get(i).getName(),Color.WHITE,widthText,Align.center,true);
+            float widthText = width * MODIFIER_FOR_CARD_NANE;
+            GlyphLayout layout = new GlyphLayout(font, deck.get(i).getName(), Color.WHITE, widthText, Align.center, true);
+            float xText = x + width / 2 - widthText / 2;
+            float y = beginPositionRowY + viewport.getWorldHeight() * 0.52f;
+            while (layout.height > viewport.getWorldHeight() * LAYOUT_HEIGHT_FOR_NAME_CARDS) {
+                font.getData().setScale(font.getScaleX() * 0.999f);
+                layout.setText(font, deck.get(i).getName(), Color.WHITE, widthText, Align.center, true);
             }
-            font.draw(batch,layout,xText,y);
+            font.draw(batch, layout, xText, y);
             font.setColor(Color.WHITE);
             font.getData().setScale(0.7f);
 
-            widthText = width*MODIFIER_FOR_CARD_DESCRIPTION;
-            xText = x+width/2 - widthText/2;
-            y = beginPositionRowY+viewport.getWorldHeight()*0.40f;
-            layout.setText(font,deck.get(i).getDescription(),Color.WHITE,widthText,Align.center,true);
-            while (layout.height >viewport.getWorldHeight()*0.32f){
-                font.getData().setScale(font.getScaleX()*0.999f);
-                layout.setText(font,deck.get(i).getDescription(),Color.WHITE,widthText,Align.center,true);
+            widthText = width * MODIFIER_FOR_CARD_DESCRIPTION;
+            xText = x + width / 2 - widthText / 2;
+            y = beginPositionRowY + viewport.getWorldHeight() * 0.40f;
+            layout.setText(font, deck.get(i).getDescription(), Color.WHITE, widthText, Align.center, true);
+            while (layout.height > viewport.getWorldHeight() * 0.32f) {
+                font.getData().setScale(font.getScaleX() * 0.999f);
+                layout.setText(font, deck.get(i).getDescription(), Color.WHITE, widthText, Align.center, true);
             }
-            font.draw(batch,layout,xText,y);
+            font.draw(batch, layout, xText, y);
             font.setColor(Color.WHITE);
             font.getData().setScale(1.0f);
 

@@ -21,28 +21,28 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 import java.util.ArrayList;
 
-import io.github.some_example_name.utils.Account;
 import io.github.some_example_name.Main;
 import io.github.some_example_name.cell_map_classes.cell_maps.CellMap;
 import io.github.some_example_name.player.CharacterKnight;
 import io.github.some_example_name.player.Player;
+import io.github.some_example_name.utils.Account;
 import io.github.some_example_name.utils.ShopSkin;
 
 public class FirstScreen implements Screen {
     private static final float NEW_GAME_BUTTON_SCALING = 0.48f, CONTINUE_GAME_BUTTON_SCALING = 0.5f,
-        TUTORIAL_BUTTON_SCALING = 0.5f, LOGO_SCALING = 0.8f,SHOP_BUTTON_SCALING = 0.5F,
+        TUTORIAL_BUTTON_SCALING = 0.5f, LOGO_SCALING = 0.8f, SHOP_BUTTON_SCALING = 0.5F,
         LOGO_SHOP_SCALING = 0.6F, SHOP_SCALE = 1.2f, MOVEMENT_BUTTONS_SCALE = 0.30F;
-    private static final float INDENT_BUTTONS = 10, STARTING_POSITION = 200,INDENT_MOVEMENTS_BUTTONS = 60,BUTTON_BUY_SCALE = 0.2F;
-    private static final float POSITION_FOR_MOVEMENT_BUTTONS= 400;
-    private static final float STARTING_POSITION_FOR_FIRST_BUY_BUTTON = 700,BETWEEN_SPACE = 250,Y_POSITION_FOR_BUY_BUTTONS = 100;
+    private static final float INDENT_BUTTONS = 10, STARTING_POSITION = 200, INDENT_MOVEMENTS_BUTTONS = 60, BUTTON_BUY_SCALE = 0.2F;
+    private static final float POSITION_FOR_MOVEMENT_BUTTONS = 400;
+    private static final float STARTING_POSITION_FOR_FIRST_BUY_BUTTON = 700, BETWEEN_SPACE = 250, Y_POSITION_FOR_BUY_BUTTONS = 100;
     private static final float AMPLITUDE_SHAKING = 30, SPEED_SHAKING = 2f, STEP_VALUE = 0.3f;
     private static final float INVENTORY_BUTTON_SCALE = 0.5f;
-    private static final float SCALE_FOR_SKINS_INVENTORY = 0.3f,Y_POSITION_FOR_INVENTORY_SKINS = 300;
-    private static final float START_POSITION_FOR_SHOP_SKINS,INDENT_FOR_SHOP_SKINS,Y_POSITION_FOR_SHOP_SKINS;
+    private static final float SCALE_FOR_SKINS_INVENTORY = 0.3f, Y_POSITION_FOR_INVENTORY_SKINS = 300;
+    private static final float START_POSITION_FOR_SHOP_SKINS, INDENT_FOR_SHOP_SKINS, Y_POSITION_FOR_SHOP_SKINS;
     private static final float SELECT_BUTTON_SCALE = 0.4f;
     private static final float MONEY_SHOP_BUTTON_SCALE = 0.1f;
-    private static final float SCALE_FOR_FIRST_ICON_MONEY=0.2F,SCALE_FOR_SECOND_ICON_MONEY=0.2F,SCALE_FOR_THIRD_ICON_MONEY=0.4F;
-    private static final float Y_POSITION_FOR_FIRST_AND_SECOND_ICON_MONEY = 650,Y_POSITION_FOR_THIRD_ICON_MONEY =200;
+    private static final float SCALE_FOR_FIRST_ICON_MONEY = 0.2F, SCALE_FOR_SECOND_ICON_MONEY = 0.2F, SCALE_FOR_THIRD_ICON_MONEY = 0.4F;
+    private static final float Y_POSITION_FOR_FIRST_AND_SECOND_ICON_MONEY = 650, Y_POSITION_FOR_THIRD_ICON_MONEY = 200;
     private static final float MONEY_SPRITE_SCALE = 0.1f;
     private static final float MONEY_SPRITE_X = 2000;
     private static final float MONEY_COUNT_HEIGHT = 40;
@@ -50,8 +50,8 @@ public class FirstScreen implements Screen {
 
     static {
         Texture buyButtonTexture = new Texture(Gdx.files.internal("menu/buy_button.png"));
-        START_POSITION_FOR_SHOP_SKINS = STARTING_POSITION_FOR_FIRST_BUY_BUTTON+buyButtonTexture.getWidth()*BUTTON_BUY_SCALE/2;
-        INDENT_FOR_SHOP_SKINS = BETWEEN_SPACE+buyButtonTexture.getWidth()*BUTTON_BUY_SCALE;
+        START_POSITION_FOR_SHOP_SKINS = STARTING_POSITION_FOR_FIRST_BUY_BUTTON + buyButtonTexture.getWidth() * BUTTON_BUY_SCALE / 2;
+        INDENT_FOR_SHOP_SKINS = BETWEEN_SPACE + buyButtonTexture.getWidth() * BUTTON_BUY_SCALE;
         Y_POSITION_FOR_SHOP_SKINS = Y_POSITION_FOR_BUY_BUTTONS + 100;
     }
 
@@ -70,10 +70,10 @@ public class FirstScreen implements Screen {
     private Texture buyButtonTexture, buyButtonUnavaibleTexture;
     private Sprite firstIconForMoney, secondIconForMoney, thirdIconForMoney;
     private Sprite moneySprite;
-    private  Texture shopTexture;
+    private Texture shopTexture;
     private SpriteBatch batch;
     private StretchViewport viewport;
-    private Stage mainStage,shopStage,inventoryStage,shopMoneyStage;
+    private Stage mainStage, shopStage, inventoryStage, shopMoneyStage;
     private Music backgroundMusic, backgroundNoiseMenu;
     private float logoStep = 0, logoShakingDelta = 0, logoELapsedTime = 0;
 
@@ -99,15 +99,17 @@ public class FirstScreen implements Screen {
         logoShopTexture = new Texture(Gdx.files.internal("menu/shop_logo.png"));
 
     }
-    private void showShopMoneyStage(){
-        shopMoneyStage = new Stage(viewport,batch);
+
+    private void showShopMoneyStage() {
+        shopMoneyStage = new Stage(viewport, batch);
         showMoneyShopWindow();
         showMoneyShopIconsForBuyButtons();
         showMoneyShopReturnButton();
         showMoneyShopBuyButtons();
 
     }
-    private void showMoneyShopIconsForBuyButtons(){
+
+    private void showMoneyShopIconsForBuyButtons() {
         Texture firstIcon = new Texture("menu/coin.png");
         Texture secondIcon = new Texture("menu/second_icon_for_buy_buttons_money.png");
         Texture thirdIcon = new Texture("menu/third_icon_for_buy_buttons_money.png");
@@ -117,85 +119,84 @@ public class FirstScreen implements Screen {
         thirdIconForMoney = new Sprite(thirdIcon);
 
         firstIconForMoney.setSize(
-            firstIcon.getWidth()*SCALE_FOR_FIRST_ICON_MONEY,
-            firstIcon.getHeight()*SCALE_FOR_FIRST_ICON_MONEY
+            firstIcon.getWidth() * SCALE_FOR_FIRST_ICON_MONEY,
+            firstIcon.getHeight() * SCALE_FOR_FIRST_ICON_MONEY
         );
         secondIconForMoney.setSize(
-            secondIcon.getWidth()*SCALE_FOR_SECOND_ICON_MONEY,
-            secondIcon.getHeight()*SCALE_FOR_FIRST_ICON_MONEY
+            secondIcon.getWidth() * SCALE_FOR_SECOND_ICON_MONEY,
+            secondIcon.getHeight() * SCALE_FOR_FIRST_ICON_MONEY
         );
         thirdIconForMoney.setSize(
-            thirdIcon.getWidth()*SCALE_FOR_FIRST_ICON_MONEY,
-            thirdIcon.getHeight()*SCALE_FOR_THIRD_ICON_MONEY
+            thirdIcon.getWidth() * SCALE_FOR_FIRST_ICON_MONEY,
+            thirdIcon.getHeight() * SCALE_FOR_THIRD_ICON_MONEY
         );
 
         firstIconForMoney.setPosition(
-            moneyShopWindow.getX()+moneyShopWindow.getWidth()/4-firstIconForMoney.getWidth()/2,
+            moneyShopWindow.getX() + moneyShopWindow.getWidth() / 4 - firstIconForMoney.getWidth() / 2,
             Y_POSITION_FOR_FIRST_AND_SECOND_ICON_MONEY
         );
         secondIconForMoney.setPosition(
-            moneyShopWindow.getX()+3*moneyShopWindow.getWidth()/4-secondIconForMoney.getWidth()/2,
+            moneyShopWindow.getX() + 3 * moneyShopWindow.getWidth() / 4 - secondIconForMoney.getWidth() / 2,
             Y_POSITION_FOR_FIRST_AND_SECOND_ICON_MONEY
         );
         thirdIconForMoney.setPosition(
-            moneyShopWindow.getX()+moneyShopWindow.getWidth()/2-thirdIconForMoney.getWidth()/2,
+            moneyShopWindow.getX() + moneyShopWindow.getWidth() / 2 - thirdIconForMoney.getWidth() / 2,
             Y_POSITION_FOR_THIRD_ICON_MONEY
         );
     }
-    private void showMoneyShopBuyButtons(){
+
+    private void showMoneyShopBuyButtons() {
         Texture buyTexture = new Texture("menu/buy_button.png");
 
         ImageButton[] buyButtons = new ImageButton[3];
-        for(int i = 0; i<buyButtons.length;i++){
-            buyButtons[i] =new ImageButton(new TextureRegionDrawable(buyTexture));
+        for (int i = 0; i < buyButtons.length; i++) {
+            buyButtons[i] = new ImageButton(new TextureRegionDrawable(buyTexture));
             buyButtons[i].setSize(
-                buyTexture.getWidth()*BUTTON_BUY_SCALE,
-                buyTexture.getHeight()*BUTTON_BUY_SCALE
+                buyTexture.getWidth() * BUTTON_BUY_SCALE,
+                buyTexture.getHeight() * BUTTON_BUY_SCALE
             );
         }
-        buyButtons[0].addListener(new ClickListener(){
+        buyButtons[0].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                account.setMoney(account.getMoney()+99);
+                account.setMoney(account.getMoney() + 99);
                 super.clicked(event, x, y);
             }
         });
-        buyButtons[1].addListener(new ClickListener(){
+        buyButtons[1].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                account.setMoney(account.getMoney()+999);
+                account.setMoney(account.getMoney() + 999);
                 super.clicked(event, x, y);
             }
         });
-        buyButtons[2].addListener(new ClickListener(){
+        buyButtons[2].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                account.setMoney(account.getMoney()+9999);
+                account.setMoney(account.getMoney() + 9999);
                 super.clicked(event, x, y);
             }
         });
         buyButtons[0].setPosition(
-            firstIconForMoney.getX()+firstIconForMoney.getWidth()/2-buyButtons[0].getWidth()/2,
-            firstIconForMoney.getY()-buyButtons[0].getHeight());
+            firstIconForMoney.getX() + firstIconForMoney.getWidth() / 2 - buyButtons[0].getWidth() / 2,
+            firstIconForMoney.getY() - buyButtons[0].getHeight());
         buyButtons[1].setPosition(
-            secondIconForMoney.getX()+secondIconForMoney.getWidth()/2-buyButtons[1].getWidth()/2,
-            secondIconForMoney.getY()-buyButtons[1].getHeight());
+            secondIconForMoney.getX() + secondIconForMoney.getWidth() / 2 - buyButtons[1].getWidth() / 2,
+            secondIconForMoney.getY() - buyButtons[1].getHeight());
         buyButtons[2].setPosition(
-            thirdIconForMoney.getX()+thirdIconForMoney.getWidth()/2-buyButtons[2].getWidth()/2,
-            thirdIconForMoney.getY()-buyButtons[2].getHeight());
-        for (ImageButton buyButton :buyButtons){
+            thirdIconForMoney.getX() + thirdIconForMoney.getWidth() / 2 - buyButtons[2].getWidth() / 2,
+            thirdIconForMoney.getY() - buyButtons[2].getHeight());
+        for (ImageButton buyButton : buyButtons) {
             shopMoneyStage.addActor(buyButton);
         }
 
 
-
-
-
     }
-    private void showMoneyShopReturnButton(){
+
+    private void showMoneyShopReturnButton() {
         Texture returnButtonTexture = new Texture(Gdx.files.internal("buttons/left_button.png"));
         ImageButton returnButton = new ImageButton(new TextureRegionDrawable(returnButtonTexture));
-        returnButton.addListener(new ClickListener(){
+        returnButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 menuCondition = MenuCondition.MAIN;
@@ -203,25 +204,28 @@ public class FirstScreen implements Screen {
                 super.clicked(event, x, y);
             }
         });
-        returnButton.setSize(returnButtonTexture.getWidth()*MOVEMENT_BUTTONS_SCALE,returnButtonTexture.getHeight()*MOVEMENT_BUTTONS_SCALE);
-        returnButton.setPosition(viewport.getWorldWidth() /2 - moneyShopWindow.getWidth()/2-returnButton.getWidth(), viewport.getWorldHeight()-returnButton.getHeight());
+        returnButton.setSize(returnButtonTexture.getWidth() * MOVEMENT_BUTTONS_SCALE, returnButtonTexture.getHeight() * MOVEMENT_BUTTONS_SCALE);
+        returnButton.setPosition(viewport.getWorldWidth() / 2 - moneyShopWindow.getWidth() / 2 - returnButton.getWidth(), viewport.getWorldHeight() - returnButton.getHeight());
         shopMoneyStage.addActor(returnButton);
 
     }
-    private void showMoneyShopWindow(){
+
+    private void showMoneyShopWindow() {
         Texture moneyShopWindowTexture = new Texture("menu/money_shop_window.png");
         moneyShopWindow = new Sprite(moneyShopWindowTexture);
-        moneyShopWindow.setSize(moneyShopWindowTexture.getWidth()*(viewport.getWorldHeight()/moneyShopWindowTexture.getHeight()),
+        moneyShopWindow.setSize(moneyShopWindowTexture.getWidth() * (viewport.getWorldHeight() / moneyShopWindowTexture.getHeight()),
             viewport.getWorldHeight());
-        moneyShopWindow.setPosition(viewport.getWorldWidth()/2 - moneyShopWindow.getWidth()/2,0);
+        moneyShopWindow.setPosition(viewport.getWorldWidth() / 2 - moneyShopWindow.getWidth() / 2, 0);
     }
-    private void showMoneySprite(){
+
+    private void showMoneySprite() {
         Texture moneyTexture = new Texture("menu/coin.png");
         moneySprite = new Sprite(moneyTexture);
-        moneySprite.setSize(moneyTexture.getWidth()*MONEY_SPRITE_SCALE, moneyTexture.getHeight()*MONEY_SPRITE_SCALE);
-        moneySprite.setPosition(MONEY_SPRITE_X, viewport.getWorldHeight()-moneySprite.getHeight());
+        moneySprite.setSize(moneyTexture.getWidth() * MONEY_SPRITE_SCALE, moneyTexture.getHeight() * MONEY_SPRITE_SCALE);
+        moneySprite.setPosition(MONEY_SPRITE_X, viewport.getWorldHeight() - moneySprite.getHeight());
     }
-    private void showMusic(){
+
+    private void showMusic() {
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/mainMenuMusic.mp3"));
         backgroundMusic.setLooping(true);
         backgroundMusic.setVolume(0.7f);
@@ -235,8 +239,9 @@ public class FirstScreen implements Screen {
         shopBellSound = Gdx.audio.newSound(Gdx.files.internal("music/shop_bell.wav"));
 
     }
-    private void showShopStage(){
-        shopStage = new Stage(viewport,batch);
+
+    private void showShopStage() {
+        shopStage = new Stage(viewport, batch);
         shopTexture = new Texture(Gdx.files.internal("menu/shop.png"));
 
 
@@ -247,7 +252,7 @@ public class FirstScreen implements Screen {
         ImageButton returnButton = new ImageButton(new TextureRegionDrawable(textureLeftShop));
         ImageButton rightShopButton = new ImageButton(new TextureRegionDrawable(textureRightShop));
 
-        returnButton.addListener(new ClickListener(){
+        returnButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 menuCondition = MenuCondition.MAIN;
@@ -257,43 +262,43 @@ public class FirstScreen implements Screen {
         });
 
 
-        leftShopButton.addListener(new ClickListener(){
+        leftShopButton.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if(indexOfFirstSkin-3>= 0){
-                    indexOfFirstSkin-=3;
+                if (indexOfFirstSkin - 3 >= 0) {
+                    indexOfFirstSkin -= 3;
                 }
                 return super.touchDown(event, x, y, pointer, button);
             }
         });
-        rightShopButton.addListener(new ClickListener(){
+        rightShopButton.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if(indexOfFirstSkin+3< lockedSkins.size()){
-                    indexOfFirstSkin+=3;
+                if (indexOfFirstSkin + 3 < lockedSkins.size()) {
+                    indexOfFirstSkin += 3;
                 }
                 return super.touchDown(event, x, y, pointer, button);
             }
         });
         leftShopButton.setSize(
-            textureLeftShop.getWidth()*MOVEMENT_BUTTONS_SCALE,
-            textureLeftShop.getHeight()*MOVEMENT_BUTTONS_SCALE);
+            textureLeftShop.getWidth() * MOVEMENT_BUTTONS_SCALE,
+            textureLeftShop.getHeight() * MOVEMENT_BUTTONS_SCALE);
         rightShopButton.setSize(
-            textureRightShop.getWidth()*MOVEMENT_BUTTONS_SCALE,
-            textureRightShop.getHeight()*MOVEMENT_BUTTONS_SCALE);
+            textureRightShop.getWidth() * MOVEMENT_BUTTONS_SCALE,
+            textureRightShop.getHeight() * MOVEMENT_BUTTONS_SCALE);
         returnButton.setSize(
-            textureLeftShop.getWidth()*MOVEMENT_BUTTONS_SCALE,
-            textureLeftShop.getHeight()*MOVEMENT_BUTTONS_SCALE);
+            textureLeftShop.getWidth() * MOVEMENT_BUTTONS_SCALE,
+            textureLeftShop.getHeight() * MOVEMENT_BUTTONS_SCALE);
 
         leftShopButton.setPosition(
             POSITION_FOR_MOVEMENT_BUTTONS,
             INDENT_MOVEMENTS_BUTTONS);
         rightShopButton.setPosition(
-            viewport.getWorldWidth()-POSITION_FOR_MOVEMENT_BUTTONS-textureRightShop.getWidth()*MOVEMENT_BUTTONS_SCALE,
+            viewport.getWorldWidth() - POSITION_FOR_MOVEMENT_BUTTONS - textureRightShop.getWidth() * MOVEMENT_BUTTONS_SCALE,
             INDENT_MOVEMENTS_BUTTONS);
         returnButton.setPosition(
-            viewport.getWorldWidth() /2 - (float) shopTexture.getWidth() *SHOP_SCALE/2,
-            shopTexture.getHeight() *SHOP_SCALE-returnButton.getHeight());
+            viewport.getWorldWidth() / 2 - (float) shopTexture.getWidth() * SHOP_SCALE / 2,
+            shopTexture.getHeight() * SHOP_SCALE - returnButton.getHeight());
 
         shopStage.addActor(leftShopButton);
         shopStage.addActor(rightShopButton);
@@ -303,19 +308,19 @@ public class FirstScreen implements Screen {
         Texture buyButtonTexture = new Texture(Gdx.files.internal("menu/buy_button.png"));
         buyButtonUnavaibleTexture = new Texture(Gdx.files.internal("menu/buy_button_unavailable.png"));
         ImageButton[] buttonsBuy = new ImageButton[3];
-        for (int i = 0; i<buttonsBuy.length; i++) {
+        for (int i = 0; i < buttonsBuy.length; i++) {
             buttonsBuy[i] = new ImageButton(new TextureRegionDrawable(buyButtonTexture));
-            buttonsBuy[i].setName(NAME_FOR_BUY_BUTTONS+i);
+            buttonsBuy[i].setName(NAME_FOR_BUY_BUTTONS + i);
             final int index = i;
-            buttonsBuy[i].setSize(buyButtonTexture.getWidth()*BUTTON_BUY_SCALE,buyButtonTexture.getHeight()*BUTTON_BUY_SCALE);
-            buttonsBuy[i].setPosition(STARTING_POSITION_FOR_FIRST_BUY_BUTTON+i*(BETWEEN_SPACE+buyButtonTexture.getWidth()*BUTTON_BUY_SCALE),Y_POSITION_FOR_BUY_BUTTONS);
-            buttonsBuy[i].addListener(new ClickListener(){
+            buttonsBuy[i].setSize(buyButtonTexture.getWidth() * BUTTON_BUY_SCALE, buyButtonTexture.getHeight() * BUTTON_BUY_SCALE);
+            buttonsBuy[i].setPosition(STARTING_POSITION_FOR_FIRST_BUY_BUTTON + i * (BETWEEN_SPACE + buyButtonTexture.getWidth() * BUTTON_BUY_SCALE), Y_POSITION_FOR_BUY_BUTTONS);
+            buttonsBuy[i].addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    if(indexOfFirstSkin+index <lockedSkins.size() &&lockedSkins.get(indexOfFirstSkin+index)!= null){
-                        if (lockedSkins.get(indexOfFirstSkin+index).getPrice() <= account.getMoney()){
-                            lockedSkins.get(indexOfFirstSkin+index).setUnlocked(true);
-                            account.setMoney(account.getMoney()-lockedSkins.get(indexOfFirstSkin+index).getPrice());
+                    if (indexOfFirstSkin + index < lockedSkins.size() && lockedSkins.get(indexOfFirstSkin + index) != null) {
+                        if (lockedSkins.get(indexOfFirstSkin + index).getPrice() <= account.getMoney()) {
+                            lockedSkins.get(indexOfFirstSkin + index).setUnlocked(true);
+                            account.setMoney(account.getMoney() - lockedSkins.get(indexOfFirstSkin + index).getPrice());
                             lockedSkins = ShopSkin.takeOnlyLockedSkins(allSkins);
                         }
                     }
@@ -328,20 +333,21 @@ public class FirstScreen implements Screen {
         }
 
 
-
     }
-    private void showInventoryStage(){
-        inventoryStage = new Stage(viewport,batch);
+
+    private void showInventoryStage() {
+        inventoryStage = new Stage(viewport, batch);
         showInventoryWindow();
         showInventoryReturnButton();
         showSwapButtonSkin();
         showSelectButton();
 
     }
-    private void showSelectButton(){
+
+    private void showSelectButton() {
         Texture selectButtonTexture = new Texture(Gdx.files.internal("menu/select_button.png"));
         ImageButton selectButton = new ImageButton(new TextureRegionDrawable(selectButtonTexture));
-        selectButton.addListener(new ClickListener(){
+        selectButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 account.setIndexOfSelectedSkin(indexOfFirstSkin);
@@ -350,51 +356,53 @@ public class FirstScreen implements Screen {
                 super.clicked(event, x, y);
             }
         });
-        selectButton.setSize(selectButtonTexture.getWidth()*SELECT_BUTTON_SCALE,selectButtonTexture.getHeight()*SELECT_BUTTON_SCALE);
-        selectButton.setPosition(viewport.getWorldWidth()/2-selectButton.getWidth()/2,INDENT_MOVEMENTS_BUTTONS);
+        selectButton.setSize(selectButtonTexture.getWidth() * SELECT_BUTTON_SCALE, selectButtonTexture.getHeight() * SELECT_BUTTON_SCALE);
+        selectButton.setPosition(viewport.getWorldWidth() / 2 - selectButton.getWidth() / 2, INDENT_MOVEMENTS_BUTTONS);
         inventoryStage.addActor(selectButton);
 
     }
-    private void showSwapButtonSkin(){
+
+    private void showSwapButtonSkin() {
         Texture textureLeftShop = new Texture(Gdx.files.internal("buttons/left_button.png"));
         Texture textureRightShop = new Texture(Gdx.files.internal("buttons/right_button.png"));
 
         ImageButton leftShopButton = new ImageButton(new TextureRegionDrawable(textureLeftShop));
         ImageButton rightShopButton = new ImageButton(new TextureRegionDrawable(textureRightShop));
 
-        leftShopButton.addListener(new ClickListener(){
+        leftShopButton.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if(indexOfFirstSkin-1>= 0){
-                    indexOfFirstSkin-=1;
+                if (indexOfFirstSkin - 1 >= 0) {
+                    indexOfFirstSkin -= 1;
                 }
                 return super.touchDown(event, x, y, pointer, button);
             }
         });
-        rightShopButton.addListener(new ClickListener(){
+        rightShopButton.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if(indexOfFirstSkin+1< unlockedSkins.size()){
-                    indexOfFirstSkin+=1;
+                if (indexOfFirstSkin + 1 < unlockedSkins.size()) {
+                    indexOfFirstSkin += 1;
                 }
                 return super.touchDown(event, x, y, pointer, button);
             }
         });
-        leftShopButton.setSize(textureLeftShop.getWidth()*MOVEMENT_BUTTONS_SCALE,textureLeftShop.getHeight()*MOVEMENT_BUTTONS_SCALE);
-        rightShopButton.setSize(textureRightShop.getWidth()*MOVEMENT_BUTTONS_SCALE,textureRightShop.getHeight()*MOVEMENT_BUTTONS_SCALE);
+        leftShopButton.setSize(textureLeftShop.getWidth() * MOVEMENT_BUTTONS_SCALE, textureLeftShop.getHeight() * MOVEMENT_BUTTONS_SCALE);
+        rightShopButton.setSize(textureRightShop.getWidth() * MOVEMENT_BUTTONS_SCALE, textureRightShop.getHeight() * MOVEMENT_BUTTONS_SCALE);
 
-        leftShopButton.setPosition(inventoryWindow.getX(),INDENT_MOVEMENTS_BUTTONS);
-        rightShopButton.setPosition(inventoryWindow.getX()+inventoryWindow.getWidth()-rightShopButton.getWidth(),INDENT_MOVEMENTS_BUTTONS);
+        leftShopButton.setPosition(inventoryWindow.getX(), INDENT_MOVEMENTS_BUTTONS);
+        rightShopButton.setPosition(inventoryWindow.getX() + inventoryWindow.getWidth() - rightShopButton.getWidth(), INDENT_MOVEMENTS_BUTTONS);
 
         inventoryStage.addActor(leftShopButton);
         inventoryStage.addActor(rightShopButton);
 
 
     }
-    public void showInventoryReturnButton(){
+
+    public void showInventoryReturnButton() {
         Texture returnButtonTexture = new Texture(Gdx.files.internal("buttons/left_button.png"));
         ImageButton returnButton = new ImageButton(new TextureRegionDrawable(returnButtonTexture));
-        returnButton.addListener(new ClickListener(){
+        returnButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 menuCondition = MenuCondition.MAIN;
@@ -402,21 +410,22 @@ public class FirstScreen implements Screen {
                 super.clicked(event, x, y);
             }
         });
-        returnButton.setSize(returnButtonTexture.getWidth()*MOVEMENT_BUTTONS_SCALE,returnButtonTexture.getHeight()*MOVEMENT_BUTTONS_SCALE);
-        returnButton.setPosition(viewport.getWorldWidth() /2 - inventoryWindow.getWidth()/2-returnButton.getWidth(), viewport.getWorldHeight()-returnButton.getHeight());
+        returnButton.setSize(returnButtonTexture.getWidth() * MOVEMENT_BUTTONS_SCALE, returnButtonTexture.getHeight() * MOVEMENT_BUTTONS_SCALE);
+        returnButton.setPosition(viewport.getWorldWidth() / 2 - inventoryWindow.getWidth() / 2 - returnButton.getWidth(), viewport.getWorldHeight() - returnButton.getHeight());
         inventoryStage.addActor(returnButton);
 
     }
 
-    public void showInventoryWindow(){
+    public void showInventoryWindow() {
         Texture inventoryWindowTexture = new Texture(Gdx.files.internal("menu/inventory_window.png"));
         inventoryWindow = new Sprite(inventoryWindowTexture);
-        inventoryWindow.setSize(inventoryWindowTexture.getWidth()*(viewport.getWorldHeight()/inventoryWindowTexture.getHeight()),
+        inventoryWindow.setSize(inventoryWindowTexture.getWidth() * (viewport.getWorldHeight() / inventoryWindowTexture.getHeight()),
             viewport.getWorldHeight());
-        inventoryWindow.setPosition(viewport.getWorldWidth()/2 - inventoryWindow.getWidth()/2,0);
+        inventoryWindow.setPosition(viewport.getWorldWidth() / 2 - inventoryWindow.getWidth() / 2, 0);
 
     }
-    private void showMainStage(){
+
+    private void showMainStage() {
         mainStage = new Stage(viewport, batch);
         Gdx.input.setInputProcessor(mainStage);
         showMoneyShopButton();
@@ -438,24 +447,24 @@ public class FirstScreen implements Screen {
         startButton.setSize(startButtonTexture.getWidth() * NEW_GAME_BUTTON_SCALING, startButtonTexture.getHeight() * NEW_GAME_BUTTON_SCALING);
         continueButton.setSize(continueButtonTexture.getWidth() * CONTINUE_GAME_BUTTON_SCALING, continueButtonTexture.getHeight() * CONTINUE_GAME_BUTTON_SCALING);
         tutorialButton.setSize(tutorialButtonTexture.getWidth() * TUTORIAL_BUTTON_SCALING, tutorialButtonTexture.getHeight() * TUTORIAL_BUTTON_SCALING);
-        shopButton.setSize(shopButtonTexture.getWidth()*SHOP_BUTTON_SCALING, shopButtonTexture.getHeight()*SHOP_BUTTON_SCALING);
-        inventoryButton.setSize(inventoryButtonTexture.getWidth()*INVENTORY_BUTTON_SCALE,inventoryButtonTexture.getHeight()*INVENTORY_BUTTON_SCALE);
+        shopButton.setSize(shopButtonTexture.getWidth() * SHOP_BUTTON_SCALING, shopButtonTexture.getHeight() * SHOP_BUTTON_SCALING);
+        inventoryButton.setSize(inventoryButtonTexture.getWidth() * INVENTORY_BUTTON_SCALE, inventoryButtonTexture.getHeight() * INVENTORY_BUTTON_SCALE);
 
 
         continueButton.setPosition(INDENT_BUTTONS, STARTING_POSITION);
         tutorialButton.setPosition(INDENT_BUTTONS, continueButton.getY() + continueButton.getHeight());
         startButton.setPosition(INDENT_BUTTONS, tutorialButton.getY() + tutorialButton.getHeight());
-        inventoryButton.setPosition(viewport.getWorldWidth()-inventoryButton.getWidth(),STARTING_POSITION);
-        shopButton.setPosition(viewport.getWorldWidth()-shopButton.getWidth(),inventoryButton.getY()+inventoryButton.getHeight());
+        inventoryButton.setPosition(viewport.getWorldWidth() - inventoryButton.getWidth(), STARTING_POSITION);
+        shopButton.setPosition(viewport.getWorldWidth() - shopButton.getWidth(), inventoryButton.getY() + inventoryButton.getHeight());
 
 
-        inventoryButton.addListener(new ClickListener(){
+        inventoryButton.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 menuCondition = MenuCondition.INVENTORY;
                 unlockedSkins = ShopSkin.takeOnlyUnlockedSkins(allSkins);
                 Gdx.input.setInputProcessor(inventoryStage);
-                indexOfFirstSkin =account.getIndexOfSelectedSkin();
+                indexOfFirstSkin = account.getIndexOfSelectedSkin();
                 return super.touchDown(event, x, y, pointer, button);
             }
         });
@@ -489,13 +498,13 @@ public class FirstScreen implements Screen {
                 Player player = new CharacterKnight();
                 CellMap[][] map = CellMap.createTrainingAct(player);
                 MapScreen training = new MapScreen(player, map);
-                TutorialScreen tutorialScreen = new TutorialScreen(training,training,"dialogues/tutorial_dialog_box_MapScreen.json");
+                TutorialScreen tutorialScreen = new TutorialScreen(training, training, "dialogues/tutorial_dialog_box_MapScreen.json");
                 ((Main) Gdx.app.getApplicationListener()).setScreen(tutorialScreen);
             }
         });
 
 
-        shopButton.addListener(new ClickListener(){
+        shopButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 lockedSkins = ShopSkin.takeOnlyLockedSkins(allSkins);
@@ -515,10 +524,11 @@ public class FirstScreen implements Screen {
         mainStage.addActor(inventoryButton);
 
     }
-    private void showMoneyShopButton(){
+
+    private void showMoneyShopButton() {
         Texture moneyShopButtonTexture = new Texture("menu/button_money_shop.png");
         ImageButton moneyShopButton = new ImageButton(new TextureRegionDrawable(moneyShopButtonTexture));
-        moneyShopButton.addListener(new ClickListener(){
+        moneyShopButton.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 menuCondition = MenuCondition.MONEY_SHOP;
@@ -527,11 +537,11 @@ public class FirstScreen implements Screen {
             }
         });
         moneyShopButton.setSize(
-            moneyShopButtonTexture.getWidth()*MONEY_SHOP_BUTTON_SCALE,
-            moneyShopButtonTexture.getHeight()*MONEY_SHOP_BUTTON_SCALE);
+            moneyShopButtonTexture.getWidth() * MONEY_SHOP_BUTTON_SCALE,
+            moneyShopButtonTexture.getHeight() * MONEY_SHOP_BUTTON_SCALE);
         moneyShopButton.setPosition(
-            viewport.getWorldWidth()-moneyShopButton.getWidth(),
-            viewport.getWorldHeight()-moneyShopButton.getHeight()
+            viewport.getWorldWidth() - moneyShopButton.getWidth(),
+            viewport.getWorldHeight() - moneyShopButton.getHeight()
         );
         moneyShopButton.setName("money_shop_button");
         mainStage.addActor(moneyShopButton);
@@ -544,7 +554,7 @@ public class FirstScreen implements Screen {
         logoPositionCalculate(delta);
         batch.begin();
         batch.draw(BG_image, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
-        if(menuCondition == MenuCondition.MAIN){
+        if (menuCondition == MenuCondition.MAIN) {
             logoDraw();
         }
         moneySprite.draw(batch);
@@ -553,58 +563,63 @@ public class FirstScreen implements Screen {
         mainStage.draw();
         mainStage.act(delta);
         batch.begin();
-        if(menuCondition ==  MenuCondition.SHOP){
+        if (menuCondition == MenuCondition.SHOP) {
             drawShop();
 
         }
-        if (menuCondition == MenuCondition.INVENTORY){
+        if (menuCondition == MenuCondition.INVENTORY) {
             drawInventory();
         }
-        if (menuCondition == MenuCondition.MONEY_SHOP){
+        if (menuCondition == MenuCondition.MONEY_SHOP) {
             drawMoneyShop();
             drawIconMoney();
         }
         batch.end();
-        if(menuCondition ==  MenuCondition.SHOP){
+        if (menuCondition == MenuCondition.SHOP) {
             shopStage.draw();
         }
-        if(menuCondition == MenuCondition.INVENTORY){
+        if (menuCondition == MenuCondition.INVENTORY) {
             inventoryStage.draw();
         }
-        if(menuCondition == MenuCondition.MONEY_SHOP){
+        if (menuCondition == MenuCondition.MONEY_SHOP) {
             shopMoneyStage.draw();
 
         }
         shopStage.act(delta);
 
     }
-    private void drawMoneyCount(){
-        float x = moneySprite.getX()+moneySprite.getWidth()+15;
-        float y = moneySprite.getY()+moneySprite.getHeight()/2 +MONEY_COUNT_HEIGHT/2;
-        float width = 2200-x;
+
+    private void drawMoneyCount() {
+        float x = moneySprite.getX() + moneySprite.getWidth() + 15;
+        float y = moneySprite.getY() + moneySprite.getHeight() / 2 + MONEY_COUNT_HEIGHT / 2;
+        float width = 2200 - x;
         font.getData().setScale(3f);
-        glyphLayout.setText(font,String.valueOf(account.getMoney()), Color.WHITE,width, Align.left,true);
-        while (glyphLayout.height>MONEY_COUNT_HEIGHT){
-            font.getData().setScale(font.getScaleX()*0.9f);
-            glyphLayout.setText(font,String.valueOf(account.getMoney()), Color.WHITE,width, Align.left,true);
+        glyphLayout.setText(font, String.valueOf(account.getMoney()), Color.WHITE, width, Align.left, true);
+        while (glyphLayout.height > MONEY_COUNT_HEIGHT) {
+            font.getData().setScale(font.getScaleX() * 0.9f);
+            glyphLayout.setText(font, String.valueOf(account.getMoney()), Color.WHITE, width, Align.left, true);
         }
-        font.draw(batch,glyphLayout,x,y);
+        font.draw(batch, glyphLayout, x, y);
     }
-    private void drawIconMoney(){
+
+    private void drawIconMoney() {
         firstIconForMoney.draw(batch);
         secondIconForMoney.draw(batch);
         thirdIconForMoney.draw(batch);
     }
-    private void drawMoneyShop(){
+
+    private void drawMoneyShop() {
         moneyShopWindow.draw(batch);
 
     }
-    private void drawInventory(){
+
+    private void drawInventory() {
         inventoryWindow.draw(batch);
         drawInventorySkin();
 
     }
-    private void logoPositionCalculate(float delta){
+
+    private void logoPositionCalculate(float delta) {
         logoStep += (delta) * SPEED_SHAKING;
         if (logoStep >= STEP_VALUE) {
             logoELapsedTime += logoStep;
@@ -613,35 +628,37 @@ public class FirstScreen implements Screen {
         }
     }
 
-    private void drawShop(){
-        batch.draw(shopTexture,  viewport.getWorldWidth() /2 - (float) shopTexture.getWidth() *SHOP_SCALE/2,0,shopTexture.getWidth()*SHOP_SCALE,shopTexture.getHeight()*SHOP_SCALE);
+    private void drawShop() {
+        batch.draw(shopTexture, viewport.getWorldWidth() / 2 - (float) shopTexture.getWidth() * SHOP_SCALE / 2, 0, shopTexture.getWidth() * SHOP_SCALE, shopTexture.getHeight() * SHOP_SCALE);
         drawShopLogo();
         drawShopSkins();
     }
-    private void drawInventorySkin(){
-        if(unlockedSkins.size()>indexOfFirstSkin&& unlockedSkins.get(indexOfFirstSkin) != null ){
-            unlockedSkins.get(indexOfFirstSkin).draw(batch,viewport.getWorldWidth()/2,Y_POSITION_FOR_INVENTORY_SKINS,SCALE_FOR_SKINS_INVENTORY);
+
+    private void drawInventorySkin() {
+        if (unlockedSkins.size() > indexOfFirstSkin && unlockedSkins.get(indexOfFirstSkin) != null) {
+            unlockedSkins.get(indexOfFirstSkin).draw(batch, viewport.getWorldWidth() / 2, Y_POSITION_FOR_INVENTORY_SKINS, SCALE_FOR_SKINS_INVENTORY);
         }
 
 
     }
-    private void drawShopSkins(){
-        for(int i=0;i<3;i++){
-            if(lockedSkins.size()>indexOfFirstSkin+i && lockedSkins.get(indexOfFirstSkin+i) != null ){
-                lockedSkins.get(indexOfFirstSkin+i).draw(batch,START_POSITION_FOR_SHOP_SKINS+INDENT_FOR_SHOP_SKINS*i,Y_POSITION_FOR_SHOP_SKINS);
+
+    private void drawShopSkins() {
+        for (int i = 0; i < 3; i++) {
+            if (lockedSkins.size() > indexOfFirstSkin + i && lockedSkins.get(indexOfFirstSkin + i) != null) {
+                lockedSkins.get(indexOfFirstSkin + i).draw(batch, START_POSITION_FOR_SHOP_SKINS + INDENT_FOR_SHOP_SKINS * i, Y_POSITION_FOR_SHOP_SKINS);
             }
         }
     }
 
-    private void drawShopLogo(){
-        batch.draw(logoShopTexture, (viewport.getWorldWidth() / 2) -  (logoShopTexture.getWidth()*LOGO_SHOP_SCALING) / 2,
+    private void drawShopLogo() {
+        batch.draw(logoShopTexture, (viewport.getWorldWidth() / 2) - (logoShopTexture.getWidth() * LOGO_SHOP_SCALING) / 2,
             950 - logoShakingDelta * AMPLITUDE_SHAKING,
             logoShopTexture.getWidth() * LOGO_SHOP_SCALING,
             logoShopTexture.getHeight() * LOGO_SHOP_SCALING);
     }
 
     private void logoDraw() {
-        batch.draw(logoTexture, (viewport.getWorldWidth() / 2)  - (logoTexture.getWidth()*LOGO_SCALING) / 2,
+        batch.draw(logoTexture, (viewport.getWorldWidth() / 2) - (logoTexture.getWidth() * LOGO_SCALING) / 2,
             600 - logoShakingDelta * AMPLITUDE_SHAKING,
             logoTexture.getWidth() * LOGO_SCALING,
             logoTexture.getHeight() * LOGO_SCALING);
@@ -714,7 +731,8 @@ public class FirstScreen implements Screen {
             inventoryWindow.getTexture().dispose();
         }
     }
-    private enum MenuCondition{
+
+    private enum MenuCondition {
         MAIN,
         SHOP,
         INVENTORY,

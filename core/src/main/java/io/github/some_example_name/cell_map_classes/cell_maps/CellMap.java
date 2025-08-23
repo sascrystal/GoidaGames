@@ -47,7 +47,8 @@ public abstract class CellMap {
         player.setyOnScreen(map[center][0]);
         map[center][0].setPlayerIn(true);
     }
-    private static void setPlayer(CellMap cellMap, Player player,int x, int y) {
+
+    private static void setPlayer(CellMap cellMap, Player player, int x, int y) {
         player.setCellX(x);
         player.setCellY(y);
         player.setxOnScreen(cellMap);
@@ -126,13 +127,13 @@ public abstract class CellMap {
     }
 
     public static CellMap[][] createTrainingAct(Player player) {
-        CellMap[][] trainingMap = new CellMap[4][13];
+        CellMap[][] trainingMap = new CellMap[4][14];
         player.setCellX(0);
         player.setCellY(1);
         int cellWight = 150;
         float center = (viewport.getWorldHeight() / 2) - (float) cellWight / 2;
         trainingMap[1][0] = new EmptyCell(0, center);
-        trainingMap[1][1] = new FightCellTutorial(Stage.generateFightAct1(), new EmptyCell(trainingMap[1][0], "Right"),"dialogues/tutorial_dialog_box_GameScreen.json");
+        trainingMap[1][1] = new FightCellTutorial(Stage.generateFightAct1(), new EmptyCell(trainingMap[1][0], "Right"), "dialogues/tutorial_dialog_box_GameScreen.json");
         trainingMap[1][2] = new EmptyCell(trainingMap[1][1], "Right");
         trainingMap[1][3] = new FightCell(Stage.generateFightAct1(), new EmptyCell(trainingMap[1][2], "Right"));
         trainingMap[1][4] = new EmptyCell(trainingMap[1][3], "Right");
@@ -157,7 +158,9 @@ public abstract class CellMap {
         trainingMap[1][10] = new EmptyCell(trainingMap[2][10], "Up");
         trainingMap[1][11] = new EmptyCell(trainingMap[1][10], "Right");
         trainingMap[1][12] = new FightCell(Stage.generateFightAct1(), new EmptyCell(trainingMap[1][11], "Right"));
-        setPlayer(trainingMap[1][0], player,0,1);
+        trainingMap[1][13] = new ExitCell(1,new EmptyCell(trainingMap[1][12], "Right"));
+
+        setPlayer(trainingMap[1][0], player, 0, 1);
         return trainingMap;
     }
 
