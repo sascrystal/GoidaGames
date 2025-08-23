@@ -17,14 +17,13 @@ public class Main extends Game {
     private static void initDefaultSkins() {
         Preferences prefs = Gdx.app.getPreferences(PREFS_NAME);
         boolean isFirstRun = prefs.getBoolean(FIRST_RUN_KEY, true);
-        FileHandle localFile = Gdx.files.local("skins_data.json");
+
 
         if (isFirstRun) {
             FileHandle internalFile = Gdx.files.internal("skins_data.json");
 
             internalFile.copyTo(Gdx.files.local("skins_data.json"));
 
-            Gdx.app.log("Files", "Скопировано в: " + localFile.path());
             isFirstRun = false;
             prefs.getBoolean(FIRST_RUN_KEY,isFirstRun);
             prefs.flush();
