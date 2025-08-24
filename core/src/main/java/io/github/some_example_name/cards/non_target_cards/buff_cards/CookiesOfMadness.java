@@ -10,9 +10,9 @@ import io.github.some_example_name.player.Player;
 
 public class CookiesOfMadness extends NonTargetCard {
     public CookiesOfMadness() {
-        name = "Печеньковое безумие";
+        name = "Печенька безумия";
         description = "Тип: талант. За каждый стак в начале хода дает дополнительную карту печенек";
-        texture = new Texture(Gdx.files.internal("cards/noDataCard.png"));
+        texture = new Texture(Gdx.files.internal("cards/cardCookieOfMadness.png"));
         cost = 2;
         burnable = true;
     }

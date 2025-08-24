@@ -19,9 +19,11 @@ import java.util.List;
 
 import io.github.some_example_name.Main;
 import io.github.some_example_name.cards.PlayingCard;
+import io.github.some_example_name.utils.CustomColors;
 
 public class ShowDeckScreen implements Screen, GestureDetector.GestureListener {
     private static final float MODIFIER_FOR_CARD_NANE = 0.61f, MODIFIER_FOR_CARD_DESCRIPTION = 0.75F;
+    private static final int COUNT_SHOWING_CARDS = 4;
     private static final float LAYOUT_HEIGHT_FOR_NAME_CARDS = (float) 10 / 225;
     private final List<PlayingCard> deck;
     private final Screen nextScreen;
@@ -71,11 +73,11 @@ public class ShowDeckScreen implements Screen, GestureDetector.GestureListener {
 
     private void screenMinMaxCalculate() {
         minX = viewport.getWorldWidth() / 2;
-        maxX = deck.size() * (viewport.getWorldHeight() * ((float) deck.get(0).getTexture().getHeight() / deck.get(0).getTexture().getWidth()) + 20) - 20;
+        maxX = deck.size() * deck.get(0).getTexture().getWidth()- (float) (deck.get(0).getTexture().getWidth() * COUNT_SHOWING_CARDS) /2;
     }
 
     private void viewportConfiguration() {
-        viewport = new StretchViewport(2080, deck.get(0).getTexture().getHeight());
+        viewport = new StretchViewport(deck.get(0).getTexture().getWidth()*COUNT_SHOWING_CARDS, deck.get(0).getTexture().getHeight());
         viewport.getCamera().position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
         viewport.getCamera().update();
         viewport.apply();
@@ -127,7 +129,8 @@ public class ShowDeckScreen implements Screen, GestureDetector.GestureListener {
         int indent = 0;
         float beginPositionRowX = 0;
         float beginPositionRowY = 0;
-        float width = viewport.getWorldHeight() * ((float) deck.get(0).getTexture().getHeight() / deck.get(0).getTexture().getWidth());
+        float height = viewport.getWorldHeight();
+        float width = deck.get(0).getTexture().getWidth();
         for (int i = 0; i < deck.size(); i++) {
             float x = beginPositionRowX + (indent + width) * i;
             batch.draw(
@@ -135,26 +138,26 @@ public class ShowDeckScreen implements Screen, GestureDetector.GestureListener {
                 x,
                 beginPositionRowY,
                 width,
-                viewport.getWorldHeight());
+                height);
             font.setColor(Color.WHITE);
 
             font.getData().setScale(1.0f);
             font.draw(
                 batch,
                 String.valueOf(deck.get(i).getCost()),
-                x + 70,
-                beginPositionRowY + viewport.getWorldHeight() - 10);
+                x + width*0.09f,
+                beginPositionRowY + height*0.95f );
 
             font.getData().setScale(2.0f);
             font.setColor(Color.WHITE);
 
             float widthText = width * MODIFIER_FOR_CARD_NANE;
-            GlyphLayout layout = new GlyphLayout(font, deck.get(i).getName(), Color.WHITE, widthText, Align.center, true);
+            GlyphLayout layout = new GlyphLayout(font, deck.get(i).getName(), CustomColors.DARK_BROWN, widthText, Align.center, true);
             float xText = x + width / 2 - widthText / 2;
-            float y = beginPositionRowY + viewport.getWorldHeight() * 0.52f;
-            while (layout.height > viewport.getWorldHeight() * LAYOUT_HEIGHT_FOR_NAME_CARDS) {
+            float y = beginPositionRowY + height * 0.52f;
+            while (layout.height > height * LAYOUT_HEIGHT_FOR_NAME_CARDS) {
                 font.getData().setScale(font.getScaleX() * 0.999f);
-                layout.setText(font, deck.get(i).getName(), Color.WHITE, widthText, Align.center, true);
+                layout.setText(font, deck.get(i).getName(), CustomColors.DARK_BROWN, widthText, Align.center, true);
             }
             font.draw(batch, layout, xText, y);
             font.setColor(Color.WHITE);
@@ -162,11 +165,11 @@ public class ShowDeckScreen implements Screen, GestureDetector.GestureListener {
 
             widthText = width * MODIFIER_FOR_CARD_DESCRIPTION;
             xText = x + width / 2 - widthText / 2;
-            y = beginPositionRowY + viewport.getWorldHeight() * 0.40f;
-            layout.setText(font, deck.get(i).getDescription(), Color.WHITE, widthText, Align.center, true);
-            while (layout.height > viewport.getWorldHeight() * 0.32f) {
+            y = beginPositionRowY + height * 0.40f;
+            layout.setText(font, deck.get(i).getDescription(), Color.BROWN, widthText, Align.center, true);
+            while (layout.height > height * 0.28f) {
                 font.getData().setScale(font.getScaleX() * 0.999f);
-                layout.setText(font, deck.get(i).getDescription(), Color.WHITE, widthText, Align.center, true);
+                layout.setText(font, deck.get(i).getDescription(), Color.BROWN, widthText, Align.center, true);
             }
             font.draw(batch, layout, xText, y);
             font.setColor(Color.WHITE);

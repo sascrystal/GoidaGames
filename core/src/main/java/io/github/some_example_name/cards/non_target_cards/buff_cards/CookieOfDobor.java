@@ -16,7 +16,7 @@ public class CookieOfDobor extends NonTargetCard {
         name = "Печенька добора";
         description = "Тип: способность. дает 2 карты, наносит 2 урон ВАМ";
         cost = 0;
-        texture = new Texture(Gdx.files.internal("cards/cardCookieOfReinforce.png"));
+        texture = new Texture(Gdx.files.internal("cards/cardCookieOfDobor.png"));
     }
 
     @Override

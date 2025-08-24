@@ -1,5 +1,7 @@
 package io.github.some_example_name.cards.non_target_cards.buff_cards;
 
+import com.badlogic.gdx.graphics.Texture;
+
 import io.github.some_example_name.buffs.Power;
 import io.github.some_example_name.buffs.Reinforce;
 import io.github.some_example_name.cards.non_target_cards.NonTargetCard;
@@ -9,6 +11,7 @@ import io.github.some_example_name.player.Player;
 public class DanceKiller extends NonTargetCard {
     public DanceKiller() {
         name = "Убийца";
+        texture = new Texture("cards/cardDanceKiller.png");
         description = "Тип: способность. дает одну силу и одно укрепление";
         cost = 1;
     }

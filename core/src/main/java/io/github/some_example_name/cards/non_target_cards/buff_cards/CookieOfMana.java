@@ -16,7 +16,7 @@ public class CookieOfMana extends NonTargetCard {
         name = "Печенька маны";
         description = "Тип: способность. дает 1 максимальную ману, наносит 2 урона ВАМ";
         cost = 0;
-        texture = new Texture(Gdx.files.internal("cards/cardCookieOfReinforce.png"));
+        texture = new Texture(Gdx.files.internal("cards/cardCookieOfMana.png"));
     }
 
     @Override

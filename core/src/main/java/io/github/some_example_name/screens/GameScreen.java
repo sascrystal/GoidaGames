@@ -29,6 +29,7 @@ import io.github.some_example_name.cards.non_target_cards.NonTargetCard;
 import io.github.some_example_name.cell_map_classes.cell_maps.CellMap;
 import io.github.some_example_name.enemy_classes.enemies.Enemy;
 import io.github.some_example_name.player.Player;
+import io.github.some_example_name.utils.CustomColors;
 
 
 public class GameScreen implements Screen, DrawableScreen {
@@ -37,6 +38,7 @@ public class GameScreen implements Screen, DrawableScreen {
     private static final float MAX_SCALE_FOR_DRAGGED_CARD = 2f;
     private static final float LAYOUT_HEIGHT_FOR_NAME_CARDS = (float) 10 / 225;
     private static final float SPEED_SCALING_FOR_DRAGGED_CARD = 1.5f;
+    private static final float LAYOUT_HEIGHT_FOR_DESCRIPTION_CARDS = 0.28f;
     public static StretchViewport viewport = new StretchViewport(2400, 1080);
     // Добавляем противника и игрока
     private final Enemy[] enemies;
@@ -400,12 +402,12 @@ public class GameScreen implements Screen, DrawableScreen {
 
             float width = scaledWidth * MODIFICATOR_FOR_CARD_NAME;
 
-            GlyphLayout layout = new GlyphLayout(fontForCardInHand, player.getHand()[draggedCardIndex].getName(), Color.WHITE, width, Align.center, true);
+            GlyphLayout layout = new GlyphLayout(fontForCardInHand, player.getHand()[draggedCardIndex].getName(), CustomColors.DARK_BROWN, width, Align.center, true);
             float x = draggedCardX + scaledWidth / 2 - width / 2;
             float y = draggedCardY + scaledHeight * 0.52f;
             while (layout.height > scaledHeight * LAYOUT_HEIGHT_FOR_NAME_CARDS) {
                 fontForCardInHand.getData().setScale(fontForCardInHand.getScaleX() * 0.99f);
-                layout.setText(fontForCardInHand, player.getHand()[draggedCardIndex].getName(), Color.WHITE, width, Align.center, true);
+                layout.setText(fontForCardInHand, player.getHand()[draggedCardIndex].getName(), CustomColors.DARK_BROWN, width, Align.center, true);
             }
             fontForCardInHand.draw(batch, layout, x, y);
             fontForCardInHand.setColor(Color.WHITE);
@@ -414,10 +416,10 @@ public class GameScreen implements Screen, DrawableScreen {
             width = scaledWidth * MODIFIER_FOR_CARD_DESCRIPTION;
             x = draggedCardX + scaledWidth / 2 - width / 2;
             y = draggedCardY + scaledHeight * 0.40f;
-            layout.setText(fontForCardInHand, player.getHand()[draggedCardIndex].getDescription(), Color.WHITE, width, Align.center, true);
-            while (layout.height > scaledHeight * 0.32f) {
+            layout.setText(fontForCardInHand, player.getHand()[draggedCardIndex].getDescription(), Color.BROWN, width, Align.center, true);
+            while (layout.height > scaledHeight * LAYOUT_HEIGHT_FOR_DESCRIPTION_CARDS) {
                 fontForCardInHand.getData().setScale(fontForCardInHand.getScaleX() * 0.99f);
-                layout.setText(fontForCardInHand, player.getHand()[draggedCardIndex].getDescription(), Color.WHITE, width, Align.center, true);
+                layout.setText(fontForCardInHand, player.getHand()[draggedCardIndex].getDescription(),  Color.BROWN, width, Align.center, true);
             }
             fontForCardInHand.draw(batch, layout, x, y);
 
@@ -475,7 +477,7 @@ public class GameScreen implements Screen, DrawableScreen {
     }
 
     private void chooseCardsTouching() {
-        for (int i = 0; i < choosingCards.length; i++) {
+        for (int i = 0;choosingCards != null && i < choosingCards.length; i++) {
             if (choosingCards[i] != null && choosingCardsRectangle[i].contains(touchPos)) {
                 chooseCard = choosingCards[i];
                 needChooseCard = false;
@@ -752,12 +754,12 @@ public class GameScreen implements Screen, DrawableScreen {
                 fontForCardInHand.getData().setScale(2.0f);
 
                 float width = cardBounds[i].width * MODIFICATOR_FOR_CARD_NAME;
-                GlyphLayout layout = new GlyphLayout(fontForCardInHand, player.getHand()[i].getName(), Color.WHITE, width, Align.center, true);
+                GlyphLayout layout = new GlyphLayout(fontForCardInHand, player.getHand()[i].getName(),  CustomColors.DARK_BROWN, width, Align.center, true);
                 float x = cardBounds[i].getX() + cardBounds[i].getWidth() / 2 - width / 2;
                 float y = cardBounds[i].getY() + cardBounds[i].height * 0.52f;
                 while (layout.height > cardBounds[i].height * LAYOUT_HEIGHT_FOR_NAME_CARDS) {
                     fontForCardInHand.getData().setScale(fontForCardInHand.getScaleX() * 0.99f);
-                    layout.setText(fontForCardInHand, player.getHand()[i].getName(), Color.WHITE, width, Align.center, true);
+                    layout.setText(fontForCardInHand, player.getHand()[i].getName(),  CustomColors.DARK_BROWN, width, Align.center, true);
                 }
                 fontForCardInHand.draw(batch, layout, x, y);
                 fontForCardInHand.setColor(Color.WHITE);
@@ -766,10 +768,10 @@ public class GameScreen implements Screen, DrawableScreen {
                 width = cardBounds[i].width * MODIFIER_FOR_CARD_DESCRIPTION;
                 x = cardBounds[i].getX() + cardBounds[i].getWidth() / 2 - width / 2;
                 y = cardBounds[i].getY() + cardBounds[i].height * 0.40f;
-                layout.setText(fontForCardInHand, player.getHand()[i].getDescription(), Color.WHITE, width, Align.center, true);
-                while (layout.height > cardBounds[i].height * 0.32f) {
+                layout.setText(fontForCardInHand, player.getHand()[i].getDescription(),  Color.BROWN, width, Align.center, true);
+                while (layout.height > cardBounds[i].height * LAYOUT_HEIGHT_FOR_DESCRIPTION_CARDS) {
                     fontForCardInHand.getData().setScale(fontForCardInHand.getScaleX() * 0.99f);
-                    layout.setText(fontForCardInHand, player.getHand()[i].getDescription(), Color.WHITE, width, Align.center, true);
+                    layout.setText(fontForCardInHand, player.getHand()[i].getDescription(),  Color.BROWN, width, Align.center, true);
                 }
                 fontForCardInHand.draw(batch, layout, x, y);
                 fontForCardInHand.setColor(Color.WHITE);
