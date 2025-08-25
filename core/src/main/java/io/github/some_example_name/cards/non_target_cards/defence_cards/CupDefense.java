@@ -1,5 +1,7 @@
 package io.github.some_example_name.cards.non_target_cards.defence_cards;
 
+import com.badlogic.gdx.graphics.Texture;
+
 import io.github.some_example_name.buffs.Reinforce;
 import io.github.some_example_name.enemy_classes.enemies.Enemy;
 import io.github.some_example_name.player.Player;
@@ -9,6 +11,7 @@ public class CupDefense extends DefenceCard {
     public CupDefense() {
         name = "Бабушкин сервиз";
         description = "Тип: способность. Дает 8 защиты. Хороший фарфор - хорошая защита!";
+        texture = new Texture("cards/cupDefence.png");
         shield = 8;
         cost = 1;
     }

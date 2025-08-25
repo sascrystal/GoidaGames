@@ -1,6 +1,9 @@
 package io.github.some_example_name.buffs;
 
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import io.github.some_example_name.enemy_classes.enemies.Enemy;
 import io.github.some_example_name.player.Player;
 
@@ -12,6 +15,7 @@ public abstract class Buff {
         inBeginFight = false, inReaction = false;
     protected int stack;
     protected String name, description;
+    protected Sprite sprite;
 
 
     public String getName() {

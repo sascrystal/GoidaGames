@@ -142,6 +142,9 @@ public abstract class Player {
         }
 
     }
+    public void addMana(int extraMana){
+        manaPool += extraMana;
+    }
 
     public void playCard(Enemy enemy, int index) {
         buffActionTrigger("cardAction");

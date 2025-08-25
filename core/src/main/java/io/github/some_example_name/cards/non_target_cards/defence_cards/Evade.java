@@ -1,6 +1,8 @@
 package io.github.some_example_name.cards.non_target_cards.defence_cards;
 
 
+import com.badlogic.gdx.graphics.Texture;
+
 import io.github.some_example_name.buffs.BonusCard;
 import io.github.some_example_name.enemy_classes.enemies.Enemy;
 import io.github.some_example_name.player.Player;
@@ -8,6 +10,7 @@ import io.github.some_example_name.player.Player;
 public class Evade extends DefenceCard {
     public Evade() {
         name = "Уворот";
+        texture = new Texture("cards/cardEvade.png");
         description = "Тип: способность. Дает 8 защиты, 1 карту из колоды и 1 карту в следующем ходу";
         shield = 8;
         cost = 1;

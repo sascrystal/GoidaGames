@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -21,17 +22,16 @@ public abstract class MoveEnemy {
     public abstract String showNumericalValue(Enemy x, Player y);
 
 
-    public void draw(Batch batch, BitmapFont font, float elapsedTime, Enemy enemy, Player player) {
+    public void draw(Batch batch, BitmapFont font, float elapsedTime, Enemy enemy, Player player,float x ,float y) {
+
 
 
         TextureRegion currentFrame = animation.getKeyFrame(elapsedTime, true);
         batch.draw(currentFrame,
-            enemy.getBounds().getX() + enemy.getBounds().getWidth() - 40,
-            enemy.getBounds().getY() + enemy.getBounds().getHeight() + 30,
-            100, 130);
-        font.draw(batch, String.valueOf(showNumericalValue(enemy, player)),
-            (enemy.getBounds().getX() + enemy.getBounds().getWidth() + currentFrame.getRegionWidth() + 2),
-            enemy.getBounds().getY() + enemy.getBounds().getHeight() + 100);
+            x,
+            y);
+        GlyphLayout glyphLayout = new GlyphLayout(font,String.valueOf(showNumericalValue(enemy, player)));
+        font.draw(batch, glyphLayout,x+currentFrame.getRegionWidth(),y+ (float) currentFrame.getRegionHeight() /2 + glyphLayout.height/2);
     }
 }
 
