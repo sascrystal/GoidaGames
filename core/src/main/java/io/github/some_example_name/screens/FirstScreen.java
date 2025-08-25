@@ -498,7 +498,8 @@ public class FirstScreen implements Screen {
                 CellMap[][] map = CellMap.createTrainingAct(player);
                 MapScreen training = new MapScreen(player, map);
                 TutorialScreen tutorialScreen = new TutorialScreen(training, training, "dialogues/tutorial_dialog_box_MapScreen.json");
-                ((Main) Gdx.app.getApplicationListener()).setScreen(tutorialScreen);
+                DialogueScreen dialogueScreen = new DialogueScreen("tutorial",tutorialScreen);
+                ((Main) Gdx.app.getApplicationListener()).setScreen(dialogueScreen);
             }
         });
 

@@ -19,7 +19,7 @@ import io.github.some_example_name.player.Player;
 import io.github.some_example_name.screens.GameScreen;
 
 public abstract class Enemy {
-    protected static final Texture heart = new Texture(Gdx.files.internal("HUD/heart.png"));
+
     protected static final float SPEED_SHAKING = 6f, SPEED_ATTACKING = 6F;
     protected static final float AMPLITUDE_SHAKING = 100, AMPLITUDE_ATTACKING = 100;
     protected static final float STEP_VALUE = 0.3f, STEP_VALUE_ATTACKING = 0.3f;
@@ -56,6 +56,9 @@ public abstract class Enemy {
         isAttacking = attacking;
         notUseAttack = attacking;
     }
+    public MoveEnemy getNextMove(){
+        return moveList[indexMoveList];
+    }
 
 
     public void draw(SpriteBatch batch, BitmapFont font, float delta, Player player) {
@@ -67,15 +70,14 @@ public abstract class Enemy {
             bounds.width + enemyAttackingDelta * AMPLITUDE_ATTACKING,
             bounds.height + enemyAttackingDelta * AMPLITUDE_ATTACKING);// Получаем текущий кадр анимации
 
-        font.draw(batch, "Health: " + health, bounds.getX() - 100, bounds.getY() + bounds.getHeight() + 100);
-        // кто читает эту заметку тот лох
-
-
-        moveList[getIndexMoveList()].draw(batch, font, ENEMY_ELAPSED_TIME, this, player);
         enemyShaking(delta);
         enemyAttacking(delta, player);
 
 
+    }
+
+    public int getHealth() {
+        return health;
     }
 
     private void enemyAttacking(float delta, Player player) {
