@@ -48,6 +48,8 @@
 # Сохранить класс ShopSkin и все его поля
 -keep class io.github.some_example_name.utils.ShopSkin { *; }
 -keepclassmembers class io.github.some_example_name.utils.ShopSkin { *; }
+-keep class io.github.some_example_name.utils.DialogBox { *; }
+-keepclassmembers class io.github.some_example_name.utils.DialogBox { *; }
 
 
 # These two lines are used with mapping files; see https://developer.android.com/build/shrink-code#retracing
