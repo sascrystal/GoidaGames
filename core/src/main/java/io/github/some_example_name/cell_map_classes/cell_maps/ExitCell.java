@@ -28,6 +28,10 @@ public class ExitCell extends CellMap {
         this.act = act;
         texture = new Texture(Gdx.files.internal("cell/emptyCell.png"));
         this.bounds = bounds;
+        Texture textureDoor = new Texture("map_screen/door.png");
+        door = new Sprite(textureDoor);
+        door.setSize(door.getWidth()*SCALE_FOR_DOOR, door.getHeight()*SCALE_FOR_DOOR);
+        door.setPosition(bounds.getX()+bounds.getWidth()/2-door.getWidth()/2, bounds.getY()+bounds.getHeight()/2-door.getHeight()/2);
     }
 
     @Override
